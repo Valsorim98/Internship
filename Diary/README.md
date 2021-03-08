@@ -11,6 +11,8 @@ Learn how to **create ignores** with gitignore.io
 
 Learn how to **add a license to a repo**
 
+Learn how to **correct mistakes with pylist**
+
 > # Homework:
 
 Learn how to work with **Markdown in VSCode**
