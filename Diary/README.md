@@ -9,3 +9,5 @@ Learn git status, git commit, git push and git clone in git bash
 
 Learn how to create ignores with gitignore.io
 
+Learn how to add a license to a repo
+
