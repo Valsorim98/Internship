@@ -7,7 +7,8 @@ Learn **cd (changed directory)**
 
 Learn **git status, git commit, git push and git clone** in git bash
 
-Learn how to **create ignores** with gitignore.io
+Learn how to **create ignores** with 
+gitignore.io
 
 Learn how to **add a license to a repo**
 
@@ -22,5 +23,12 @@ Learn **Version Control Systems (VCS)**
 Learn what is **docstring** and how to use it
 
 > # March 9:
+
+Installed **python docstring generator extension** in VSCode (using with ctrl+shift+2)
+
+Learned how to open pylint with cmd:
+- cd Documents\Git_repos\... (directory)
+- dir (shows the files in the directory)
+- python -m pylint [filename] (indicates certain file)
 
 
