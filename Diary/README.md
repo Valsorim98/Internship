@@ -31,4 +31,12 @@ Learned how to open pylint with cmd:
 - dir (shows the files in the directory)
 - python -m pylint [filename] (indicates certain file)
 
+Learned mutable (list) and immutable objects (int, float, string, tuple)
+
+Worked on optimizing and refactoring Python tasks in PythonTasks repo
+
+> # Homework:
+
+What is OOP and what is it used for in Python
+
 
