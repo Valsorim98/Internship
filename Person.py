@@ -50,41 +50,47 @@ class Person:
         """        
         print(f"My name is {self.name} and I am {self.age} years old.")
 
-#age input
-age = int(input("Please enter age: "))
 
-#create two people with names and age
-p1 = Person("Tom", 20)
-p2 = Person("Jerry", 35)
+def main():
 
-#call introduce_self method which is printing to the console
-p1.introduce_self()
-p2.introduce_self()
+    #age input
+    age = int(input("Please enter age: "))
 
-#create variables to store the bool response from is_greater method
-p1_great = p1.is_greater(age)
-p2_great = p2.is_greater(age)
+    #create two people with names and age
+    p1 = Person("Tom", 20)
+    p2 = Person("Jerry", 35)
 
-#create variables to store the bool response from is_equal method
-p1_equal = p1.is_equal(age)
-p2_equal = p2.is_equal(age)
+    #call introduce_self method which is printing to the console
+    p1.introduce_self()
+    p2.introduce_self()
 
-#create variables to store the bool response from is_lower method
-p1_lower = p1.is_lower(age)
-p2_lower = p2.is_lower(age)
+    #create variables to store the bool response from is_greater method
+    p1_great = p1.is_greater(age)
+    p2_great = p2.is_greater(age)
 
-#create conditional statements to print the person's age compared to the input age for person 1 - Tom
-if p1_great:
-    print(f"{p1.name}'s age is younger than {age}")
-if p1_equal:
-    print(f"{p1.name}'s age equals {age}")
-if p1_lower:
-    print(f"{p1.name}'s age is older than {age}")
+    #create variables to store the bool response from is_equal method
+    p1_equal = p1.is_equal(age)
+    p2_equal = p2.is_equal(age)
 
-#create conditional statements to print the person's age compared to the input age for person 2 - Jerry
-if p2_great:
-    print(f"{p2.name}'s age is younger than {age}")
-if p2_equal:
-    print(f"{p2.name}'s age equals {age}")
-if p2_lower:
-    print(f"{p2.name}'s age is older than {age}")
+    #create variables to store the bool response from is_lower method
+    p1_lower = p1.is_lower(age)
+    p2_lower = p2.is_lower(age)
+
+    #create conditional statements to print the person's age compared to the input age for person 1 - Tom
+    if p1_great:
+        print(f"{p1.name}'s age is younger than {age}")
+    if p1_equal:
+        print(f"{p1.name}'s age equals {age}")
+    if p1_lower:
+        print(f"{p1.name}'s age is older than {age}")
+
+    #create conditional statements to print the person's age compared to the input age for person 2 - Jerry
+    if p2_great:
+        print(f"{p2.name}'s age is younger than {age}")
+    if p2_equal:
+        print(f"{p2.name}'s age equals {age}")
+    if p2_lower:
+        print(f"{p2.name}'s age is older than {age}")
+
+if __name__ == "__main__":
+    main()
