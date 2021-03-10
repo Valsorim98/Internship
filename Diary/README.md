@@ -40,3 +40,6 @@ Worked on optimizing and refactoring Python tasks in PythonTasks repo
 What is OOP and what is it used for in Python
 
 
+> # March 10:
+
+Learn how to create classes, methods and functions and how to call them
