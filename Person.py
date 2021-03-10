@@ -50,11 +50,15 @@ class Person:
         """        
         print(f"My name is {self.name} and I am {self.age} years old.")
 
+def check_input():
+    while is_valid
 
 def main():
 
     #age input
     age = int(input("Please enter age: "))
+
+  #  print(string.isdigit())
 
     #create two people with names and age
     p1 = Person("Tom", 20)
