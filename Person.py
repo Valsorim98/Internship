@@ -40,7 +40,7 @@ class Person:
             age (int): Shows the input age.
 
         Returns:
-            bool: Returns True if the input age is younger than the person's age.
+            bool: Returns True if the input age is younger than the person's age, else False.
         """        
         return self.age > age
 
@@ -50,15 +50,17 @@ class Person:
         """        
         print(f"My name is {self.name} and I am {self.age} years old.")
 
-def check_input():
-    while is_valid
-
 def main():
-
-    #age input
-    age = int(input("Please enter age: "))
-
-  #  print(string.isdigit())
+    
+    #Cycle asks user for integer type until provided
+    while True:
+        try:
+            #age input
+            age = int(input("Please enter age: "))
+            break
+        except ValueError:
+            print("You didn't enter an integer. Please enter an integer.")
+            
 
     #create two people with names and age
     p1 = Person("Tom", 20)
