@@ -22,6 +22,9 @@ class Animal:
 
 def main():
 
+    #create counter for duplicates
+    counter = 0
+
     #create list to store user inputs
     input_list = []
 
@@ -31,14 +34,6 @@ def main():
         a = str(input("Please enter four animal types: "))
         input_list.append(a)
         i += 1
-
-    for i in range(len(input_list)): 
-            for i1 in range(len(input_list)): 
-                if i != i1: 
-                    if input_list[i] == input_list[i1]: 
-                        print("There are duplicates.")
-                    else:
-                        print("There are no duplicates.")
 
     #create animals with name, type and age
     a1 = Animal("Riki", input_list[0], 3)
@@ -52,6 +47,14 @@ def main():
     a3.greet()
     a4.greet()
 
+    for i in range(len(input_list)): 
+            for i1 in range(len(input_list)): 
+                if i != i1: 
+                    if input_list[i] == input_list[i1]:
+                        counter += 1
+                        break
+                    
+    print(f"There are {counter} duplicates.")
 
 #start main function
 if __name__ == "__main__":
