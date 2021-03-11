@@ -18,6 +18,16 @@ class Animal:
         """        
         print(f"Hi, my name is {self.name} and I'm a {self.age} years old {self.type}.")
 
+    def check_for_duplicates(self, input_list):
+        """Check if the user entered duplicates.
+
+        Args:
+            input_list (list): Stores the user's inputs.
+        """        
+        if len(input_list) == len(set(input_list)):
+            return False
+        else:
+            return True
 
 
 def main():
@@ -31,7 +41,14 @@ def main():
         a = str(input("Please enter four animal types: "))
         input_list.append(a)
         i += 1
-        
+
+    #check if there is a duplicate in the input list
+    is_duplicate = check_for_duplicates()
+    
+    if is_duplicate:
+        print("Yes, there are duplicates in the list.")
+    else:
+        print("No, there are no duplicates in the list.")
 
     #create animals with name, type and age
     a1 = Animal("Riki", input_list[0], 3)
@@ -44,6 +61,7 @@ def main():
     a2.greet()
     a3.greet()
     a4.greet()
+
 
 #start main function
 if __name__ == "__main__":
