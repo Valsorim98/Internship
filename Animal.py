@@ -18,19 +18,12 @@ class Animal:
         """        
         print(f"Hi, my name is {self.name} and I'm a {self.age} years old {self.type}.")
 
-    def check_for_duplicates(self, input_list):
-        for i in range(len(input_list)): 
-            for i1 in range(len(input_list)): 
-                if i != i1: 
-                    if input_list[i] == input_list[i1]: 
-                        print("There are duplicates")
 
 
-def main(check_for_duplicates):
+def main():
 
     #create list to store user inputs
     input_list = []
-  #  unique_list = set(input_list) #see later
 
     #create cycle to get the needed amount of inputs
     i = 0
@@ -39,8 +32,13 @@ def main(check_for_duplicates):
         input_list.append(a)
         i += 1
 
-    #call check_for_duplicates method
-    check_for_duplicates()
+    for i in range(len(input_list)): 
+            for i1 in range(len(input_list)): 
+                if i != i1: 
+                    if input_list[i] == input_list[i1]: 
+                        print("There are duplicates.")
+                    else:
+                        print("There are no duplicates.")
 
     #create animals with name, type and age
     a1 = Animal("Riki", input_list[0], 3)
@@ -57,4 +55,4 @@ def main(check_for_duplicates):
 
 #start main function
 if __name__ == "__main__":
-    main(check_for_duplicates)
+    main()
