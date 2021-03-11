@@ -42,4 +42,12 @@ What is OOP and what is it used for in Python
 
 > # March 10:
 
-Learn how to create classes, methods and functions and how to call them
+Learn how to **create classes, methods and functions and how to call them**
+
+> # Homework:
+
+Finish Person.py task with **try except in a while cycle**
+
+> # March 11:
+
+Exercise creating classes, methods and functions and calling them
