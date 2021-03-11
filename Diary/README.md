@@ -51,3 +51,9 @@ Finish Person.py task with **try except in a while cycle**
 > # March 11:
 
 Exercise creating classes, methods and functions and calling them
+
+Create new file Animal.py with Animal class, constructor for animals, greet method, check_for_duplicates method and main function
+
+> # Homework:
+
+Finish the check_for_duplicates method
