@@ -59,7 +59,7 @@ def main():
             age = int(input("Please enter age: "))
             break
         except ValueError:
-            print("You didn't enter an integer. Please enter an integer.")
+            print("You didn't enter a number. Please enter a number.")
             
 
     #create two people with names and age
