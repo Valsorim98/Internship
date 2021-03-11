@@ -14,16 +14,19 @@ class Animal:
         self.age = age
 
     def greet(self):
-
+        """Method to print the animal's name, age and type.
+        """        
         print(f"Hi, my name is {self.name} and I'm a {self.age} years old {self.type}.")
 
 
 
 def main():
 
-    i = 0
+    #create list to store user inputs
     input_list = []
 
+    #create cycle to get the needed amount of inputs
+    i = 0
     while i < 4:
         a = str(input("Please enter four animal types: "))
         input_list.append(a)
@@ -36,10 +39,12 @@ def main():
     a3 = Animal("Roko", input_list[2], 10)
     a4 = Animal("Mirage", input_list[3], 5)
 
+    #call greet method
     a1.greet()
     a2.greet()
     a3.greet()
     a4.greet()
 
+#start main function
 if __name__ == "__main__":
     main()
