@@ -30,6 +30,7 @@ def main(check_for_duplicates):
 
     #create list to store user inputs
     input_list = []
+  #  unique_list = set(input_list) #see later
 
     #create cycle to get the needed amount of inputs
     i = 0
