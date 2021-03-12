@@ -1,5 +1,5 @@
-import parent
-import child
+from parent import Parent
+from child import Child
 
 def main():
 
