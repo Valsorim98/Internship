@@ -8,14 +8,14 @@ class Animal:
             name (str): Animal name
             type (str): Animal type
             age (int): Animal age
-        """        
+        """
         self.name = name
         self.type = type
         self.age = age
 
     def greet(self):
         """Method to print the animal's name, age and type.
-        """        
+        """
         print(f"Hi, my name is {self.name} and I'm a {self.age} years old {self.type}.")
 
 
@@ -48,13 +48,12 @@ def main():
     a4.greet()
 
     #nested for loop to check duplicates
-    for i in range(len(input_list)): 
-            for i1 in range(len(input_list)): 
-                if i != i1: 
-                    if input_list[i] == input_list[i1]:
-                        counter += 1
-                        break
-                    
+    for i in range(len(input_list)):
+        for i1 in range(len(input_list)):
+            if i != i1:
+                if input_list[i] == input_list[i1]:
+                    counter += 1
+                    break
     print(f"There are {counter} duplicates.")
 
 #start main function
