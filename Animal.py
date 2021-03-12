@@ -1,7 +1,7 @@
 
 class Animal:
     """Create class Animal
-    """    
+    """
     def __init__(self, name, type, age):
         """Constructor for animals
 
@@ -23,7 +23,7 @@ class Animal:
 
 def main():
     """Create main function
-    """    
+    """
     #create counter for duplicates
     counter = 0
 
