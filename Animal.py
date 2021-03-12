@@ -47,6 +47,7 @@ def main():
     a3.greet()
     a4.greet()
 
+    #nested for loop to check duplicates
     for i in range(len(input_list)): 
             for i1 in range(len(input_list)): 
                 if i != i1: 
