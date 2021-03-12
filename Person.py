@@ -7,10 +7,10 @@ class Person:
         Args:
             name (str): The name of the person.
             age (int): The age of the person.
-        """        
+        """
         self.name = name
         self.age = age
-        
+
     def is_greater(self, age):
         """Shows if the input age is greater than the person's age.
 
@@ -19,9 +19,9 @@ class Person:
 
         Returns:
             bool: Returns True if the input age is older than the person's age, else False.
-        """        
+        """
         return self.age < age
-    
+
     def is_equal(self, age):
         """Shows if the input age is equal to the person's age.
 
@@ -30,7 +30,7 @@ class Person:
 
         Returns:
             bool: Returns True if the input age equals the person's age, else False.
-        """        
+        """
         return self.age == age
 
     def is_lower(self, age):
@@ -41,17 +41,17 @@ class Person:
 
         Returns:
             bool: Returns True if the input age is younger than the person's age, else False.
-        """        
+        """
         return self.age > age
 
 
     def introduce_self(self):
         """Prints the person's name and age.
-        """        
+        """
         print(f"My name is {self.name} and I am {self.age} years old.")
 
 def main():
-    
+
     #Cycle asks user for integer type until provided
     while True:
         try:
@@ -60,7 +60,7 @@ def main():
             break
         except ValueError:
             print("You didn't enter a number. Please enter a number.")
-            
+
 
     #create two people with names and age
     p1 = Person("Tom", 20)
