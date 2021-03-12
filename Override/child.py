@@ -1,3 +1,5 @@
+import parent
+
 class Child(Parent):
     """Create class Child. Sub class of class Parent.
     """
