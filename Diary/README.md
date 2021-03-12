@@ -57,3 +57,19 @@ Create new file Animal.py with Animal class, constructor for animals, greet meth
 > # Homework:
 
 Finish the check_for_duplicates method
+
+> # March 12:
+
+Remove errors from pylint on person.py and animal.py
+
+Learn about **override methods**
+
+Create test_override.py to test override
+
+Learn **how to import files**
+
+Create two classes in separate files and import them in main.py
+
+> # Homework:
+
+Read about public, protected and private methods
