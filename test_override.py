@@ -2,7 +2,7 @@ class Parent:
     """Create class Parent.
     """
 
-    def show(self):
+    def display(self):
         print("I am the parent.")
 
 
@@ -11,9 +11,9 @@ class Child(Parent):
     """
 
     def display(self):
+        super().display()   #call parent's class method using super()
         print("I am the child.")
 
 
 obj = Child()
-obj.show()
 obj.display()
