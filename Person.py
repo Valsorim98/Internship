@@ -1,6 +1,7 @@
 
 class Person:
-
+    """Create class Person.
+    """
     def __init__(self, name, age):
         """Constructor for class Person.
 
@@ -51,6 +52,8 @@ class Person:
         print(f"My name is {self.name} and I am {self.age} years old.")
 
 def main():
+    """Create main function.
+    """
 
     #Cycle asks user for integer type until provided
     while True:
