@@ -6,6 +6,7 @@ def __password():
     """    
 
     password = str(input("Enter the password you want to sign up with: "))
+    print(f"Your account is signed up with password: {password}")
 
 
 def main():
