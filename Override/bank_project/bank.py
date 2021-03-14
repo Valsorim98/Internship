@@ -13,11 +13,11 @@ def main():
     """Create main function to run the project.
     """    
 
-    date = Date()       #call Date() class
-    date.today_date()   #call today_date() method
+    Date().today_date()   #call Date() class and call today_date() method
 
-    p_age = PersonLater()    #call PersonLater() class which is sub class of Person     
-    age = p_age.introduce()  #call introduce() method
+    print("You have to be at least 18 years old to open a back account.")
+   
+    age = PersonLater().introduce()  #call PersonLater() class which is sub class of Person and call introduce() method
 
 
     if age >= 18:
