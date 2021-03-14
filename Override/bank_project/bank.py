@@ -16,8 +16,9 @@ def main():
     date = Date()       #call Date() class
     date.today_date()   #call today_date() method
 
-    p_age = PersonLater()    #call PersonLater() class which is sub class of Person
-    p_age.introduce()        #call introduce() method
+    p_age = PersonLater()    #call PersonLater() class which is sub class of Person     
+    age = p_age.introduce()  #call introduce() method
+
 
     if age >= 18:
         print(f"You can open a bank account!")
