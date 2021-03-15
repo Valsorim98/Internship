@@ -9,6 +9,7 @@ class Tokens():
 
     while(1):
 
+        rep = ""
         if (serialPort.in_waiting > 0):
             serialString = serialPort.readline()
             x = serialString.decode('Ascii')
@@ -16,7 +17,7 @@ class Tokens():
             print(rep)
 
         
-        if rep == "6E536046010080FF"
+        if rep == "6E536046010080FF":
             print("Access granted.")
         else:
             print("Access denied.")
