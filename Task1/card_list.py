@@ -1,9 +1,9 @@
 import serial
 
-class ACT_230_RFID():
 
+def main():
     serialPort = serial.Serial(port = "COM3", baudrate=9600,
-                                bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
+                                bytesize=8, stopbits=serial.STOPBITS_ONE)
 
     serialString = ""
 
@@ -18,3 +18,7 @@ class ACT_230_RFID():
                 print("Access granted.")
             else:
                 print("Access denied.")
+
+
+if __name__ == "__main__":
+    main()
