@@ -23,6 +23,9 @@ def main():
     if age >= 18:
         print(f"You can open a bank account!")
         __password()
+    else:
+        print("You are not old enough.")
+
 
 if __name__ == "__main__":
     main()
