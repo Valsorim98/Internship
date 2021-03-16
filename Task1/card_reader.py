@@ -1,9 +1,14 @@
 import serial
+import serial.tools.list_ports
 from whitelist import Whitelist
 
 class ACT_230_RFID():
     """Create class for card readers.
     """
+
+    comPorts = list(serial.tools.list_ports.comports())
+    print(comPorts)
+
     def __init__(self, port):
         """Constructor for card readers.
 
@@ -19,8 +24,8 @@ class ACT_230_RFID():
         """Method to get the input from a token, decode it to a string and compare to see if its whitelisted.
         """        
 
-        if (serialPort.in_waiting > 0):
-            serialString = serialPort.readline()
+        if (self.serialPort.in_waiting > 0):
+            serialString = self.serialPort.readline()
             x = serialString.decode('Ascii')
             rep = x.replace("?\r\n", "")
             print(rep)
