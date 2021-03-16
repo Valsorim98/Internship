@@ -73,3 +73,11 @@ Create two classes in separate files and import them in main.py
 > # Homework:
 
 Read about public, protected and private methods
+
+> # March 13:
+
+Work on Task1 (github repo)
+
+> # March 14:
+
+Work on Task1 (github repo)
