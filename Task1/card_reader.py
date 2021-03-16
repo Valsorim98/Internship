@@ -1,5 +1,5 @@
 import serial
-from whitelist import Whitelist
+#from whitelist import Whitelist
 
 class ACT_230_RFID():
     """Create class for card readers.
