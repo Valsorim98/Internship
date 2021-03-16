@@ -3,7 +3,8 @@ from card_reader import ACT_230_RFID
 
 def main():
 
-    ACT_230_RFID().update()
+    while(1):
+        ACT_230_RFID().update()
 
 
 

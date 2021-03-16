@@ -8,8 +8,6 @@ class ACT_230_RFID():
 
     def update(self):
 
-        while(1):
-
             if (self.serialPort.in_waiting > 0):
                 serialString = self.serialPort.readline()
                 x = serialString.decode('Ascii')
