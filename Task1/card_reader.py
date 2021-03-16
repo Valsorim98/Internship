@@ -3,8 +3,11 @@ from whitelist import Whitelist
 
 class ACT_230_RFID():
 
-    serialPort = serial.Serial(port = "COM3", baudrate=9600,
-                                bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
+    def __init__(self, port):
+        port = port
+
+        __serialPort = serial.Serial(port = "COM3", baudrate=9600,
+                                    bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
 
     def update(self):
 
