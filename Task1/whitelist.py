@@ -27,4 +27,5 @@ class Whitelist():
     c18 = ("6E12345678901218", "2022-12-30")
 
     arr_cards = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18]
-    #kak da izvikam Whitelist().arr_cards.i.code/exp_date
+    #whitelist i blacklist na json file - database
+    
