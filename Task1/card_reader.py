@@ -19,8 +19,8 @@ class ACT_230_RFID():
         """Method to get the input from a token, decode it to a string and compare to see if its whitelisted.
         """        
 
-        if (self.serialPort.in_waiting > 0):
-            serialString = self.serialPort.readline()
+        if (serialPort.in_waiting > 0):
+            serialString = serialPort.readline()
             x = serialString.decode('Ascii')
             rep = x.replace("?\r\n", "")
             print(rep)
@@ -31,5 +31,6 @@ class ACT_230_RFID():
                 print("Access denied.")
 
 
-       # for i in Whitelist().arr_cards:
-       #     rep == i.
+        #for i in Whitelist().arr_cards:
+        #    rep == i
+        #    print(rep)
