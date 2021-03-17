@@ -1,11 +1,11 @@
-from card_reader import ACT_230_RFID
+from card_reader import ACT230
 
 
 def main():
     """Main function for the project.
     """
     #Create card reader one
-    c1 = ACT_230_RFID("COM3")
+    c1 = ACT230("COM3")
 
     #call update method in a while cycle to check for token input non-stop
     while(1):
