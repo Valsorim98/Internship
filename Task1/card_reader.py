@@ -1,5 +1,4 @@
 import serial
-#from whitelist import Whitelist
 
 class ACT230():
     """Create class for card readers.
@@ -15,6 +14,10 @@ class ACT230():
         self.__serialPort = serial.Serial(port = port, baudrate=9600,
                                     bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
 
+    def set_card_cb(self, cb):
+
+        self.__card_reader_cb = cb
+
     def update(self):
         """Method to get the input from a token, decode it to a string and compare to see if its whitelisted.
         """        
@@ -23,9 +26,6 @@ class ACT230():
             serialString = self.__serialPort.readline()
             x = serialString.decode('Ascii')
             rep = x.replace("?\r\n", "")
-            print(rep)
 
-            if rep == "6E536046010080FF":
-                print("Access granted.")
-            else:
-                print("Access denied.")
+            if self.__card_reader_cb is not None:
+                self.__card_reader_cb(rep)
