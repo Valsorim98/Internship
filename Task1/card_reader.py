@@ -29,7 +29,3 @@ class ACT230():
                 print("Access granted.")
             else:
                 print("Access denied.")
-
-
-    #def set_database():
-
