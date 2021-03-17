@@ -38,6 +38,9 @@ class AccessControl():
         else:
             print("Access denied.")
 
+        #check for code from whitelist in database
+        #if not in whitelist its in blacklist
+
 
     def update(self):
 
