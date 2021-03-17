@@ -1,7 +1,7 @@
 import serial
 #from whitelist import Whitelist
 
-class ACT_230_RFID():
+class ACT230():
     """Create class for card readers.
     """
 
@@ -31,6 +31,5 @@ class ACT_230_RFID():
                 print("Access denied.")
 
 
-        #for i in Whitelist().arr_cards:
-        #    rep == i
-        #    print(rep)
+    #def set_database():
+
