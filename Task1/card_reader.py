@@ -19,13 +19,13 @@ class ACT230():
         self.__card_reader_cb = cb
 
     def update(self):
-        """Method to get the input from a token, decode it to a string and compare to see if its whitelisted.
+        """Method to get the input from a token and decode it to a string.
         """        
 
         if (self.__serialPort.in_waiting > 0):
-            serialString = self.__serialPort.readline()
-            x = serialString.decode('Ascii')
-            rep = x.replace("?\r\n", "")
+            byte_data = self.__serialPort.readline()
+            str_data = byte_data.decode('Ascii')
+            card_id = str_data.replace("?\r\n", "")
 
             if self.__card_reader_cb is not None:
-                self.__card_reader_cb(rep)
+                self.__card_reader_cb(card_id)

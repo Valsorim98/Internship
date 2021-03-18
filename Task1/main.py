@@ -7,12 +7,12 @@ def main():
     """Main function for the project.
     """
     #Create card reader one
-    c1 = ACT230("COM3")
+    card_reader = ACT230("COM3")
 
     tokens = Tokens()
     tbase = tokens.get_database()
 
-    ac = AccessControl(c1, tbase)
+    ac = AccessControl(card_reader, tbase)
 
     #call update method in a while cycle to check for token input non-stop
     while(1):
