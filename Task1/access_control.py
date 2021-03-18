@@ -1,3 +1,4 @@
+from tokensbase import Tokens
 
 class AccessControl():
     """Access control
@@ -32,11 +33,17 @@ class AccessControl():
             return
 
         print(card_id)
+        tbase = Tokens().get_database()
 
-        if card_id == "6E536046010080FF":
-            print("Access granted.")
-        else:
-            print("Access denied.")
+        i = 0
+        while i < 30:
+            print(tbase)
+            i += 1
+
+        #if card_id == "6E536046010080FF":
+        #    print("Access granted.")
+        #else:
+        #    print("Access denied.")
 
         #check for code from whitelist in database
         #if not in whitelist its in blacklist
