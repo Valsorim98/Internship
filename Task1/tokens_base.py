@@ -12,5 +12,5 @@ class Tokens():
         with open(file_path, 'r') as f:
             content = f.read()
             json_content = json.loads(content)
-        
+
         return json_content
