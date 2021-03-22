@@ -1,75 +1,64 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
 from student import Student
 from subject import Subject
 import os
 import json
 
 class UpdateGrades():
+    """Database connector.
+    """
+
+#region Attributes
+
+    __db_path = ""
+    """Database file path.
+    """    
+
+    __json_content = None
+    """Database content.
+    """
+
+#endregion
+
+#region Constructor
 
     def __init__(self):
+        """Constructor
+        """
 
         dir_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(dir_path, "database_students.json")
+        self.__db_path = os.path.join(dir_path, "database_students.json")
 
-        self.json_content = None
-        with open(file_path, 'r') as f:
+        with open(self.__db_path, 'r') as f:
             content = f.read()
-            self.json_content = json.loads(content)
-        #print(json_content["Students"][0]["Student1"][0]["name"])
+            f.close()
+            self.__json_content = json.loads(content)
 
+#endregion
 
-    #def cycle_update(self):
-        #i = 4
-        #while i < 4:
-            #update_grades()
-            #i += 1
+#region Public Methods
 
+    def get_students(self):
 
-    def update_grades(self, student):
+        students = None
 
-        #create subjects
-        subject1 = Subject("Philosophy")
-        subject2 = Subject("Mathematics")
-        subject3 = Subject("Finance")
-        subject4 = Subject("PE")
-        subject5 = Subject("Biology")
-        #list of all subjects
-        all_subjects = [subject1.name, subject2.name, subject3.name, subject4.name, subject5.name]
+        if self.__json_content is None:
+            return None
 
-        student1 = Student(self.json_content["Students"][0]["Student1"][0]["name"], 20, None)
-        
-        #grades list from input
-        grades_list = []
+        if "students" in self.__json_content:
+            students = self.__json_content["students"]
 
-        #enter student's grade for subjects
-        for subject_names in range(len(all_subjects)):
-            asdf = student[0]["name"]
-            grade = int(input(f"Enter {asdf}'s grade for {all_subjects[subject_names]}: "))
-            grades_list.append(grade)
-            #prints student's grades from json file
-            #print(json_content["Students"][0]["Student1"][0]["grade"][i])
-            
-        #convert python list to json string
-        grades_list_json = json.dumps(grades_list)
-        #print(grades_list_json)
+        return students
 
-        #update student1 grade with grades_list
-        with open('Task2/database_students.json', 'r+') as f:
-            json_content = json.load(f)
-            json_content["Students"][0]["Student1"][0]["grade"] = grades_list_json
-            f.seek(0)
-            f.truncate()
-            json.dump(json_content, f, indent=4)
-            
+    def save(self):
+        """Save database file.
+        """
 
-        #prints student's grades as a list from the database
-        print(json_content["Students"][0]["Student1"][0]["grade"])
-        #print(grades_list)
-        
-        #for item in json_content["Students"][0]["Student1"]:
-            #print(item["grade"][1])
+        with open(self.__db_path, 'w') as f:
+            content = json.dumps(self.__json_content, indent=4)
+            f.write(content)
+            f.close()    
 
-            #print(item)
-
-        student1 = Student(json_content["Students"][0]["Student1"][0]["name"], 20, grade)
-        
-        print(f"{student1.name}'s grade for {subject1.name} is: {student1.grade}")
+#endregion
