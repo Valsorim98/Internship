@@ -1,28 +1,28 @@
-from update_grades import UpdateGrades
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
 import os
 import json
 
+from update_grades import UpdateGrades
+
 def main():
 
-    dir_path = os.path.abspath(os.path.dirname(__file__))
-    file_path = os.path.join(dir_path, "database_students.json")
+    subjects = ["Philosophy", "Mathematics", "Finance", "PE", "Biology"]
 
-    json_content = None
-    with open(file_path, 'r') as f:
-        content = f.read()
-        json_content = json.loads(content)
-
-    student = json_content["Students"][0]["Student1"]
-    print(student)
-    UpdateGrades().update_grades(student)
-
-    #for item in json_content["Students"][0]:
-    #for item in student:
-        #print(json_content["Students"][0][item][0]["grade"])
-        #print(item)
-        #UpdateGrades().update_grades(item)
-
+    ug = UpdateGrades()
+    students = ug.get_students()
     
+    for student in students:
+        grades = student["grade"]
+        grades.clear()
+        for subject in subjects:
+            name = student["name"]
+            grade = int(input(f"Enter {name}'s grade for {subject}: "))
+            grades.append(grade)
+
+    ug.save()
+    print("Ready...")
 
 if __name__ == "__main__":
     main()
