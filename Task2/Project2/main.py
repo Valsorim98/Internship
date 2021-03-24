@@ -34,18 +34,12 @@ def main():
                 elif worker != "Lincoln" or worker != "Brad":
                     print("You are not working here. You are not allowed to go inside!")
                 if is_person2_here == True and is_person3_here == True:
-                    is_everybody_inside = True
                     enter_door_unlocked = False
                     print("All workers came. The front door is now locked.")
                     break
     else:
         print("The boss haven't unlocked the door yet. Come later.")
 
-        
-    if enter_door_unlocked == True and is_everybody_inside == True:
-        enter_door_unlocked = False
-    else:
-        enter_door_unlocked = True
 
     #pri proverka za izlizane ot izhodna vrata da pita ot konzolata kolko vreme e rabotil daden worker
 
