@@ -4,10 +4,13 @@
 from person import Person
 
 def main():
+    """Main function.
+    """    
 
     enter_door_unlocked = False
     exit_door_unlocked = False
 
+    # Create the boss and workers
     person1 = Person("Michael", "boss")
     person2 = Person("Lincoln", "worker")
     person3 = Person("Brad", "worker")
@@ -18,7 +21,7 @@ def main():
 
     name = str(input("Who is trying to enter the building?: "))
 
-
+    # Check who is trying to get inside and if all the workers are inside to lock the enter door
     if name == "Michael":
         enter_door_unlocked = True
         print("The boss came and unlocked the front door.")
