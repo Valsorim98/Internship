@@ -5,7 +5,7 @@ from person import Person
 
 def main():
     """Main function.
-    """    
+    """
 
     enter_door_unlocked = False
     exit_door_unlocked = False
@@ -29,26 +29,26 @@ def main():
         is_boss_here = True
         print("The boss came and unlocked the front door.")
         while(1):
-            if is_everybody_inside == False:
+            if is_everybody_inside is False:
                 name = str(input("Who is trying to get inside?: "))
                 if name == "Michael":
-                    if is_boss_here == True:
+                    if is_boss_here is True:
                         print("The boss already came in.")
                 if name == "Lincoln":
-                    if is_person2_here == True:
+                    if is_person2_here is True:
                         print("Lincoln already came in.")
                         continue
                     is_person2_here = True
                     print("Lincoln came to work!")
                 if name == "Brad":
-                    if is_person3_here == True:
+                    if is_person3_here is True:
                         print("Brad already came in.")
                         continue
                     is_person3_here = True
                     print("Brad came to work!")
-                if name != "Michael" and name != "Lincoln" and name != "Brad":
+                if name not in ("Michael", "Lincoln", "Brad"):
                     print("You are not working here. You are not allowed to go inside!")
-                if is_boss_here == True and is_person2_here == True and is_person3_here == True:
+                if is_boss_here is True and is_person2_here is True and is_person3_here is True:
                     enter_door_unlocked = False
                     is_everybody_inside = True
                     print("All workers came in. The front door is now locked.")
@@ -66,34 +66,34 @@ def main():
         print("There's an emergency! Everyone is out!")
 
 
-    if is_everybody_inside == True and is_everybody_outside == False:
+    if is_everybody_inside is True and is_everybody_outside is False:
         name = str(input("Who is trying to exit the building?: "))
         while(1):
-            if is_everybody_outside == False:
+            if is_everybody_outside is False:
                 if name == "Michael":
-                    if is_boss_here == True:
+                    if is_boss_here is True:
                         exit_door_unlocked = True
                         print("Bye boss!")
                         is_boss_here = False
                         exit_door_unlocked = False
-                        if is_boss_here == False and is_person2_here == False and is_person3_here == False:
+                        if is_boss_here is False and is_person2_here is False and is_person3_here is False:
                             is_everybody_outside = True
                             print("Everybody is out. Exit door is locked.")
                             break
                         name = str(input("Who is trying to exit the building?: "))
-                    elif is_boss_here == False:
+                    elif is_boss_here is False:
                         print("Michael already left.")
                         name = str(input("Who is trying to exit the building?: "))
 
                 if name == "Lincoln":
-                    if is_person2_here == True:
+                    if is_person2_here is True:
                         hours_work = float(input("How many hours have you worked today?: "))
                         if hours_work >= 8:
                             exit_door_unlocked = True
                             print("Bye Lincoln!")
                             is_person2_here = False
                             exit_door_unlocked = False
-                            if is_boss_here == False and is_person2_here == False and is_person3_here == False:
+                            if is_boss_here is False and is_person2_here is False and is_person3_here is False:
                                 is_everybody_outside = True
                                 print("Everybody is out. Exit door is locked.")
                                 break
@@ -101,19 +101,19 @@ def main():
                         elif hours_work < 8:
                             print("You haven't finished working. Go back to work!")
                             name = str(input("Who is trying to exit the building?: "))
-                    elif is_person2_here == False:
+                    elif is_person2_here is False:
                         print("Lincoln already left.")
                         name = str(input("Who is trying to exit the building?: "))
 
                 if name == "Brad":
-                    if is_person3_here == True:
+                    if is_person3_here is True:
                         hours_work = float(input("How many hours have you worked today?: "))
                         if hours_work >= 8:
                             exit_door_unlocked = True
                             print("Bye Brad!")
                             is_person3_here = False
                             exit_door_unlocked = False
-                            if is_boss_here == False and is_person2_here == False and is_person3_here == False:
+                            if is_boss_here is False and is_person2_here is False and is_person3_here is False:
                                 is_everybody_outside = True
                                 print("Everybody is out. Exit door is locked.")
                                 break
@@ -121,11 +121,11 @@ def main():
                         elif hours_work < 8:
                             print("You haven't finished working. Go back to work!")
                             name = str(input("Who is trying to exit the building?: "))
-                    elif is_person3_here == False:
+                    elif is_person3_here is False:
                         print("Brad already left.")
                         name = str(input("Who is trying to exit the building?: "))
 
-                elif name != "Michael" and name != "Lincoln" and name != "Brad":
+                elif name not in ("Michael", "Lincoln", "Brad"):
                     print("How did you get in? Call security!")
                     break
 
