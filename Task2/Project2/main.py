@@ -58,6 +58,7 @@ def main():
         is_everybody_inside = False
 
 
+    # Check if there is an emergency
     attention = str(input("Is there an emergency?: "))
     if attention == "Yes":
         enter_door_unlocked = True
@@ -66,6 +67,7 @@ def main():
         print("There's an emergency! Everyone is out!")
 
 
+    # Check who is trying to exit and if all the workers are outside to lock the exit door
     if is_everybody_inside is True and is_everybody_outside is False:
         name = str(input("Who is trying to exit the building?: "))
         while(1):
