@@ -58,9 +58,15 @@ def main():
         is_everybody_inside = False
 
 
-    #pri proverka za izlizane ot izhodna vrata da pita ot konzolata kolko vreme e rabotil daden worker
+    attention = str(input("Is there an emergency?: "))
+    if attention == "Yes":
+        enter_door_unlocked = True
+        exit_door_unlocked = True
+        is_everybody_outside = True
+        print("There's an emergency! Everyone is out!")
 
-    if is_everybody_inside == True:
+
+    if is_everybody_inside == True and is_everybody_outside == False:
         name = str(input("Who is trying to exit the building?: "))
         while(1):
             if is_everybody_outside == False:
