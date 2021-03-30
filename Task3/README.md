@@ -1,5 +1,5 @@
-**This is documentation file for Task3**
----
+# **This is documentation file for Task3**
+
 ---
 To make a HTTP request we must first install the requests module. In 'cmd' type "pip install requests" to install the module.
 
@@ -83,3 +83,25 @@ url = "https://httpbin.org/delete"
 payload = {"FirstName": "John", "LastName": "Smith"}
 
 r = requests.delete(url, data=payload)
+
+---
+With the following code we send a **GET** request to download images from the urls:
+
+import requests
+
+* That's for downloading an image from xkcd.com
+
+receive = requests.get("https://imgs.xkcd.com/comics/history_department.png")
+
+    with open(r"C:\Users\PC\Desktop\downloaded_img.png","wb") as f:
+
+        f.write(receive.content)
+
+
+* That's for downloading an image from httbin.org
+
+receive = requests.get("https://httpbin.org/image/png")
+
+    with open (r"C:\Users\PC\Desktop\image1.png", "wb") as f:
+
+        f.write(receive.content)
