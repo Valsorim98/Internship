@@ -118,10 +118,16 @@ Finish work on Task2
 
 Start work on Task3
 
+Install **requests** module and send HTTP requests using the **GET, POST, PUT, PATCH and DELETE methods**.
+
 > # March 30:
 
 Work on Task3
 
+Send HTTP requests to **save images** from sites.
+
 > # March 31:
 
 Work on Task3
+
+Create a database and a collection in MongoDB and save documents with the content from get requests.
