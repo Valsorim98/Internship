@@ -14,11 +14,11 @@ if r.status_code == 200:
 else:
     print("No connection.")
 
-# prints the content in bytes
+
 print(f"That is the url content in bytes: {r.content}")
-# prints the content in string
+
 print(f"That is the url content in a string: {r.text}")
-# prints the headers from which we can see the content type and other information
+
 print(f"These are the headers: {r.headers}")
 
 # Convert to a dictionary
