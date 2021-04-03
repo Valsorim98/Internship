@@ -15,6 +15,7 @@ To make a HTTP request we must first install the requests module. In 'cmd' type 
 ---
 With the following code we send a **GET** request to the url:
 
+```py
 import requests
 
 url = "https://httpbin.org/get"
@@ -26,7 +27,7 @@ r = requests.get(url, params=payload)
 print(f"That is the url: {r.url}")
 
 print(f"That is the status code: {r.status_code}")
-
+```
 ---
 HTTP Status Codes:
 
@@ -41,6 +42,7 @@ HTTP Status Codes:
 ---
 With the following code we send a **POST** request to the url:
 
+```py
 import requests
 
 url = "https://httpbin.org/post"
@@ -48,10 +50,11 @@ url = "https://httpbin.org/post"
 payload = {"FirstName": "John", "LastName": "Smith"}
 
 r = requests.post(url, data=payload)
-
+```
 ---
 With the following code we send a **PUT** request to the url:
 
+```py
 import requests
 
 url = "https://httpbin.org/put"
@@ -59,12 +62,13 @@ url = "https://httpbin.org/put"
 payload = {"FirstName": "John", "LastName": "Smith"}
 
 r = requests.put(url, data=payload)
-
+```
 * When using the **PUT** method if the Request-URI refers to an already existing resource then the **PATCH** method will be used. Otherwise if the Request-URI is not existing, then the **POST** method will be used.
 
 ---
 With the following code we send a **PATCH** request to the url:
 
+```py
 import requests
 
 url = "https://httpbin.org/patch"
@@ -72,10 +76,11 @@ url = "https://httpbin.org/patch"
 payload = {"FirstName": "John", "LastName": "Smith"}
 
 r = requests.patch(url, data=payload)
-
+```
 ---
 With the following code we send a **DELETE** request to the url:
 
+```py
 import requests
 
 url = "https://httpbin.org/delete"
@@ -83,32 +88,35 @@ url = "https://httpbin.org/delete"
 payload = {"FirstName": "John", "LastName": "Smith"}
 
 r = requests.delete(url, data=payload)
-
+```
 ---
 With the following code we send a **GET** request to download images from the urls:
 
+```py
 import requests
 
-* That's for downloading an image from xkcd.com
+# That's for downloading an image from xkcd.com
 
 receive = requests.get("https://imgs.xkcd.com/comics/history_department.png")
 
-    with open(r"C:\Users\PC\Desktop\downloaded_img.png","wb") as f:
+with open(r"C:\Users\PC\Desktop\downloaded_img.png","wb") as f:
 
-        f.write(receive.content)
+    f.write(receive.content)
 
 
-* That's for downloading an image from httbin.org
+# That's for downloading an image from httbin.org
 
 receive = requests.get("https://httpbin.org/image/png")
 
-    with open (r"C:\Users\PC\Desktop\image1.png", "wb") as f:
+with open (r"C:\Users\PC\Desktop\image1.png", "wb") as f:
 
-        f.write(receive.content)
+    f.write(receive.content)
+```
 ---
 With the following code we **create a new database and a collection in MongoDB and save documenents** in the collection:
 
-* Save the document with the content from https://httpbin.org/get :
+```py
+# Save the document with the content from https://httpbin.org/get :
 
 import pymongo
 
@@ -136,10 +144,11 @@ json_content = json.loads(content)
 
 result = test_collection.insert_one(json_content)
 
-* Save another document with the content of headers from https://www.bloomberg.com/europe :
+# Save another document with the content of headers from https://www.bloomberg.com/europe :
 
 url = "https://www.bloomberg.com/europe"
 
 response_2 = requests.get(url)
 
 result = test_collection.insert_one(response_2.headers)
+```
