@@ -3,7 +3,6 @@
 
 import pymodbus
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
-from pymodbus.constants import Defaults
 
 
 client = ModbusClient(method="rtu", port="COM4", timeout=1, stopbits=1, bytesize=8, parity="N", baudrate=9600)
