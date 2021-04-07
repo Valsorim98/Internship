@@ -146,17 +146,17 @@ Finish work on Task3
 
 Start work on Task4
 
-Connect smart device HHC-R4I4D to PC. Learn how to read and write on it using MODBUS-RTU communication protocol and RS485.
+**Connect smart device HHC-R4I4D** to PC. Learn how to **read and write** on it using **MODBUS-RTU communication protocol and RS485**.
 
 Use Modbus Poll for testing.
 
-Turn all relays ON/OFF. Print the response on the console.
+**Turn all relays ON/OFF**. Print the response on the console.
 
 > # April 6:
 
 Work on Task4
 
-Turn relays one by one ON/OFF. Print the response on the console.
+**Turn relays one by one ON/OFF**. Print the response on the console.
 
 > # April 7:
 
