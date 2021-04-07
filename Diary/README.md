@@ -131,3 +131,35 @@ Send HTTP requests to **save images** from sites.
 Work on Task3
 
 Create a database and a collection in MongoDB and save documents with the content from get requests.
+
+> # April 1:
+
+Work on Task3
+
+Write documentation for Task3
+
+> # April 2:
+
+Finish work on Task3
+
+> # April 5:
+
+Start work on Task4
+
+Connect smart device HHC-R4I4D to PC. Learn how to read and write on it using MODBUS-RTU communication protocol and RS485.
+
+Use Modbus Poll for testing.
+
+Turn all relays ON/OFF. Print the response on the console.
+
+> # April 6:
+
+Work on Task4
+
+Turn relays one by one ON/OFF. Print the response on the console.
+
+> # April 7:
+
+Work on Task4
+
+Create documentation for Task4.
