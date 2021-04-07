@@ -26,8 +26,8 @@ def main():
     else:
         print("Error")
 
-    # turn all coils ON
-    response = client.write_coils(16, [True]*4, unit=1)
+    # Turn all coils ON/OFF
+    response = client.write_coils(16, [False]*4, unit=1)
 
     response = client.read_coils(
         address=16,
@@ -41,6 +41,18 @@ def main():
         print("All relays are turned off.")
     else:
         print("Error")
+
+
+
+    response = client.read_coils(16, count=4, unit=1)
+    print(response.bits[:4])
+
+    # Turn one coil ON/OFF
+    #response = client.write_coil(16+2, True, unit=1)
+
+    response = client.read_coils(16, count=4, unit=1)
+    print(response.bits[:4])
+
 
 if __name__ == "__main__":
     main()
