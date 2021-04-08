@@ -36,4 +36,57 @@ A Modbus command contains the Modbus **address of the device** it is intended fo
 
 I connected the controler to the PC via RS-485 to USB converter. Then first I installed **pymodbus** module with typing the following command in cmd: **pip install pymodbus**
 
-I had trouble with addresses when I tryed turning relays one by one ON/OFF.
+* First I make a connection with the device:
+
+```py
+import pymodbus
+
+from pymodbus.client.sync import ModbusSerialClient as ModbusClient
+
+
+client = ModbusClient(method="rtu", port="COM4", timeout=1, stopbits=1, bytesize=8, parity="N", baudrate=9600)
+
+connection = client.connect()
+```
+
+* Then I read and write from/to the device. **Turning all relays ON/OFF** and print the outcome on the console:
+
+Also when printing on the console I used **[:4]** after response.bits, because I worked on **four relays** from the device and I wanted to print only the first four relays.
+
+When the **write_coils** method is **True** the relays are turned ON. If the method is set to **False**, then the relays are turned OFF.
+
+```py
+response = client.read_coils(
+    address=16,
+    count=4,
+    unit=1)
+
+print(response.bits[:4])
+
+response = client.write_coils(16, [True]*4, unit=1)
+
+response = client.read_coils(
+    address=16,
+    count=4,
+    unit=1)
+
+print(response.bits[:4])
+```
+
+* Then I read and write from/to the device, this time I'm **turning relays one by one ON/OFF**
+
+This time I had trouble with the addresses of the relays when I tryed turning relays one by one ON/OFF. Also I made the mistake of first reading only one coil, when I should have read all four coils, so that I get a proper response on the console.
+
+When writing to the first relay the address should be 16 and **every next relay's address** should be X+1, so the second relay's address is 16+1, etc.
+
+```py
+response = client.read_coils(16, count=4, unit=1)
+print(response.bits[:4])
+
+response = client.write_coil(16+2, True, unit=1)
+
+response = client.read_coils(16, count=4, unit=1)
+print(response.bits[:4])
+```
+
+For this example the write_coil method's address is set to 16+2, which is the address of the third relay. And the function is set to **True** so the third relay will turn ON.
