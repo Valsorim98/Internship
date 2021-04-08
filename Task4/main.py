@@ -27,7 +27,7 @@ def main():
         print("Error")
 
     # Turn all coils ON/OFF
-    response = client.write_coils(16, [False]*4, unit=1)
+    response = client.write_coils(16, [True]*4, unit=1)
 
     response = client.read_coils(
         address=16,
