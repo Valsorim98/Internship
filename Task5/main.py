@@ -24,8 +24,6 @@ def main():
 
     print(response.bits)
 
-    response = client.read_holding_registers
-
 
 
 if __name__ == "__main__":
