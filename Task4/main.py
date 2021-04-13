@@ -11,7 +11,11 @@ def main():
     global client
 
     connection = client.connect()
-    print(connection)
+
+    if connection:
+        print("Connected")
+    else:
+        print("No connection")
 
     response = client.read_coils(
         address=16,
