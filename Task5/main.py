@@ -12,7 +12,7 @@ def main():
     """    
     global client
 
-    # Create a connection with the device
+    # Create a connection with the controller
     connection = client.connect()
 
     if connection:
