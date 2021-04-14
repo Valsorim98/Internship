@@ -201,3 +201,7 @@ The device is using COM5 port, Baud Rate - 9600, ID - 1, Parity - None, Word Len
 > # April 14:
 
 Write all the coils and read before and after writing them.
+
+> Merge Task5 with Task1:
+
+Using the token's input to the card reader and check if the token is whitelisted. If it is in whitelist write the pin index appropriate of the relay on the controler.
