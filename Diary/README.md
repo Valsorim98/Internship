@@ -76,43 +76,61 @@ Read about public, protected and private methods
 
 > # March 15:
 
-Work on Task1 (github repo)
+Create Task1 folder and main.py, database.json, tokens_base.py, io_controller.py, card_reader.py, access_control.py.
+
+Create a card reader constructor and a connection to the reader.
 
 > # March 16:
 
-Work on Task1 (github repo)
+Add whitelist and blacklist lists for the cards with a code and expire date for each card in database.json.
 
 > # March 17:
 
-Work on Task1 (github repo)
+Create a method to read the input data from tokens to the card reader and convert them to a string in card_reader.py.
 
 > # March 18:
 
-Work on Task1 (github repo)
+Read the data from database.json and convert it to a dictionary in tokens_base.py.
 
 > # March 19:
 
-Finish work on Task1 (github repo)
+Create access control class to read the inputs from tokens to check if the given token is in whitelist or blacklist in order to unlock/lock the door.
 
 > # March 22:
 
 Start work on Task2
 
+Create Project1 folder for the first project.
+
+Create main.py for main function, student.py with a constructor for students, subject.py with a constructor for subjects and database_students.json.
+
 > # March 23:
 
-Work on Task2
+Create students with name, age and grade in database_students.json.
+
+Create subjects in main.py. Ask for input grades for each student and for each subject. Save the inputs in a list for each student. Get the average grade of each student.
 
 > # March 24:
 
-Work on Task2
+Read the content from database_students.json and convert it to a dictionary.
+
+Get each student's grades and save them in database_students.json.
+
+Add conditional statements to check if the students qualify for a scholarship or not.
 
 > # March 25:
 
-Work on Task2
+Create main.py for main function and person.py with a constructor for people with name and type.
+
+Create three people - a boss and two workers. Create flags is the person here and is everybody inside or outside.
+
+The boss comes to work and unlocks the enter door. Ask for input who is trying to enter and when all the workers are inside the enter door is now locked.
+
+Check if there is an emergency with a conditional statement and if there is both enter and exit doors become unlocked and the workers exit the building.
 
 > # March 26:
 
-Finish work on Task2
+Ask for input who is trying to exit if its the boss he can exit anytime, if its a worker and doesnt have at least 8 hours worked to be unable to exit. When all the workers are outside the exit door is now locked. 
 
 > # March 29:
 
@@ -154,13 +172,9 @@ Use Modbus Poll for testing.
 
 > # April 6:
 
-Work on Task4
-
 **Turn relays one by one ON/OFF**. Print the response on the console.
 
 > # April 7:
-
-Work on Task4
 
 Create documentation for Task4.
 
@@ -182,4 +196,4 @@ The device is using COM5 port, Baud Rate - 9600, ID - 1, Parity - None, Word Len
 
 * Created main.py file to read coils from the controller.
 
-* Researched modbus protocol in details - requests and responses by bits.
+* Researched modbus protocol in details - got the requests and responses by bits and use a decoder to see the function codes, id address, ip address, mac address, port of the device. 
