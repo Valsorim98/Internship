@@ -82,17 +82,17 @@ class AccessControl():
                 break
 
         if wl_flag and not bl_flag:
-            print("dobrojelatel")
+            print("Access granted")
             self.__unlock_flag = True
 
         if not wl_flag and bl_flag:
-            print("nejelan")
+            print("Access denied")
 
         if not wl_flag and not bl_flag:
-            print("nepoznat")
+            print("Unauthorized")
 
         if wl_flag and bl_flag:
-            print("Sistemna greshka")
+            print("System error")
 
 
     def update(self):
