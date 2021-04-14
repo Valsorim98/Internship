@@ -1,15 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
+import pymodbus
+from pymodbus.client.sync import ModbusSerialClient as ModbusClient
+
 from card_reader import ACT230
 from tokens_base import Tokens
 from io_controller import IOController
-
 from access_control import AccessControl
+
+
+client = ModbusClient(method="rtu", port="COM5", timeout=1, stopbits=1, bytesize=8, parity="N", baudrate=9600)
 
 def main():
     """Main function for the project.
     """
+    global client
+
+    # Create a connection with the controller
+    connection = client.connect()
+
+    if connection:
+        print("Connected")
+    else:
+        print("No connection")
+
 
     # Create card reader one
     card_reader = ACT230("COM3")
