@@ -197,3 +197,7 @@ The device is using COM5 port, Baud Rate - 9600, ID - 1, Parity - None, Word Len
 * Created main.py file to read coils from the controller.
 
 * Researched modbus protocol in details - got the requests and responses by bits and use a decoder to see the function codes, id address, ip address, mac address, port of the device. 
+
+> # April 14:
+
+Write all the coils and read before and after writing them.
