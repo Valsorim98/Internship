@@ -205,3 +205,13 @@ Write all the coils and read before and after writing them.
 > Merge Task5 with Task1:
 
 Using the token's input to the card reader and check if the token is whitelisted. If it is in whitelist write the pin index appropriate of the relay on the controler.
+
+> # April 15:
+
+Install dnspython module with the command: **pip install dnspython** in cmd.
+
+Merge Task3 with Task1: Create a MongoDB cluster and create a new database and a collection and import database.json file in the database.
+
+Copy all files from Task1 to a new folder in Task5: card_reader_mongodb, so I can have both project instances. Import database.json file to the new database in MongoDB and delete the python file. Delete the reading from database.json file as it is not existing anymore in tokens_base.py. 
+
+Make a connection to the MongoDB database in tokens_base.py, in the same file I created the database, the collection and imported the document. Then read the database and return the response.
