@@ -36,4 +36,8 @@ class Tokens():
             #print(elem["code"])
 
 
+        # Create new collection
+        entries = db.entries
+
+
         return readDB
