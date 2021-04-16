@@ -36,7 +36,7 @@ class IOController():
 
         # Pin is index 0 by default
         #self.__coils[pin] = state
-        response = self.__client.write_coils(16, [True]*4, unit=1)
+        response = self.__client.write_coils(16, [False]*4, unit=1)
 
         print("set_gpio({}, {})".format(pin, state))
 
