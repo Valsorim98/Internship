@@ -12,6 +12,7 @@ def main():
     """Main function for the project.
     """
 
+    # Call class DateTime and date_time method
     date_time = DateTime()
     execution_time = date_time.time_of_execution()
     
