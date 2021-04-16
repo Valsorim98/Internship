@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import datetime
+import math
 
 class DateTime():
     """Class for date and time.
@@ -13,6 +14,7 @@ class DateTime():
 
         mydate = datetime.datetime.now()
         print(mydate.strftime('Date of execution of the program is: %d %B %Y at %H:%M:%S'))
+        print(mydate)
 
         return mydate
     
