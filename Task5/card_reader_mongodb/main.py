@@ -15,7 +15,6 @@ def main():
     # Call class DateTime and date_time method
     date_time = DateTime()
     execution_time = date_time.time_of_execution()
-    
 
     # Create card reader one
     card_reader = ACT230("COM3", 1914)
@@ -23,6 +22,7 @@ def main():
     # Call class Tokens and get_database method
     tokens = Tokens()
     tbase = tokens.get_database()
+    tokens.create_collection('test_db', 'entries')
 
     # Create controller
     controller = IOController()
@@ -34,6 +34,7 @@ def main():
     #call update method in a while cycle to check for token input non-stop
     while(1):
         ac.update()
+
 
 
 if __name__ == "__main__":
