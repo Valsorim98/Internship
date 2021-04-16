@@ -4,7 +4,7 @@ class ACT230():
     """Create class for card readers.
     """
 
-    def __init__(self, port):
+    def __init__(self, port, reader_id):
         """Constructor for card readers.
 
         Args:
@@ -13,6 +13,11 @@ class ACT230():
         
         self.__serialPort = serial.Serial(port = port, baudrate=9600,
                                     bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
+
+    # Make the reader_id argument of the constructor 'read-only'
+    @property
+    def _reader_id(self):
+        return self._reader_id
 
     def set_card_cb(self, cb):
 
