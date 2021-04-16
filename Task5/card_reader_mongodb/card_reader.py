@@ -14,12 +14,19 @@ class ACT230():
         self.__serialPort = serial.Serial(port = port, baudrate=9600,
                                     bytesize=8, timeout=2, stopbits=serial.STOPBITS_ONE)
 
-        self._reader_id = 1914
+        self._reader_id = reader_id
+        
 
     # Make the reader_id argument of the constructor 'read-only'
     @property
-    def _reader_id(self):
+    def reader_id(self):
         return self._reader_id
+
+    # Set a value for reader_id
+    @reader_id.setter
+    def set_reader_id(self, value):
+        self._reader_id = value
+
 
     def set_card_cb(self, cb):
 
@@ -36,3 +43,5 @@ class ACT230():
 
             if self.__card_reader_cb is not None:
                 self.__card_reader_cb(card_id)
+
+            return card_id
