@@ -7,8 +7,12 @@ import pymongo
 from pymongo import MongoClient
 import requests
 
+from date_time import DateTime
+
 
 class Tokens():
+
+    __mydate = DateTime()
 
     def get_database(self):
         """Read the database
@@ -50,7 +54,6 @@ class Tokens():
 
         return readDB
 
-
     def create_collection(self, db_name, collection_name):
         """Method to create a collection in the database.
 
@@ -78,6 +81,23 @@ class Tokens():
         else:
             return db.get_collection(collection_name)
 
+    def get_tokens(self):
 
-    #def insert_data(self, db_name, collection_name, data):
+        url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+        client = MongoClient(url)
+        db = client["test_db"]
+        collection = db["tokens_database"]
+
+        return collection
+
+    def insert_data(self, db_name, collection_name, data):
+
+        url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         
+        client = MongoClient(url)
+
+        db = client[db_name]
+        collection = db[collection_name]
+
+        db.entries.insert(data)
+
