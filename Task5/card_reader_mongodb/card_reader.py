@@ -43,5 +43,3 @@ class ACT230():
 
             if self.__card_reader_cb is not None:
                 self.__card_reader_cb(card_id)
-
-            return card_id
