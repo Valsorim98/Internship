@@ -140,19 +140,13 @@ Install **requests** module and send HTTP requests using the **GET, POST, PUT, P
 
 > # March 30:
 
-Work on Task3
-
 Send HTTP requests to **save images** from sites.
 
 > # March 31:
 
-Work on Task3
-
 Create a database and a collection in MongoDB and save documents with the content from get requests.
 
 > # April 1:
-
-Work on Task3
 
 Write documentation for Task3
 
@@ -215,3 +209,7 @@ Merge Task3 with Task1: Create a MongoDB cluster and create a new database and a
 Copy all files from Task1 to a new folder in Task5: card_reader_mongodb, so I can have both project instances. Import database.json file to the new database in MongoDB and delete the python file. Delete the reading from database.json file as it is not existing anymore in tokens_base.py. 
 
 Make a connection to the MongoDB database in tokens_base.py, in the same file I created the database, the collection and imported the document. Then read the database and return the response.
+
+> # April 19:
+
+Get the date and time in timestamp format and the method returns timestamp format.
