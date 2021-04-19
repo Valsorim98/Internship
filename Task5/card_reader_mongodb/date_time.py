@@ -14,7 +14,7 @@ class DateTime():
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         timestamp = int(timestamp)
-        ts = now.strftime("%d %B %Y at %H:%M:%S.%f")
+        #ts = now.strftime("%d %B %Y at %H:%M:%S.%f")
 
         print(f"Date of execution of the program in timestamp: {timestamp}")
         #print(ts)
