@@ -1,5 +1,7 @@
 # **This is a documentation file for Task4**
 
+The project runs from main function in main.py.
+
 ---
 > What is Modbus RTU and RS485:
 
