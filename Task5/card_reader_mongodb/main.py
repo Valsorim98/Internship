@@ -6,6 +6,7 @@ from card_reader import ACT230
 from tokens_base import Tokens
 from io_controller import IOController
 from access_control import AccessControl
+from create_read_config import CreateConfig
 
 
 def main():
@@ -27,6 +28,13 @@ def main():
 
     # Call AccessControl class
     ac = AccessControl(card_reader, tokens, controller)
+
+    # Create config.ini file
+    cc = CreateConfig()
+    create_config = cc.create_config()
+
+    # Read config.ini file
+    #read_config = cc.read_config()
 
 
     #call update method in a while cycle to check for token input non-stop
