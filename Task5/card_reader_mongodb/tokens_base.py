@@ -5,7 +5,6 @@ import json
 import os
 import pymongo
 from pymongo import MongoClient
-import requests
 
 from date_time import DateTime
 
