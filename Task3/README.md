@@ -1,5 +1,7 @@
 # **This is documentation file for Task3**
 
+For Task3 every file in the folder acts as a different method which can be run separately. The names of the files equals the function that each method does.
+
 ---
 To make a HTTP request we must first install the requests module. In 'cmd' type "pip install requests" to install the module.
 
