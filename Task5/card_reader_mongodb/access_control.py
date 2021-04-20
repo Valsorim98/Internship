@@ -2,6 +2,8 @@
 # -*- coding: utf8 -*-
 
 import time
+import pymongo
+from pymongo import MongoClient
 
 from tokens_base import Tokens
 
@@ -72,12 +74,17 @@ class AccessControl():
 
         wl_flag = False
 
+        url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+        client = MongoClient(url)
+        db = client["test_db"]
+        collection = db.tokens_database
+        collection = collection.find_one({}, {"_id": 0})
+
         # # Print the codes from whitelist
-        # whitelist = db.tokens_database.find()
-        # for code in whitelist:
-        #     print('{0} {1}'.format(code['code']))
+        # for item in collection["whitelist"]:
+        #     print(item["code"])
         
-        for item in whitelist:
+        for item in collection["whitelist"]:
 
             db_card_id = item["code"]
 
@@ -90,7 +97,8 @@ class AccessControl():
         blacklist = self.__tokens_base["blacklist"]
 
         bl_flag = False
-        for item in blacklist:
+
+        for item in collection["blacklist"]:
             db_card_id = item["code"]
             if db_card_id == card_id:
 
@@ -121,7 +129,7 @@ class AccessControl():
             "state": token_state,
             "direction": 1}
 
-        self.__readDB.insert_data(entry)
+        self.__readDB.insert_data("test_db", "entries", entry)
 
     def update(self):
 
