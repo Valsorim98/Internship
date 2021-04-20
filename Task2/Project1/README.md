@@ -1,5 +1,7 @@
 > # This is a documentation file for Task2 Project1:
 
+The project runs from main function in main.py.
+
 Create Project1 folder for the first project.
 
 Create main.py for main function, student.py with a constructor for students, subject.py with a constructor for subjects and database_students.json.
