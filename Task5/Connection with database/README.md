@@ -1,1 +1,1 @@
-> # 
+> # This is a program to read the database from MongoDB and print the codes from whitelist.
