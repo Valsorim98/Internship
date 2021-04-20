@@ -17,3 +17,17 @@ Get the date and time in timestamp format and the method returns timestamp forma
 Create get_tokens and insert_data methods to read the tokens database and insert data as a document into the collection in the database in tokens_base.py.
 
 Connect to the database in MongoDB in access_control.py and on token event iterate through the token database and insert a new document in the collection with date and time in timestamp format, reader id, token id, token state (Access granted, Access denied, etc) and direction (entry or exit).
+
+Create create_read_config.py to create a config.ini file in Task5 card_reader_mongodb.
+Create three sections in the file and set keys and values to them with the following code:
+
+```py
+write_config.add_section("Connection to database")
+write_config.set("Connection to database","URL","mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+write_config.add_section("Card reader")
+write_config.set("Card reader","Port","COM3")
+write_config.add_section("Controller")
+write_config.set("Controller","ID","1")
+```
+
+Create read_config method to read the config.ini file in create_read_config.py.
