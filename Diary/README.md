@@ -120,6 +120,8 @@ Add conditional statements to check if the students qualify for a scholarship or
 
 > # March 25:
 
+Create Project2 folder for the second project.
+
 Create main.py for main function and person.py with a constructor for people with name and type.
 
 Create three people - a boss and two workers. Create flags is the person here and is everybody inside or outside.
@@ -188,7 +190,7 @@ Start work on Task5.
 
 The device is using COM5 port, Baud Rate - 9600, ID - 1, Parity - None, Word Length - 8, Stop bits - 1, IP address:192.168.1.75, Service port:502, by default. I changed the ID address from 1 (default) to 5.
 
-* Created main.py file to read coils from the controller.
+* Created main.py file to read and write coils from the controller.
 
 * Researched modbus protocol in details - got the requests and responses by bits and use a decoder to see the function codes, id address, ip address, mac address, port of the device. 
 
@@ -208,8 +210,20 @@ Merge Task3 with Task1: Create a MongoDB cluster and create a new database and a
 
 Copy all files from Task1 to a new folder in Task5: card_reader_mongodb, so I can have both project instances. Import database.json file to the new database in MongoDB and delete the python file. Delete the reading from database.json file as it is not existing anymore in tokens_base.py. 
 
-Make a connection to the MongoDB database in tokens_base.py, in the same file I created the database, the collection and imported the document. Then read the database and return the response.
+Make a connection to the MongoDB database in tokens_base.py, in the same file I created the database and the collection. Then read the database and return the response. From access_control.py insert the documents.
 
 > # April 19:
 
 Get the date and time in timestamp format and the method returns timestamp format.
+
+Create get_tokens and insert_data methods to read the tokens database and insert data as a document into the collection in the database in tokens_base.py
+
+> # Homework
+
+Create a new folder in Task5 with new project to read the database from MongoDB and print the token codes from whitelist.
+
+> # April 20:
+
+Connect to the database in MongoDB in access_control.py and on token event iterate through the token database and insert a new document in the collection with date and time in timestamp format, reader id, token id, token state (Access granted, Access denied, etc) and direction (entry or exit).
+
+Create README files for Task1 project and Task1 test project, both Task2 projects and Task5 card_reader_mongodb project and add info for how the projects work.
