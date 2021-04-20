@@ -1,6 +1,14 @@
-> # This is documentation file for Task5:
+> # This is documentation file for Task5 change_controller_id_address project:
 
 The project runs from main function in main.py.
+
+> Environment:
+
+* This script is written in Python 3.9.2.
+
+> Required modules to run the program:
+
+* pymodbus - install with command in cmd:pip install pymodbus
 
 I was given a **GECON TCP-508N Super Smart S8-3CN** controller.
 
