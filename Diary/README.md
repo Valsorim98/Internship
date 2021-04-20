@@ -227,3 +227,17 @@ Create a new folder in Task5 with new project to read the database from MongoDB 
 Connect to the database in MongoDB in access_control.py and on token event iterate through the token database and insert a new document in the collection with date and time in timestamp format, reader id, token id, token state (Access granted, Access denied, etc) and direction (entry or exit).
 
 Create README files for Task1 project and Task1 test project, both Task2 projects and Task5 card_reader_mongodb project and add info for how the projects work.
+
+Create create_config.py to create a config.ini file in Task5 card_reader_mongodb.
+Create three sections in the file and set keys and values to them with the following code:
+
+```py
+write_config.add_section("Connection to database")
+write_config.set("Connection to database","URL","mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+write_config.add_section("Card reader")
+write_config.set("Card reader","Port","COM3")
+write_config.add_section("Controller")
+write_config.set("Controller","ID","1")
+```
+
+Create read_config method to read the config.ini file in create_config.py.
