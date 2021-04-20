@@ -1,5 +1,7 @@
 > # This is a documentation file for Task1:
 
+The project runs from main function in main.py.
+
 Create Task1 folder and main.py, database.json, tokens_base.py, io_controller.py, card_reader.py, access_control.py.
 
 Create a card reader constructor and a connection to the reader.
