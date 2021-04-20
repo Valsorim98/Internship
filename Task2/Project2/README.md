@@ -1,5 +1,7 @@
 > # This is a documentation file for Task2 Project2:
 
+The project runs from main function in main.py.
+
 Create Project2 folder for the second project.
 
 Create main.py for main function and person.py with a constructor for people with name and type.
