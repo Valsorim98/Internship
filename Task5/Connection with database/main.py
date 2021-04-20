@@ -12,9 +12,9 @@ def main():
     collection = db.tokens_database
 
     readDB = collection.find_one({}, {"_id": 0})
-    print(readDB)
+    #print(readDB)
 
-    # Read the values from whitelist, code
+    # Print the values from whitelist, code
     for elem in readDB["whitelist"]:
         print(elem["code"])
 
@@ -22,3 +22,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
