@@ -46,7 +46,7 @@ class AddToken():
         # if self.__readDB is None:
         #     return
 
-        exp_date_str = input("Type expiration date in day.month.year hour.minute.seconds: ")
+        exp_date_str = input("Type GMT expiration date in day.month.year hour.minute.seconds format: ")
         #print(exp_date_str)
 
         timestamp = int(time.mktime(datetime.datetime.strptime(exp_date_str,
