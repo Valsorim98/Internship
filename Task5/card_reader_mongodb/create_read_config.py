@@ -13,10 +13,10 @@ class CreateConfig():
         """
 
         write_config = configparser.ConfigParser()
-        write_config.add_section("Connection to database")
-        write_config.set("Connection to database","URL","mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-        write_config.add_section("Card reader")
-        write_config.set("Card reader","Port","COM3")
+        write_config.add_section("Database")
+        write_config.set("Database","URL","mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+        write_config.add_section("Card_Reader")
+        write_config.set("Card_Reader","Port","COM3")
         write_config.add_section("Controller")
         write_config.set("Controller","ID","1")
 
