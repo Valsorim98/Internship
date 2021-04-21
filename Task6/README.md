@@ -25,4 +25,6 @@ pip install pyserial
 
 * Create card_reader.py with a constructor for the card reader and methods for card reader callback and update method to decode the token input from Ascii to string.
 
-* Create access_control.py with constructor of the card reader instance and the tokens database.
+* Create add_token.py with constructor of the card reader instance and the tokens database.
+
+* Create update method and card reader callback method to get input date in GMT format, convert it to timestamp format and update the database with the given token id and expiration date of the token in timestamp format in add_token.py.
