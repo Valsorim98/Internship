@@ -8,7 +8,10 @@ The project runs from main function in main.py.
 
 > Required modules to run the program:
 
-* pymodbus - install with command in cmd:pip install pymodbus
+* pymodbus - install with command in cmd:
+```py
+pip install pymodbus
+```
 
 ---
 > What is Modbus RTU and RS485:
