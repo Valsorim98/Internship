@@ -8,11 +8,20 @@ The project runs from main function in main.py.
 
 > Required modules to run the program:
 
-* pymongo - install with command in cmd:pip install pymongo
+* pymongo - install with command in cmd:
+```py
+pip install pymongo
+```
 
-* pymodbus - install with command in cmd:pip install pymodbus
+* pymodbus - install with command in cmd:
+```py
+pip install pymodbus
+```
 
-* pyserial - install with command in cmd:pip install pyserial
+* pyserial - install with command in cmd:
+```py
+pip install pyserial
+```
 
 ---
 If you want to turn the relays ON you have to set the write_coils method on row 39 in io_controller.py to **True**, as following:

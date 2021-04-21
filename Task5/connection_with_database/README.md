@@ -9,6 +9,9 @@ The project runs from main function in main.py.
 
 > Required modules to run the program:
 
-* pymongo - install with command in cmd:pip install pymongo
+* pymongo - install with command in cmd:
+```py
+pip install pymongo
+```
 
 The program reads the database from MongoDB and prints the codes from whitelist.

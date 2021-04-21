@@ -8,7 +8,10 @@ The project runs from main function in main.py.
 
 > Required modules to run the program:
 
-* pymodbus - install with command in cmd:pip install pymodbus
+* pymodbus - install with command in cmd:
+```py
+pip install pymodbus
+```
 
 I was given a **GECON TCP-508N Super Smart S8-3CN** controller.
 
