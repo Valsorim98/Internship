@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
+import time
+import datetime
 import pymongo
 from pymongo import MongoClient
 
@@ -41,16 +43,19 @@ class AddToken():
 
     def __card_reader_cb(self, card_id):
 
-        if self.__readDB is None:
-            return
+        # if self.__readDB is None:
+        #     return
 
-        exp_date_str = str(input("Type expiration date in day.month.year hour.minute.seconds: "))
-        print(exp_date_str)
+        exp_date_str = input("Type expiration date in day.month.year hour.minute.seconds: ")
+        #print(exp_date_str)
 
+        timestamp = int(time.mktime(datetime.datetime.strptime(exp_date_str,
+                                             "%d.%m.%Y %H.%M.%S").timetuple()))
 
+        print(timestamp)
 
         entry = {"token_id": card_id,
-                "exp_date": 1672351200}
+                "exp_date": timestamp}
 
         print(entry)
         #self.__readDB.insert_data("test_db", "tokens_database", entry)
