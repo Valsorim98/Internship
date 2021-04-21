@@ -2,6 +2,23 @@
 
 The project runs from main function in main.py.
 
+> Environment:
+
+* This script is written in Python 3.9.2.
+
+> Required modules to run the program:
+
+* pymodbus - install with command in cmd:
+```py
+pip install pymodbus
+```
+
+* pyserial - install with command in cmd:
+```py
+pip install pyserial
+```
+
+---
 Create Task1 folder and main.py, database.json, tokens_base.py, io_controller.py, card_reader.py, access_control.py.
 
 Create a card reader constructor and a connection to the reader.
