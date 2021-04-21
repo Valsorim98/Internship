@@ -2,6 +2,14 @@
 
 The project runs from main function in main.py.
 
+> Environment:
+
+* This script is written in Python 3.9.2.
+
+> Required modules to run the program:
+
+* pymodbus - install with command in cmd:pip install pymodbus
+
 ---
 > What is Modbus RTU and RS485:
 
