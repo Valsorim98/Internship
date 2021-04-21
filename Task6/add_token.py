@@ -31,8 +31,14 @@ class AddToken():
     
         self.__card_reader = card_reader
 
+        self.__readDB = readDB
+        self.__tokens_base = self.__readDB.get_tokens()
+
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         self.__client = MongoClient(url)
+        db = self.__client["test_db"]
+        collection = db.tokens_database
+        collection = collection.find_one({}, {"_id": 0})
 
         if self.__card_reader is not None:
             self.__card_reader.set_card_cb(self.__card_reader_cb)
@@ -58,4 +64,4 @@ class AddToken():
                 "exp_date": timestamp}
 
         print(entry)
-        #self.__readDB.insert_data("test_db", "tokens_database", entry)
+        self.__readDB.insert_data("test_db", "tokens_database", entry)

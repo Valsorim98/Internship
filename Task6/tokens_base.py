@@ -18,11 +18,13 @@ class Tokens():
     def insert_data(self, db_name, collection_name, data):
 
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-        
         client = MongoClient(url)
+        db = client["test_db"]
+        collection = db.tokens_database
+        collection = collection.find_one({}, {"_id": 0})
 
         db = client[db_name]
         collection = db[collection_name]
 
-        db.entries.insert(data)
+        db.tokens_database.update(collection["whitelist"], data)
         
