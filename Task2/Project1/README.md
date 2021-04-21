@@ -2,6 +2,11 @@
 
 The project runs from main function in main.py.
 
+> Environment:
+
+* This script is written in Python 3.9.2.
+
+---
 Create Project1 folder for the first project.
 
 Create main.py for main function, student.py with a constructor for students, subject.py with a constructor for subjects and database_students.json.
