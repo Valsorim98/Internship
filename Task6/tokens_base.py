@@ -26,5 +26,4 @@ class Tokens():
         db = client[db_name]
         collection = db[collection_name]
 
-        db.tokens_database.update(collection["whitelist"], data)
-        
+        result = db.tokens_database.update_one(collection["whitelist"], data)
