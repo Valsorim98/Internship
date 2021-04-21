@@ -11,7 +11,7 @@ class IOController():
     """Instance of the controller.
     """
 
-    __coils = [False]*12
+    __coils = [False]*4
 
     def __init__(self):
 
@@ -35,15 +35,15 @@ class IOController():
         """
 
         # Pin is index 0 by default
-        #self.__coils[pin] = state
-        response = self.__client.write_coils(16, [False]*4, unit=1)
+        self.__coils[pin] = state
+        response = self.__client.write_coils(16, self.__coils, unit=1)
 
         print("set_gpio({}, {})".format(pin, state))
 
         # Read all the coils
-        response = self.__client.read_coils(
-        address=16,
-        count=4,
-        unit=1)
+        # response = self.__client.read_coils(
+        # address=16,
+        # count=4,
+        # unit=1)
 
-        print(response.bits[:4])
+        #print(response.bits[:4])
