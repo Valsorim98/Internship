@@ -37,9 +37,9 @@ class ACT230():
 
     def update(self):
         """Method to get the input from a token and decode it to a string.
-        """        
+        """
 
-        if (self.__serialPort.in_waiting > 0):
+        if self.__serialPort.in_waiting > 0:
             byte_data = self.__serialPort.readline()
             str_data = byte_data.decode('Ascii')
             card_id = str_data.replace("?\r\n", "")
