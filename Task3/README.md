@@ -2,6 +2,22 @@
 
 For Task3 every file in the folder acts as a different method which can be run separately. The names of the files equals the function that each method does.
 
+> Environment:
+
+* The scripts are written in Python 3.9.2.
+
+> Required modules to run the programs:
+
+* pymongo - install with command in cmd:
+```py
+pip install pymongo
+```
+
+* requests - install with command in cmd:
+```py
+pip install requests
+```
+
 ---
 To make a HTTP request we must first install the requests module. In 'cmd' type "pip install requests" to install the module.
 
