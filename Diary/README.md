@@ -241,3 +241,18 @@ write_config.set("Controller","ID","1")
 ```
 
 Create read_config method to read the config.ini file in create_config.py.
+
+> # April 21:
+
+* Start work on Task6:
+
+The task is to create a program and use the card reader and the database in MongoDB. On token event to add the token's code to the whitelist.
+
+---
+* Create a new folder for Task6, main function in main.py and tokens_base.py and methods to read the database from MongoDB and insert data.
+
+* Create card_reader.py with a constructor for the card reader and methods for card reader callback and update method to decode the token input from Ascii to string.
+
+* Create add_token.py with constructor of the card reader instance and the tokens database.
+
+* Create update method and card reader callback method to get input date in GMT format, convert it to timestamp format and update the database with the given token id and expiration date of the token in timestamp format in add_token.py.
