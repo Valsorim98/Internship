@@ -5,7 +5,7 @@ import pymodbus
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 
 
-client = ModbusClient(method="rtu", port="COM4", timeout=1, stopbits=1, bytesize=8, parity="N", baudrate=9600)
+client = ModbusClient(method="rtu", port="COM5", timeout=1, stopbits=1, bytesize=8, parity="N", baudrate=9600)
 
 def main():
     """Main function.
@@ -32,7 +32,7 @@ def main():
     elif response.bits[:4] == [False]*4:
         print("All relays are off.")
     else:
-        print("Error")
+        print("Not all relays are ON/OFF")
 
     # Turn all coils ON/OFF
     response = client.write_coils(16, [True]*4, unit=1)
