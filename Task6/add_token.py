@@ -10,7 +10,7 @@ from tokens_base import Tokens
 from card_reader import ACT230
 
 class AddToken():
-    """Access control
+    """AddToken class.
     """
 
     __card_reader = None
@@ -49,19 +49,29 @@ class AddToken():
 
     def __card_reader_cb(self, card_id):
 
+        url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+        client = MongoClient(url)
+        db = client["test_db"]
+        collection = db.whitelist
+        collection = collection.find_one({}, {"_id": 0})
+
         # if self.__readDB is None:
         #     return
 
-        exp_date_str = input("Type GMT expiration date in day.month.year hour.minute.seconds format: ")
-        #print(exp_date_str)
+        #exp_date_str = input("Type GMT expiration date in day.month.year hour.minute.seconds format: ")
+        exp_date_str = "30.08.2021 12.12.12"
 
+        # Convert time from string to timestamp format
         timestamp = int(time.mktime(datetime.datetime.strptime(exp_date_str,
                                              "%d.%m.%Y %H.%M.%S").timetuple()))
 
         print(timestamp)
 
-        entry = {"token_id": card_id,
-                "exp_date": timestamp}
+        data = {"exp_date": timestamp}
+        print(card_id)
 
-        print(entry)
-        self.__readDB.insert_data("test_db", "tokens_database", entry)
+        for item in collection:
+            if card_id == "_id":
+                break
+            else:
+                self.__readDB.insert_data("test_db", "whitelist", card_id, data)
