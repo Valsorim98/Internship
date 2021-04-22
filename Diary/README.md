@@ -261,4 +261,4 @@ The task is to create a program and use the card reader and the database in Mong
 
 * Create a method to update the given collection with a new document in tokens_base.py.
 
-* Insert the new document in the given collection with id - token code and with timestamp date.
+* I created two new collections in the test_db database named whitelist and blacklist and inserted new documents in both collections with id - token code and with timestamp date for the expiration date of the token.
