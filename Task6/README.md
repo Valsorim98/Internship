@@ -28,3 +28,7 @@ pip install pyserial
 * Create add_token.py with constructor of the card reader instance and the tokens database.
 
 * Create update method and card reader callback method to get input date in GMT format, convert it to timestamp format and update the database with the given token id and expiration date of the token in timestamp format in add_token.py.
+
+* Create a method to update the given collection with a new document in tokens_base.py.
+
+* I created two new collections in the test_db database named whitelist and blacklist and inserted new documents in both collections with id - token code and with timestamp date for the expiration date of the token.
