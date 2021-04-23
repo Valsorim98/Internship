@@ -18,20 +18,24 @@ def main():
     create_config = cc.create_config()
 
     # Read config.ini file
-    #read_config = cc.read_config()
+    read_config = cc.read_config()
+    cd_port = read_config["Card_Reader"]["Port"]
+    cd_id = read_config["Card_Reader"]["ID"]
+    IO_port = read_config["Controller"]["Port"]
+    IO_id = read_config["Controller"]["ID"]
 
     # Call class DateTime and date_time method
     date_time = DateTime()
     execution_time = date_time.time_of_execution()
 
     # Create card reader one
-    card_reader = ACT230("COM3", 1914)
+    card_reader = ACT230(cd_port, cd_id)
 
     # Call class Tokens and get_tokens method
     tokens = Tokens()
 
     # Create controller
-    controller = IOController("COM5", 1)
+    controller = IOController(IO_port, IO_id)
 
     # Call AccessControl class
     ac = AccessControl(card_reader, tokens, controller)
