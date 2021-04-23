@@ -13,6 +13,13 @@ def main():
     """Main function for the project.
     """
 
+    # Create config.ini file
+    cc = CreateConfig()
+    create_config = cc.create_config()
+
+    # Read config.ini file
+    #read_config = cc.read_config()
+
     # Call class DateTime and date_time method
     date_time = DateTime()
     execution_time = date_time.time_of_execution()
@@ -24,18 +31,10 @@ def main():
     tokens = Tokens()
 
     # Create controller
-    controller = IOController()
+    controller = IOController("COM5", 1)
 
     # Call AccessControl class
     ac = AccessControl(card_reader, tokens, controller)
-
-    # Create config.ini file
-    #cc = CreateConfig()
-    #create_config = cc.create_config()
-
-    # Read config.ini file
-    #read_config = cc.read_config()
-
 
     #call update method in a while cycle to check for token input non-stop
     while(1):
