@@ -46,7 +46,9 @@ class CreateConfig():
         """        
         read_config = configparser.ConfigParser()
         read_config.read("config.ini")
-        section1 = read_config.get("Connection to database", "URL")
-        print(f"URL: {section1}")
+
+        # Print Database section
+        #section1 = read_config.get("Database", "URL")
+        #print(f"URL: {section1}")
 
         return read_config
