@@ -85,11 +85,18 @@ class Tokens():
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         client = MongoClient(url)
         db = client["test_db"]
-        collection = db["tokens_database"]
+        collection = db["whitelist"]
 
         return collection
 
     def insert_data(self, db_name, collection_name, data):
+        """Method to insert new documents in the entries collection.
+
+        Args:
+            db_name (string): Name of the database.
+            collection_name (string): Name of the collection.
+            data (dict): The inserted data.
+        """
 
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         
