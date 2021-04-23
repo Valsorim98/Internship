@@ -30,8 +30,8 @@ def main():
     ac = AccessControl(card_reader, tokens, controller)
 
     # Create config.ini file
-    cc = CreateConfig()
-    create_config = cc.create_config()
+    #cc = CreateConfig()
+    #create_config = cc.create_config()
 
     # Read config.ini file
     #read_config = cc.read_config()
