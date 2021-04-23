@@ -70,36 +70,32 @@ class AccessControl():
         # State of the token for the event.
         token_state = 0
 
-        whitelist = self.__tokens_base["whitelist"]
-
         wl_flag = False
 
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         client = MongoClient(url)
         db = client["test_db"]
-        collection = db.tokens_database
-        collection = collection.find_one({}, {"_id": 0})
+        whitelist = db.whitelist
+        whitelist = whitelist.find()
+        blacklist = db.blacklist
+        blacklist = blacklist.find()
 
         # # Print the codes from whitelist
         # for item in collection["whitelist"]:
         #     print(item["code"])
         
-        for item in collection["whitelist"]:
-
-            db_card_id = item["code"]
-
+        for item in whitelist:
+            db_card_id = item["_id"]
             if db_card_id == card_id:
 
                 wl_flag = True
                 break
 
-        
-        blacklist = self.__tokens_base["blacklist"]
 
         bl_flag = False
 
-        for item in collection["blacklist"]:
-            db_card_id = item["code"]
+        for item in blacklist:
+            db_card_id = item["_id"]
             if db_card_id == card_id:
 
                 bl_flag = True
@@ -129,6 +125,7 @@ class AccessControl():
             "state": token_state,
             "direction": 1}
 
+        # Insert the data in the collection in the database.        
         self.__readDB.insert_data("test_db", "entries", entry)
 
     def update(self):
@@ -148,4 +145,3 @@ class AccessControl():
                 self.__controller.set_gpio(0, False)
                 self.__unlock_flag = False
                 self.__unlocked_flag = False
-
