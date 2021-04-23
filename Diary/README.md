@@ -262,3 +262,7 @@ The task is to create a program and use the card reader and the database in Mong
 * Create a method to update the given collection with a new document in tokens_base.py.
 
 * I created two new collections in the test_db database named whitelist and blacklist and inserted new documents in both collections with id - token code and with timestamp date for the expiration date of the token.
+
+> # April 23:
+
+* After creating two new collections in the database - **whitelist and blacklist** and adding tokens in them: **id: token's code and exp_date: expiration date of the token**, read the new collections and compare if the token's code exists in the read collections. The controller works if the token's code is in whitelist and doesnt if it isnt. On token event the data is inserted as a new document in entries collection.
