@@ -20,7 +20,7 @@ def main():
     # Create card reader one
     card_reader = ACT230("COM3", 1914)
 
-    # Call class Tokens and get_database method
+    # Call class Tokens and get_tokens method
     tokens = Tokens()
 
     # Create controller
