@@ -13,9 +13,11 @@ class IOController():
 
     __coils = [False]*4
 
-    def __init__(self):
+    def __init__(self, port, controller_id):
 
-        self.__client = ModbusClient(method="rtu", port="COM5", timeout=1, stopbits=1, bytesize=8, parity="N", baudrate=9600)
+        self.__client = ModbusClient(method="rtu", port=port, timeout=1, stopbits=1, bytesize=8, parity="N", baudrate=9600)
+
+        self._controller_id = controller_id
 
         # Create a connection with the controller
         connection = self.__client.connect()
