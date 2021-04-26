@@ -81,6 +81,11 @@ class Tokens():
             return db.get_collection(collection_name)
 
     def get_tokens(self):
+        """Method to return the collection.
+
+        Returns:
+            object: The collection.
+        """        
 
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         client = MongoClient(url)
@@ -98,12 +103,14 @@ class Tokens():
             data (dict): The inserted data.
         """
 
+        # Connection with the client
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-        
         client = MongoClient(url)
 
+        # Database and collection names
         db = client[db_name]
         collection = db[collection_name]
 
+        # Insert the data in the collection
         db.entries.insert(data)
 
