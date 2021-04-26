@@ -12,7 +12,7 @@ def main():
     # Create card reader one
     card_reader = ACT230("COM3", 1914)
 
-    # Call class Tokens and get_tokens method
+    # Call class Tokens
     tokens = Tokens()
 
 
