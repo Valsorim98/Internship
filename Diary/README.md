@@ -266,3 +266,38 @@ The task is to create a program and use the card reader and the database in Mong
 > # April 23:
 
 * After creating two new collections in the database - **whitelist and blacklist** and adding tokens in them: **id: token's code and exp_date: expiration date of the token**, read the new collections and compare if the token's code exists in the read collections. The controller works if the token's code is in whitelist and doesnt if it isnt. On token event the data is inserted as a new document in entries collection.
+
+> # April 26:
+
+Introducing to an electric actuator controlling a valve. Model FLX-05.
+
+> Performance parameters of the device:
+
+* Power supply: DC24V,
+* Power: 20W
+* Rated current: 2A,
+* Output moment: 50Nm,
+* Running time: 10s
+* Ambient temperature: -25C° ~ 60C°
+* Nominal temperature: -15C° ~ 85C°
+* Protection level: IP67,
+* Rotation angle: 0-360°
+* Installation angle: Any angle
+
+---
+Manual testing to open/close the valve with a hexagram provided by the manufacturer. Opened the lid leading to the electrical system with a hexagram number 3. Introduction to the functions of the relays according to the documentation of the manufacturer.
+
+> Wiring method:
+
+* When terminal 1 links to power supply positive pole, terminal 2 links to the power supply negative pole, and that is "ON" operation.
+
+* When terminal 1 links to power supply negative pole, terminal 2 links to the power supply positive pole, and that is "OFF" operation.
+
+* Terminal 4 is power-less contact point common terminal.
+
+* When "ON" runs in place, the terminal 5 outputs "full-open signal".
+
+* When "OFF" runs in place, the terminal 6 outputs "full-shut signal".
+
+---
+Supplying current to the circuit and current measurement with a digital multimeter.
