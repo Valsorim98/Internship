@@ -37,7 +37,7 @@ class AddToken():
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         self.__client = MongoClient(url)
         db = self.__client["test_db"]
-        collection = db.tokens_database
+        collection = db.whitelist
         collection = collection.find_one({}, {"_id": 0})
 
         if self.__card_reader is not None:
