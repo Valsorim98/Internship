@@ -301,3 +301,37 @@ Manual testing to open/close the valve with a hexagram provided by the manufactu
 
 ---
 Supplying current to the circuit and current measurement with a digital multimeter.
+
+> # April 27:
+
+* I inserted new tokens in the whitelist and blacklist collections and added loops to check on token event if the token already exists in one of the collections and if it does to ask the user for input if he wants to delete it from that collection and insert it to the other one, with answer "yes/no". With the following code:
+
+```py
+# Iterate through blacklist collection
+for item in blacklist:
+    db_card_id = item["_id"]
+    if db_card_id == card_id:
+        print("The token already exists in the blacklist collection.")
+        question = input("Do you want me to delete it from blacklist and transfer it to whitelist?: ")
+        if question == "yes":
+            # Delete the document from blacklist
+            db.blacklist.delete_one(item)
+            # Insert the document in whitelist
+            db.whitelist.update_one({'_id': card_id}, {"$set": data}, upsert=True)
+        if question == "no":
+            break
+
+# Iterate through whitelist collection
+for item in whitelist:
+    db_card_id = item["_id"]
+    if db_card_id == card_id:
+        print("The token already exists in the whitelist collection.")
+        question = input("Do you want me to delete it from whitelist and transfer it to blacklist?: ")
+        if question == "yes":
+            # Delete the document from whitelist
+            db.whitelist.delete_one(item)
+            # Insert the document in blacklist
+            db.blacklist.update_one({'_id': card_id}, {"$set": data}, upsert=True)
+        if question == "no":
+            break
+```
