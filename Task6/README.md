@@ -33,7 +33,7 @@ pip install pyserial
 
 * I created two new collections in the test_db database named whitelist and blacklist and inserted new documents in both collections with id - token code and with timestamp date for the expiration date of the token.
 
-* I inserted new tokens in the whitelist and blacklist collections and added loops to check on token event if the token already exists in one of the collections and if it does to ask the user for input if he wants to delete it from that collection and insert it to the other one, with answer "yes/no". With is the following code:
+* I inserted new tokens in the whitelist and blacklist collections and added loops to check on token event if the token already exists in one of the collections and if it does to ask the user for input if he wants to delete it from that collection and insert it to the other one, with answer "yes/no". With the following code:
 
 ```py
 # Iterate through blacklist collection
