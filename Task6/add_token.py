@@ -37,8 +37,6 @@ class AddToken():
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         self.__client = MongoClient(url)
         db = self.__client["test_db"]
-        collection = db.whitelist
-        collection = collection.find_one({}, {"_id": 0})
 
         if self.__card_reader is not None:
             self.__card_reader.set_card_cb(self.__card_reader_cb)
@@ -70,6 +68,7 @@ class AddToken():
         data = {"exp_date": timestamp}
         print(card_id)
 
+        # Check if the token id exists in the database and if not to insert it
         for item in collection:
             if card_id == "_id":
                 break
