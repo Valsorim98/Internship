@@ -53,3 +53,5 @@ write_config.set("Controller","ID","1")
 * Create read_config method to read the config.ini file in create_read_config.py.
 
 * After creating two new collections in the database - **whitelist and blacklist** and adding tokens in them: **id: token's code and exp_date: expiration date of the token**, read the new collections and compare if the token's code exists in the read collections. The controller works if the token's code is in whitelist and doesnt if it isnt. On token event the data is inserted as a new document in entries collection.
+
+* Check on token event if the token is expired, if it is print "The card has expired", if it isn't expired and it's in whitelist to unlock the door.
