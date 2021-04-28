@@ -6,19 +6,17 @@ import os
 import pymongo
 from pymongo import MongoClient
 
-from date_time import DateTime
-
 
 class Tokens():
-
-    __mydate = DateTime()
+    """Class Tokens.
+    """    
 
     def get_database(self):
-        """Read the database
+        """Read the database.
 
         Returns:
-            dict: Collection from the database
-        """        
+            dict: tokens_database collection from the database.
+        """
         
         # Read database.json file
         # dir_path = os.path.abspath(os.path.dirname(__file__))
@@ -62,7 +60,7 @@ class Tokens():
 
         Returns:
             object: collection name
-        """        
+        """
 
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
@@ -85,7 +83,7 @@ class Tokens():
 
         Returns:
             object: The collection.
-        """        
+        """
 
         url = "mongodb+srv://user:user-pass@cluster0.jfrs3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         client = MongoClient(url)
