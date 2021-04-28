@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from date_time import DateTime
 from card_reader import ACT230
 from tokens_base import Tokens
 from io_controller import IOController
@@ -13,20 +12,14 @@ def main():
     """Main function for the project.
     """
 
-    # Create config.ini file
+    # Call CreateConfig class
     cc = CreateConfig()
-    create_config = cc.create_config()
-
     # Read config.ini file
     read_config = cc.read_config()
     cd_port = read_config["Card_Reader"]["Port"]
     cd_id = read_config["Card_Reader"]["ID"]
     IO_port = read_config["Controller"]["Port"]
     IO_id = read_config["Controller"]["ID"]
-
-    # Call class DateTime and date_time method
-    date_time = DateTime()
-    execution_time = date_time.time_of_execution()
 
     # Create card reader one
     card_reader = ACT230(cd_port, cd_id)
