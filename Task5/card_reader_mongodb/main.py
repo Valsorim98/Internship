@@ -15,11 +15,11 @@ def main():
     # Call CreateConfig class
     cc = CreateConfig()
     # Read config.ini file
-    read_config = cc.read_config()
-    cd_port = read_config["Card_Reader"]["Port"]
-    cd_id = read_config["Card_Reader"]["ID"]
-    IO_port = read_config["Controller"]["Port"]
-    IO_id = read_config["Controller"]["ID"]
+    config = cc.read()
+    cd_port = config["Card_Reader"]["Port"]
+    cd_id = config["Card_Reader"]["ID"]
+    io_port = config["Controller"]["Port"]
+    io_id = config["Controller"]["ID"]
 
     # Create card reader one
     card_reader = ACT230(cd_port, cd_id)
@@ -28,7 +28,7 @@ def main():
     tokens = Tokens()
 
     # Create controller
-    controller = IOController(IO_port, IO_id)
+    controller = IOController(io_port, io_id)
 
     # Call AccessControl class
     ac = AccessControl(card_reader, tokens, controller)
