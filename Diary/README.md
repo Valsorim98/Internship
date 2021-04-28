@@ -341,3 +341,5 @@ for item in whitelist:
 * Check on token event if the token is expired, if it is print "The card has expired", if it isn't expired and it's in whitelist to unlock the door in access_control.py.
 
 * Delete unused and unnecessary code from Task5 card_reader_mongodb project. Change the directory of creation of config.ini file. Add comments and docstrings.
+
+* Update the documentation of Task5 card_reader_mongodb project with the latest work.
