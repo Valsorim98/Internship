@@ -8,7 +8,7 @@ class CreateConfig():
     """Class CreateConfig.
     """
 
-    def create_config(self):
+    def read_config(self):
         """Method to create a config.ini file.
         """
 
@@ -33,22 +33,18 @@ class CreateConfig():
         write_config.set("Controller","Stopbits","1")
 
         # Change directory
-        os.chdir("C:/Users/Miro/Documents/Git_repos/Work/Task5/card_reader_mongodb")
+        config_path = os.path.join(
+            os.getcwd(),
+            os.path.dirname(__file__),
+            "config.ini")
+        #print(config_path)
 
-        cfgfile = open("config.ini",'w')
+        # Create the file if it doesnt exist
+        cfgfile = open(config_path, "w")
         write_config.write(cfgfile)
         cfgfile.close()
-
-        return cfgfile
-
-    def read_config(self):
-        """Method to read the config.ini file.
-        """        
+        # Read the file
         read_config = configparser.ConfigParser()
-        read_config.read("config.ini")
-
-        # Print Database section
-        #section1 = read_config.get("Database", "URL")
-        #print(f"URL: {section1}")
+        read_config.read(config_path)
 
         return read_config
