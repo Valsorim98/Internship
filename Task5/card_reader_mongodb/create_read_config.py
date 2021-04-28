@@ -40,9 +40,13 @@ class CreateConfig():
         #print(config_path)
 
         # Create the file if it doesnt exist
-        cfgfile = open(config_path, "w")
-        write_config.write(cfgfile)
-        cfgfile.close()
+        if os.path.isfile(config_path):
+            print("config file already exists.")
+        if os.path.isfile(config_path) is False:
+            print("config file doesnt exist, creating now.")
+            cfgfile = open(config_path, "w")
+            write_config.write(cfgfile)
+            cfgfile.close()
         # Read the file
         read_config = configparser.ConfigParser()
         read_config.read(config_path)
