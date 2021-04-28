@@ -342,4 +342,6 @@ for item in whitelist:
 
 * Delete unused and unnecessary code from Task5 card_reader_mongodb project. Change the directory of creation of config.ini file. Add comments and docstrings.
 
+* Add a conditional statement to check if the config.ini file is existing, if it is to read it, if it doesn't to write it and read it.
+
 * Update the documentation of Task5 card_reader_mongodb project with the latest work.
