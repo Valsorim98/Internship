@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import time
+from datetime import datetime
 import pymongo
 from pymongo import MongoClient
 
@@ -55,7 +56,6 @@ class AccessControl():
         self.__controller = controller
 
 
-
         if self.__card_reader is not None:
             self.__card_reader.set_card_cb(self.__card_reader_cb)
 
@@ -83,18 +83,26 @@ class AccessControl():
         blacklist = db.blacklist
         blacklist = blacklist.find()
 
+        # The date in timestamp
+        now = datetime.now()
+        timestamp = datetime.timestamp(now)
+        timestamp = int(timestamp)
+
         # # Print the codes from whitelist
         # for item in collection["whitelist"]:
         #     print(item["code"])
         
-        # Iterate through whitelist collection and compare card ids
+        # Iterate through whitelist collection and compare card ids and expiration date
         for item in whitelist:
             db_card_id = item["_id"]
             if db_card_id == card_id:
-
-                wl_flag = True
-                break
-
+                db_card_exp = item["exp_date"]
+                if db_card_exp > timestamp:
+                    wl_flag = True
+                    break
+                if db_card_exp < timestamp:
+                    print("The card has expired.")
+                    break
 
         bl_flag = False
 
@@ -138,6 +146,8 @@ class AccessControl():
         self.__readDB.insert_data("test_db", "entries", entry)
 
     def update(self):
+        """Update method.
+        """
 
         now_time = time.time()
 
