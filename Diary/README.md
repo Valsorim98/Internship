@@ -345,3 +345,13 @@ for item in whitelist:
 * Add a conditional statement to check if the config.ini file is existing, if it is to read it, if it doesn't to write it and read it.
 
 * Update the documentation of Task5 card_reader_mongodb project with the latest work.
+
+> # April 29:
+
+* I was given 4 XY-MD02 devices and I created a program that reads the temperature and the humidity from a XY-MD02 device.
+
+* If you don't know the device's id or you forgot it, the identify_device_id method finds what is the device's id.
+
+* If you have a lot of XY-MD02 devices and you want to change all of their ids the change_device_id method does it for you.
+
+* If you dont pass any arguments in the terminal, the defaults are taken and written.
