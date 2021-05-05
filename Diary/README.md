@@ -377,17 +377,16 @@ def read_humidity(unit):
 * If you don't know the device's id or you forgot it, the identify_device_id function finds what is the device's id:
 
 ```py
-def identify_device_id():
+def identify_device_id(begin_id=1, end_id=254):
 
     global client
 
     current_id = -1
     # for loop has range from 1 to 254, because of modbus specification.
-    for index in range(1, 254):
+    for index in range(begin_id, end_id):
         try:
             read_temperature(index)
             read_humidity(index)
-            print(f"Device id: {index}")
             current_id = index
             break
 
