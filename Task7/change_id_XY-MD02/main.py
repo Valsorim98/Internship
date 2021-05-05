@@ -10,7 +10,7 @@ client = None
 """
 
 def read_temperature(unit):
-    """Method to read the temperature.
+    """Function to read the temperature.
 
     Args:
         unit (int): Unit id.
@@ -29,7 +29,7 @@ def read_temperature(unit):
     return temperature
 
 def read_humidity(unit):
-    """Method to read the humidity.
+    """Function to read the humidity.
 
     Args:
         unit (int): Unit id.
@@ -48,7 +48,7 @@ def read_humidity(unit):
     return humidity
 
 def identify_device_id():
-    """Method to identify device's id.
+    """Function to identify device's id.
 
     Returns:
         int: Returns current device's id as a number.
@@ -72,7 +72,7 @@ def identify_device_id():
     return current_id
 
 def change_device_id(current_id, new_id):
-    """Method to change the device id.
+    """Function to change the device id.
 
     Args:
         current_id (int): Current device id.
@@ -96,6 +96,20 @@ def change_device_id(current_id, new_id):
 
     return state
 
+def change_devide_baudrate(current_id, new_baudrate):
+    """Function to change device's baudrate.
+
+    Args:
+        current_id (int): Current device's ID.
+        new_baudrate (int): The new baudrate of the device.
+    """
+
+    global client
+
+    response = client.write_register(0x0102, new_baudrate, unit=current_id)
+    print(response)
+
+
 def main():
     """Main function.
     """
@@ -106,16 +120,20 @@ def main():
     parser.add_argument('--new_id', default=1, type=int, help='Set new device id.')
     parser.add_argument('--port', default="COM5", type=str, help='Modbus COM port.')
     parser.add_argument('--baudrate', default=9600, type=int, help='Rate in symbols per second.')
+    parser.add_argument('--new_baudrate', default=9600, type=int, help='Set new device baudrate.')
+    parser.add_argument('--identify', help="Identify device's ID")
     args = parser.parse_args()
-    # Pass new_id and port as arguments
+    # Pass arguments
     new_id = args.new_id
     port = args.port
     baudrate = args.baudrate
+    new_baudrate = args.new_baudrate
+    identify = args.identify
 
     # Create a connection with the controller.
     client = ModbusClient(method="rtu", port=port,
     timeout=0.4, stopbits=1, bytesize=8,
-    parity="N", baudrate=9600)
+    parity="N", baudrate=baudrate)
     connection = client.connect()
 
     if connection:
@@ -124,11 +142,18 @@ def main():
         print("No connection")
         return
 
+    # if identify:
+    #     print(identify_device_id())
+    # else:
+    #     print("No device found.")
+    #     return
+
     time_to_stop = False
     # While time_to_stop is not False to identify and change device id.
     while not time_to_stop:
         current_id = identify_device_id()
         state = change_device_id(current_id, new_id)
+        change_devide_baudrate(current_id, new_baudrate)
 
         if state:
             print("Ready...")
