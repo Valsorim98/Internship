@@ -47,7 +47,7 @@ def read_humidity(unit):
     print(f"Humidity: {humidity}")
     return humidity
 
-def identify_device_id():
+def identify_device_id(begin_id=1, end_id=254):
     """Function to identify device's id.
 
     Returns:
@@ -58,11 +58,10 @@ def identify_device_id():
 
     current_id = -1
     # for loop has range from 1 to 254, because of modbus specification.
-    for index in range(1, 254):
+    for index in range(begin_id, end_id):
         try:
             read_temperature(index)
             read_humidity(index)
-            print(f"Device id: {index}")
             current_id = index
             break
 
@@ -121,7 +120,9 @@ def main():
     parser.add_argument('--port', default="COM5", type=str, help='Modbus COM port.')
     parser.add_argument('--baudrate', default=9600, type=int, help='Rate in symbols per second.')
     parser.add_argument('--new_baudrate', default=9600, type=int, help='Set new device baudrate.')
-    parser.add_argument('--identify', help="Identify device's ID")
+    parser.add_argument('--identify', default=False, type=bool, help="Identify device's ID")
+    parser.add_argument('--begin_id', default=1, type=int, help="The begin ID of the device to search from.")
+    parser.add_argument('--end_id', default=254, type=int, help="The end ID of the device to stop searching.")
     args = parser.parse_args()
     # Pass arguments
     new_id = args.new_id
@@ -129,8 +130,10 @@ def main():
     baudrate = args.baudrate
     new_baudrate = args.new_baudrate
     identify = args.identify
+    begin_id = args.begin_id
+    end_id = args.end_id
 
-    # Create a connection with the controller.
+    # Create a connection with the device.
     client = ModbusClient(method="rtu", port=port,
     timeout=0.4, stopbits=1, bytesize=8,
     parity="N", baudrate=baudrate)
@@ -142,19 +145,19 @@ def main():
         print("No connection")
         return
 
-    # if identify:
-    #     print(identify_device_id())
-    # else:
-    #     print("No device found.")
-    #     return
+    if identify:
+        device_id = identify_device_id(begin_id, end_id)
+        print(f"Device ID: {device_id}")
+        return
 
     time_to_stop = False
     # While time_to_stop is not False to identify and change device id.
     while not time_to_stop:
-        current_id = identify_device_id()
+        current_id = identify_device_id(begin_id, end_id)
         state = change_device_id(current_id, new_id)
         change_devide_baudrate(current_id, new_baudrate)
 
+        # If state is True it means that device id changed successfuly.
         if state:
             print("Ready...")
             print("Please do power cycle for the device.")
