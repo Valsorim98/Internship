@@ -1,4 +1,4 @@
-> # This is a documentation file for Task7:
+> # This is a documentation file for configuration of XY-MD02 device:
 
 * The project runs from main function in main.py.
 
