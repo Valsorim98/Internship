@@ -77,13 +77,13 @@ def change_device_id(current_id, new_id):
 
     state = False
 
-    try:
+    # Only values from 1 to 254 can be passed.
+    if new_id < 1 or new_id > 254:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 254.')
+    else:
         response = client.write_register(0x0101, new_id, unit=current_id)
         print(response)
         state = True
-
-    except Exception as e:
-        print(e)
 
     return state
 ```
@@ -95,8 +95,12 @@ def change_devide_baudrate(current_id, new_baudrate):
 
     global client
 
-    response = client.write_register(0x0102, new_baudrate, unit=current_id)
-    print(response)
+    # Only values equal to 9600, 14400 or 19200 can be passed.
+    if new_baudrate != 9600 and new_baudrate != 14400 and new_baudrate != 19200:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 9600, 14400 or 19200.')
+    else:
+        response = client.write_register(0x0102, new_baudrate, unit=current_id)
+        print(response)
 ```
 
 >  **If you dont pass any arguments in the terminal, the defaults are taken and written.**
@@ -126,7 +130,7 @@ $ --baudrate
 $ --new_baudrate
 ```
 
-* Identify device's ID of type **bool**, default is **False**, you should set it to True only if you want to identify the ID:
+* Identify device's ID of type **str**, default is **False**, you should set it to True only if you want to identify the ID:
 ```sh
 $ --identify
 ```
@@ -162,6 +166,14 @@ Do you want a new one?: no
 $ _
 ```
 
+If you type a wrong value for example (string in that case) when trying to change the id of the device, the terminal says "invalid int value 'gosho':
+```sh
+$ python main.py --new_id gosho
+usage: main.py [-h] [--new_id NEW_ID] [--port PORT] [--baudrate BAUDRATE] [--new_baudrate NEW_BAUDRATE] [--identify IDENTIFY]
+               [--begin_id BEGIN_ID] [--end_id END_ID]
+main.py: error: argument --new_id: invalid int value: 'gosho'
+```
+
 * Pass the COM port that your device is using:
 
 In case the device is not on the given COM port:
@@ -182,6 +194,13 @@ Ready...
 Please do power cycle for the device.
 Do you want a new one?: no
 $ _
+```
+
+If you type a wrong value for example (int in that case) when trying to give the COM port of the device:
+
+```sh
+$ python main.py --port 15
+No connection
 ```
 
 * The baudrate that your device is using:
@@ -219,6 +238,14 @@ Connected
 Temperature: 29.0
 Humidity: 31.9
 Device ID: 1
+$ _
+```
+
+If you type a wrong value for example (int or string different from "True") when trying to give the COM port of the device:
+
+```sh
+$ Connected
+argparse.ArgumentTypeError: Invalid value! Set value to True.
 $ _
 ```
 
