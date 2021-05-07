@@ -18,6 +18,8 @@ pip install pymodbus
 pip install argparse
 ```
 
+* Here is a link to the documentation from the manufacturer in pdf: http://sahel.rs/media/sah/techdocs/xy-md02-manual.pdf
+
 * The program reads the temperature and the humidity from a XY-MD02 device with those two functions:
 
 ```py
@@ -148,37 +150,96 @@ You can do that with typing **cd** and then the directory of the program in the 
 
 * Changes the device ID:
 ```sh
-$ python main.py --new_id [insert new id here]
+$ python main.py --new_id 2
+Connected
+Temperature: 28.2
+Humidity: 34.6
+WriteRegisterResponse 257 => 2
+WriteRegisterResponse 258 => 9600
+Ready...
+Please do power cycle for the device.
+Do you want a new one?: no
+$ _
 ```
 
 * Pass the COM port that your device is using:
+
+In case the device is not on the given COM port:
 ```sh
-$ python main.py --port [insert COM port here]
+$ python main.py --port COM3
+No connection
+```
+In case the device is on the given COM port:
+```sh
+$ python main.py --port COM5
+Connected
+No device found at id: 1
+Temperature: 28.9
+Humidity: 33.0
+WriteRegisterResponse 257 => 1
+WriteRegisterResponse 258 => 9600
+Ready...
+Please do power cycle for the device.
+Do you want a new one?: no
+$ _
 ```
 
 * The baudrate that your device is using:
 ```sh
-$ python main.py --baudrate [insert baudrate here]
+$ python main.py --baudrate 9600
+Connected
+Temperature: 29.0
+Humidity: 32.0
+WriteRegisterResponse 257 => 1
+WriteRegisterResponse 258 => 9600
+Ready...
+Please do power cycle for the device.
+Do you want a new one?: no
+$ _
 ```
 
 * Changes the baudrate of the device:
 ```sh
-$ python main.py --new_baudrate [insert new baudrate here]
+$ python main.py --new_baudrate 14400
+Connected
+Temperature: 29.0
+Humidity: 30.9
+WriteRegisterResponse 257 => 1
+WriteRegisterResponse 258 => 14400
+Ready...
+Please do power cycle for the device.
+Do you want a new one?: no
+$ _
 ```
 
 * Identify device's ID:
 ```sh
 $ python main.py --identify True
+Connected
+Temperature: 29.0
+Humidity: 31.9
+Device ID: 1
+$ _
 ```
 
 * The begin ID of the device to search from:
 ```sh
-$ python main.py --begin_id [insert begin id here]
+$ python main.py --begin_id 1
+Connected
+Temperature: 29.0
+Humidity: 30.3
+Device ID: 1
+$ _
 ```
 
 * The end ID of the device to stop searching:
 ```sh
-$ python main.py --end_id [insert end id here]
+$ python main.py --end_id 15
+Connected
+Temperature: 29.0
+Humidity: 30.5
+Device ID: 1
+$ _
 ```
 
 > You can use these arguments in combinations:
@@ -186,16 +247,43 @@ $ python main.py --end_id [insert end id here]
 * In case you want to identify device's id and search only from id 1 to 20:
 ```sh
 $ python main.py --identify True --begin_id 1 --end_id 20
+Connected
+Temperature: 29.1
+Humidity: 31.7
+Device ID: 1
+$ _
 ```
 
 * In case you want to set the baudrate to 14400 and the id to 5:
 ```sh
 $ python main.py --new_baudrate 14400 --new_id 5
+Connected
+Temperature: 29.1
+Humidity: 31.3
+WriteRegisterResponse 257 => 5
+WriteRegisterResponse 258 => 14400
+Ready...
+Please do power cycle for the device.
+Do you want a new one?: no
+$ _
 ```
 
 * In case you want to return the baudrate to 9600 and the device id to 1:
 ```sh
 $ python main.py --baudrate 14400 --new_baudrate 9600 --new_id 1
+Connected
+No device found at id: 1
+No device found at id: 2
+No device found at id: 3
+No device found at id: 4
+Temperature: 29.1
+Humidity: 32.0
+WriteRegisterResponse 257 => 1
+WriteRegisterResponse 258 => 9600
+Ready...
+Please do power cycle for the device.
+Do you want a new one?: no
+$ _
 ```
 
 > I found misleading information in the documentation for XY-MD02 device from the manufacturer. I tryed to set the baudrate of the device to 10000 and to 38400 and it worked. In the documentation from the manufacturer there are three states that should be working: 9600, 14400, 19200 baudrate.
