@@ -105,37 +105,37 @@ def change_devide_baudrate(current_id, new_baudrate):
 > Here is a list of all the arguments that could be passed from the terminal:
 
 * Set new device id of type **int**, default is **1**:
-```py
+```sh
 $ --new_id
 ```
 
 * Modbus COM port of type **str**, default is **COM5**:
-```py
+```sh
 $ --port
 ```
 
 * Rate in symbols per second of type **int**, default is **9600**:
-```py
+```sh
 $ --baudrate
 ```
 
 * Set new device baudrate of type **int**, default is **9600**:
-```py
+```sh
 $ --new_baudrate
 ```
 
 * Identify device's ID of type **bool**, default is **False**, you should set it to True only if you want to identify the ID:
-```py
+```sh
 $ --identify
 ```
 
 * The begin ID of the device to search from of type **int**, default is **1**:
-```py
+```sh
 $ --begin_id
 ```
 
 * The end ID of the device to stop searching of type **int**, default is **254**:
-```py
+```sh
 $ --end_id
 ```
 
@@ -152,49 +152,49 @@ $ python main.py --new_id [insert new id here]
 ```
 
 * Pass the COM port that your device is using:
-```py
+```sh
 $ python main.py --port [insert COM port here]
 ```
 
 * The baudrate that your device is using:
-```py
+```sh
 $ python main.py --baudrate [insert baudrate here]
 ```
 
 * Changes the baudrate of the device:
-```py
+```sh
 $ python main.py --new_baudrate [insert new baudrate here]
 ```
 
 * Identify device's ID:
-```py
+```sh
 $ python main.py --identify True
 ```
 
 * The begin ID of the device to search from:
-```py
+```sh
 $ python main.py --begin_id [insert begin id here]
 ```
 
 * The end ID of the device to stop searching:
-```py
+```sh
 $ python main.py --end_id [insert end id here]
 ```
 
 > You can use these arguments in combinations:
 
 * In case you want to identify device's id and search only from id 1 to 20:
-```py
+```sh
 $ python main.py --identify True --begin_id 1 --end_id 20
 ```
 
 * In case you want to set the baudrate to 14400 and the id to 5:
-```py
+```sh
 $ python main.py --new_baudrate 14400 --new_id 5
 ```
 
 * In case you want to return the baudrate to 9600 and the device id to 1:
-```py
+```sh
 $ python main.py --baudrate 14400 --new_baudrate 9600 --new_id 1
 ```
 
