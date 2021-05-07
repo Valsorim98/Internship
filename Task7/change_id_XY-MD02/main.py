@@ -84,14 +84,13 @@ def change_device_id(current_id, new_id):
 
     state = False
 
-    try:
-        # Change device id
+    # Only values from 1 to 254 can be passed.
+    if new_id < 1 or new_id > 254:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 254.')
+    else:
         response = client.write_register(0x0101, new_id, unit=current_id)
         print(response)
         state = True
-
-    except Exception as e:
-        print(e)
 
     return state
 
@@ -105,8 +104,12 @@ def change_devide_baudrate(current_id, new_baudrate):
 
     global client
 
-    response = client.write_register(0x0102, new_baudrate, unit=current_id)
-    print(response)
+    # Only values equal to 9600, 14400 or 19200 can be passed.
+    if new_baudrate != 9600 and new_baudrate != 14400 and new_baudrate != 19200:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 9600, 14400 or 19200.')
+    else:
+        response = client.write_register(0x0102, new_baudrate, unit=current_id)
+        print(response)
 
 
 def main():
@@ -120,7 +123,7 @@ def main():
     parser.add_argument('--port', default="COM5", type=str, help='Modbus COM port.')
     parser.add_argument('--baudrate', default=9600, type=int, help='Rate in symbols per second.')
     parser.add_argument('--new_baudrate', default=9600, type=int, help='Set new device baudrate.')
-    parser.add_argument('--identify', default=False, type=bool, help="Identify device's ID")
+    parser.add_argument('--identify', default="False", type=str, help="Identify device's ID.")
     parser.add_argument('--begin_id', default=1, type=int, help="The begin ID of the device to search from.")
     parser.add_argument('--end_id', default=254, type=int, help="The end ID of the device to stop searching.")
     args = parser.parse_args()
@@ -145,10 +148,16 @@ def main():
         print("No connection")
         return
 
-    if identify:
+
+    if identify == "True":
         device_id = identify_device_id(begin_id, end_id)
         print(f"Device ID: {device_id}")
         return
+    if identify == "False":
+        pass
+    if identify != "True" and identify != "False":
+            raise argparse.ArgumentTypeError('Invalid value! Set value to True.')
+
 
     time_to_stop = False
     # While time_to_stop is not False to identify and change device id.
