@@ -66,7 +66,7 @@ def read_humidity(unit):
     print(f"Humidity: {humidity}")
     return humidity
 
-def identify_device_id(begin_id=1, end_id=254):
+def identify_device_id(begin_id=1, end_id=247):
     """Function to identify device's id.
 
     Returns:
@@ -76,7 +76,7 @@ def identify_device_id(begin_id=1, end_id=254):
     global client
 
     current_id = -1
-    # for loop has range from 1 to 254, because of modbus specification.
+    # for loop has range from 1 to 247, because of modbus specification.
     for index in range(begin_id, end_id):
         try:
             read_temperature(index)
@@ -103,9 +103,9 @@ def change_device_id(current_id, new_id):
 
     state = False
 
-    # Only values from 1 to 254 can be passed.
-    if new_id < 1 or new_id > 254:
-        raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 254.')
+    # Only values from 1 to 247 can be passed.
+    if new_id < 1 or new_id > 247:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 247.')
     else:
         response = client.write_register(0x0101, new_id, unit=current_id)
         print(response)
@@ -144,7 +144,7 @@ def main():
     parser.add_argument('--new_baudrate', default=9600, type=int, help='Set new device baudrate.')
     parser.add_argument('--identify', default="False", type=str, help="Identify device's ID.")
     parser.add_argument('--begin_id', default=1, type=int, help="The begin ID of the device to search from.")
-    parser.add_argument('--end_id', default=254, type=int, help="The end ID of the device to stop searching.")
+    parser.add_argument('--end_id', default=247, type=int, help="The end ID of the device to stop searching.")
     args = parser.parse_args()
     # Pass arguments
     new_id = args.new_id
