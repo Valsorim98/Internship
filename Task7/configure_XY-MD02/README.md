@@ -313,4 +313,6 @@ Do you want a new one?: no
 $ _
 ```
 
-> I found misleading information in the documentation for XY-MD02 device from the manufacturer. I tryed to set the baudrate of the device to 10000 and to 38400 and it worked. In the documentation from the manufacturer there are three states that should be working: 9600, 14400, 19200 baudrate.
+* Updated end_id from 254 to 247, as ID 247 is the highest possible option from the modbus protocol.
+
+> I found misleading information in the documentation for XY-MD02 device from the manufacturer. I tryed to set the baudrate of the device to 10000 and to 38400 and it worked. In the documentation from the manufacturer there are three states that should be working: 9600, 14400, 19200 baudrate. Also it is not described what are the possible options for ID changes.
