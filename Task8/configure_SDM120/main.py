@@ -19,11 +19,20 @@ def read_voltage(unit):
     count=2,
     unit=unit)
 
-    # Pack the byte response from the registers
+    # Pack the response to bytes from the registers
     response_bytes = pack("<HH", response.registers[1], response.registers[0])
     # Unpack the response as a float
     response_float = unpack("f", response_bytes)
     voltage = response_float[0]
+
+ # DELETE THIS
+    # READ holding registers for ID DELETE THIS
+    response = client.read_holding_registers(
+        address=20,
+        count=2,
+        unit=unit)
+    print(response.registers)
+ # DELETE THIS
 
     print(f"Voltage: {round(voltage, 2)}")
     return round(voltage, 2)
@@ -70,20 +79,23 @@ def change_device_id(current_id, new_id):
     if new_id < 1 or new_id > 247:
         raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 247.')
     else:
-        float_value = bytearray(pack("f", new_id))
-        unpack_value = unpack("<HH", float_value)
-        print(unpack_value[0])
-        print(unpack_value[1])
+        # Pack new_id from float to bytes
+        byte_value = pack("f", new_id)
+        # Unpack bytes to binary
+        unpack_value = unpack("<HH", byte_value)
         regs_value = []
-        regs_value.append(unpack_value[1])
         regs_value.append(unpack_value[0])
-        response = client.write_register(20, regs_value[1], unit=current_id)
+        regs_value.append(unpack_value[1])
+
+        # Write registers 20,21 with the float number
+        response = client.write_registers(0x0014, regs_value, unit=current_id)
         print(response)
-        response = client.write_register(21, regs_value[0], unit=current_id)
-        print(response)
+        # response = client.write_registers(21, regs_value[1], unit=current_id)
+        # print(response)
 
         # response = client.write_registers(20, regs_value, unit=current_id)
         # print(response)
+
         state = True
 
     return state
@@ -114,7 +126,7 @@ def main():
         state = change_device_id(current_id, new_id)
 
         # If state is True it means that device id changed successfuly.
-        if state:
+        if state is True:
             print("Ready...")
             print("Please do power cycle for the device.")
             time_to_stop = True
