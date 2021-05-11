@@ -430,3 +430,57 @@ def change_devide_baudrate(current_id, new_baudrate):
     response = client.write_register(0x0102, new_baudrate, unit=current_id)
     print(response)
 ```
+
+> # May 10:
+
+* I was given a SDM120 power analyzer and I created a program that reads the voltage from it. Also identifies and changes the device ID and baudrate with inputs from the user. 
+---
+* The program reads the voltage with the following code:
+
+```py
+def read_voltage(unit):
+
+    response = client.read_input_registers(
+    address=0,
+    count=2,
+    unit=unit)
+
+    # Pack the response to bytes from the registers
+    response_bytes = pack("<HH", response.registers[1], response.registers[0])
+    # Unpack the response as a float
+    response_float = unpack("f", response_bytes)
+    voltage = response_float[0]
+
+    print(f"Voltage: {round(voltage, 2)}")
+    return round(voltage, 2)
+```
+
+* The program identifies the device ID with the following code:
+
+```py
+def identify_device_id(begin_id=1, end_id=247):
+
+    global client
+
+    current_id = -1
+    # for loop has range from 1 to 247, because of modbus specification.
+    for index in range(begin_id, end_id):
+        try:
+            read_voltage(index)
+            current_id = index
+            break
+
+        except Exception as e:
+            print(f"No device found at id: {index}")
+
+    print(f"Device ID: {current_id}")
+    return current_id
+```
+
+> # April 11:
+
+* The following function changes the device ID:
+
+```py
+
+```
