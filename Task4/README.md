@@ -12,6 +12,7 @@ The project runs from main function in main.py.
 ```py
 pip install pymodbus
 ```
+You can see the documentation for the controller in the folder Task4 - HHC-R4I4D.md. Made by **Orlin Dimitrov**.
 
 ---
 > What is Modbus RTU and RS485:
