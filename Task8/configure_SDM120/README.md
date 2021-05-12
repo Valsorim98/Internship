@@ -49,7 +49,7 @@ def identify_device_id(begin_id=1, end_id=247):
 
     current_id = -1
     # for loop has range from 1 to 247, because of modbus specification.
-    for index in range(begin_id, end_id):
+    for index in range(begin_id, end_id+1):
         try:
             read_voltage(index)
             current_id = index
@@ -65,5 +65,49 @@ def identify_device_id(begin_id=1, end_id=247):
 * If you want to change the ID of the power analyzer you can do it with the following function:
 
 ```py
+def change_device_id(current_id, new_id):
 
+    global client
+
+    state = False
+
+    # Pack new_id from float to bytes
+    byte_value = pack("f", new_id)
+
+    # Unpack bytes to binary
+    unpack_value = unpack("<HH", byte_value)
+
+    # Append the lower number on last position for little-endian
+    regs_value = []
+    regs_value.append(unpack_value[1])
+    regs_value.append(unpack_value[0])
+
+    # Write registers 20,21 with the float number
+    response = client.write_registers(20, regs_value, unit=current_id)
+    print(response)
+
+    state = True
+
+    return state
+```
+
+* If you want you can change the device baudrate with the following function:
+
+```py
+def change_devide_baudrate(current_id, new_baudrate):
+
+    global client
+
+    # Pack new_baudrate from float to bytes
+    byte_value = pack("f", new_baudrate)
+
+    # Unpack bytes to binary
+    unpack_value = unpack("<HH", byte_value)
+    
+    # Append the lower number on last position for little-endian
+    regs_value = []
+    regs_value.append(unpack_value[1])
+    regs_value.append(unpack_value[0])
+    response = client.write_registers(28, regs_value, unit=current_id)
+    print(response)
 ```
