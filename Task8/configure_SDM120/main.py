@@ -25,15 +25,6 @@ def read_voltage(unit):
     response_float = unpack("f", response_bytes)
     voltage = response_float[0]
 
- # DELETE THIS
-    # READ holding registers for ID DELETE THIS
-    response = client.read_holding_registers(
-        address=20,
-        count=2,
-        unit=unit)
-    print(response.registers)
- # DELETE THIS
-
     print(f"Voltage: {round(voltage, 2)}")
     return round(voltage, 2)
 
@@ -84,17 +75,13 @@ def change_device_id(current_id, new_id):
         # Unpack bytes to binary
         unpack_value = unpack("<HH", byte_value)
         regs_value = []
-        regs_value.append(unpack_value[0])
+        # Append the lower number on last position for little-endian
         regs_value.append(unpack_value[1])
+        regs_value.append(unpack_value[0])
 
         # Write registers 20,21 with the float number
-        response = client.write_registers(0x0014, regs_value, unit=current_id)
+        response = client.write_registers(20, regs_value, unit=current_id)
         print(response)
-        # response = client.write_registers(21, regs_value[1], unit=current_id)
-        # print(response)
-
-        # response = client.write_registers(20, regs_value, unit=current_id)
-        # print(response)
 
         state = True
 
