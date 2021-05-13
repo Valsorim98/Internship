@@ -528,3 +528,73 @@ def change_devide_baudrate(current_id, new_baudrate):
     response = client.write_registers(28, regs_value, unit=current_id)
     print(response)
 ```
+
+> # April 12:
+
+* Created a new folder Configure_HHC-R4I4D in Work with main.py file for the main function. Added functions to read coils, identify and change device ID.
+
+* Read coils function:
+
+```py
+def read_coils(unit):
+
+    global client
+
+    response = client.read_coils(
+        address=16,
+        count=4,
+        unit=unit)
+
+    print(response.bits[:4])
+```
+
+* Identify device ID function:
+
+```py
+def identify_device_id(begin_id=1, end_id=247):
+    """Function to identify device's id.
+
+    Returns:
+        int: Returns current device's id as a number.
+    """
+
+    global client
+
+    current_id = -1
+    # for loop has range from 1 to 247, because of modbus specification.
+    for index in range(begin_id, end_id+1):
+        try:
+            read_coils(index)
+            current_id = index
+            break
+
+        except Exception as e:
+            print(f"No device found at id: {index}")
+
+    return current_id
+```
+
+* Change device ID function:
+
+```py
+def change_device_id(current_id, new_id):
+    """Function to change the device id.
+
+    Args:
+        current_id (int): Current device id.
+        new_id (int): Set new device id.
+
+    Returns:
+        bool : True if successful, else False.
+    """
+
+    global client
+
+    state = False
+
+    response = client.write_register(address=2, value=1, unit=current_id)
+    print(response)
+    state = True
+
+    return state
+```
