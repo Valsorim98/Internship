@@ -111,3 +111,45 @@ def change_devide_baudrate(current_id, new_baudrate):
     response = client.write_registers(28, regs_value, unit=current_id)
     print(response)
 ```
+
+---
+# HELP:
+
+* The functions for changing the device ID and device baudrate will only work if the user gives a proper input (integer). For example:
+
+* For new device ID: The numbers from 1 ~ 247.
+
+* For new device baudrate: 0, 1, 2 or 5.
+
+If the user gives a string input or an invalid value the program will keep asking for a proper input.
+
+---
+# Examples:
+
+* Changes the device ID:
+
+```sh
+$ 
+$ _
+```
+
+If you type a wrong value for example (string in that case) when trying to change the id of the device:
+
+```sh
+$ 
+$ _
+```
+
+* Changes the baudrate of the device:
+
+```sh
+$ 
+$ _
+```
+
+If you type a wrong value for example (string in that case) when trying to change the baudrate of the device:
+
+```sh
+$
+$ _
+```
