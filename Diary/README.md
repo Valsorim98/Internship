@@ -598,3 +598,13 @@ def change_device_id(current_id, new_id):
 
     return state
 ```
+
+> # April 13:
+
+* Removed omissions from configure_HHC-R4I4D.
+
+* Add checks if the user input is a string for new device ID and new device baudrate in Task8.
+
+* Create a device_identification folder with a README file. It contains each usable device's name and history of ID and baudrate changing, with date of change and the person who changed it.
+
+* Finished documentation for power analyzer (See in Task8 -> README).
