@@ -1,22 +1,40 @@
 > # Identify devices:
 
 ---
+> GECON TCP-508N
 
-| GECON TCP-508N | April 12   |
-| :---           |    :----:  |
-| ID             | 1          |
-| Baudrate       | 9600       |
+| ID   | Baudrate  |   Date    | Changed by |
+| :--- |    :----: |   :----:  |      ---:  |
+| 1    |    9600   | 12.05.21  |   Orlin    |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
 
 ---
+> HHC-R4I4D
 
-| HHC-R4I4D   | April 12   |
-| :---        |    :----:  |
-| ID          | 3          |
-| Baudrate    | 1200       |
+| ID   | Baudrate  |   Date    | Changed by |
+| :--- |    :----: |   :----:  |      ---:  |
+| 3    |    1200   | 12.05.21  |   Orlin    |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
 
 ---
+> SDM120
 
-| SDM120      | April 12   |
-| :---        |    :----:  |
-| ID          | 1          |
-| Baudrate    | 9600       |
+| ID   | Baudrate  |   Date    | Changed by |
+| :--- |    :----: |   :----:  |      ---:  |
+| 1    |    9600   | 12.05.21  |   Orlin    |
+| 5    |    9600   | 13.05.21  |   Miro     |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
+|      |           |           |            |
