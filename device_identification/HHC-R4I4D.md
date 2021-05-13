@@ -1,6 +1,22 @@
-> # This is a documentation file for identifying HHC-R4I4D device:
+> # Identify devices:
 
-> # April 12:
+---
 
-* ID = 3
-* Baudrate = 1200
+| GECON TCP-508N | April 12   |
+| :---           |    :----:  |
+| ID             | 1          |
+| Baudrate       | 9600       |
+
+---
+
+| HHC-R4I4D   | April 12   |
+| :---        |    :----:  |
+| ID          | 3          |
+| Baudrate    | 1200       |
+
+---
+
+| SDM120      | April 12   |
+| :---        |    :----:  |
+| ID          | 1          |
+| Baudrate    | 9600       |
