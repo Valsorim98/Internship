@@ -29,7 +29,7 @@ def identify_device_id(begin_id=1, end_id=247):
 
     current_id = -1
     # for loop has range from 1 to 247, because of modbus specification.
-    for index in range(begin_id, end_id):
+    for index in range(begin_id, end_id+1):
         try:
             read_coils(index)
             current_id = index
@@ -79,7 +79,7 @@ def main():
 
     # While time_to_stop is not False to identify and change device id.
     while not time_to_stop:
-        current_id = identify_device_id(1, 247)
+        current_id = identify_device_id()
         state = change_device_id(current_id, new_id=1)
 
 
