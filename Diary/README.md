@@ -433,7 +433,7 @@ def change_devide_baudrate(current_id, new_baudrate):
 
 > # May 10:
 
-* I was given a SDM120 power analyzer and I created a program that reads the voltage from it. Also identifies and changes the device ID and baudrate with inputs from the user. 
+* I was given a **SDM120 power analyzer** and I created a program that reads the voltage from it. Also identifies and changes the device ID and baudrate with inputs from the user. 
 ---
 * The program reads the voltage with the following code:
 
@@ -482,5 +482,49 @@ def identify_device_id(begin_id=1, end_id=247):
 * The following function changes the device ID:
 
 ```py
+def change_device_id(current_id, new_id):
 
+    global client
+
+    state = False
+
+    # Pack new_id from float to bytes
+    byte_value = pack("f", new_id)
+
+    # Unpack bytes to binary
+    unpack_value = unpack("<HH", byte_value)
+
+    # Append the lower number on last position for little-endian
+    regs_value = []
+    regs_value.append(unpack_value[1])
+    regs_value.append(unpack_value[0])
+
+    # Write registers 20,21 with the float number
+    response = client.write_registers(20, regs_value, unit=current_id)
+    print(response)
+
+    state = True
+
+    return state
+```
+
+* The following function changes the device baudrate:
+
+```py
+def change_devide_baudrate(current_id, new_baudrate):
+
+    global client
+
+    # Pack new_baudrate from float to bytes
+    byte_value = pack("f", new_baudrate)
+
+    # Unpack bytes to binary
+    unpack_value = unpack("<HH", byte_value)
+    
+    # Append the lower number on last position for little-endian
+    regs_value = []
+    regs_value.append(unpack_value[1])
+    regs_value.append(unpack_value[0])
+    response = client.write_registers(28, regs_value, unit=current_id)
+    print(response)
 ```
