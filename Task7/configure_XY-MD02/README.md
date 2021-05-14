@@ -46,26 +46,37 @@ def read_humidity(unit):
     return humidity
 ```
 
-* If you don't know the device's id or you forgot it, the identify_device_id function finds what is the device's id:
+* If you don't know the device's ID or baudrate or you forgot them, the identify_device_id_bd function finds what is the device's id and baudrate:
 
 ```py
-def identify_device_id(begin_id=1, end_id=254):
+def identify_device_id_bd(begin_id=1, end_id=247):
 
     global client
 
     current_id = -1
-    # for loop has range from 1 to 254, because of modbus specification.
-    for index in range(begin_id, end_id):
-        try:
-            read_temperature(index)
-            read_humidity(index)
-            current_id = index
+    baudrate_list = [9600, 14400, 19200]
+    current_id_bd = []
+    time_to_stop = False
+
+    # for loop has range from 1 to 247, because of modbus specification.
+    for index in range(begin_id, end_id+1):
+        if time_to_stop == True:
             break
+        for baud_value in baudrate_list:
+            try:
+                read_temperature(index)
+                read_humidity(index)
+                current_id = index
+                current_bd = baud_value
+                current_id_bd.append(current_id)
+                current_id_bd.append(current_bd)
+                time_to_stop = True
+                break
 
-        except Exception as e:
-            print(f"No device found at id: {index}")
+            except Exception as e:
+                print(f"No device found at id: {index} baudrate: {baud_value}.")
 
-    return current_id
+    return current_id_bd
 ```
 
 * If you have a lot of XY-MD02 devices and you want to change all of their ids the change_device_id function does it for you:
@@ -153,6 +164,7 @@ To run the following commands in the terminal you have to change the directory t
 You can do that with typing **cd** and then the directory of the program in the terminal.
 
 * Changes the device ID:
+
 ```sh
 $ python main.py --new_id 2
 Connected
@@ -204,6 +216,7 @@ No connection
 ```
 
 * The baudrate that your device is using:
+
 ```sh
 $ python main.py --baudrate 9600
 Connected
@@ -218,6 +231,7 @@ $ _
 ```
 
 * Changes the baudrate of the device:
+
 ```sh
 $ python main.py --new_baudrate 14400
 Connected
@@ -231,13 +245,15 @@ Do you want a new one?: no
 $ _
 ```
 
-* Identify device's ID:
+* Identify device's ID and baudrate:
+
 ```sh
 $ python main.py --identify True
 Connected
 Temperature: 29.0
 Humidity: 31.9
 Device ID: 1
+Device baudrate: 9600
 $ _
 ```
 
@@ -250,6 +266,7 @@ $ _
 ```
 
 * The begin ID of the device to search from:
+
 ```sh
 $ python main.py --begin_id 1
 Connected
@@ -260,6 +277,7 @@ $ _
 ```
 
 * The end ID of the device to stop searching:
+
 ```sh
 $ python main.py --end_id 15
 Connected
@@ -272,6 +290,7 @@ $ _
 > You can use these arguments in combinations:
 
 * In case you want to identify device's id and search only from id 1 to 20:
+
 ```sh
 $ python main.py --identify True --begin_id 1 --end_id 20
 Connected
@@ -282,6 +301,7 @@ $ _
 ```
 
 * In case you want to set the baudrate to 14400 and the id to 5:
+
 ```sh
 $ python main.py --new_baudrate 14400 --new_id 5
 Connected
@@ -296,6 +316,7 @@ $ _
 ```
 
 * In case you want to return the baudrate to 9600 and the device id to 1:
+
 ```sh
 $ python main.py --baudrate 14400 --new_baudrate 9600 --new_id 1
 Connected
