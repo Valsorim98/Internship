@@ -5,9 +5,14 @@ import pymodbus
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 
 
-client = ModbusClient(method="rtu", port="COM5", timeout=0.5, stopbits=1, bytesize=8, parity="N", baudrate=1200)
+client = ModbusClient(method="rtu", port="COM3", timeout=0.5, stopbits=1, bytesize=8, parity="N", baudrate=1200)
 
 def read_coils(unit):
+    """Function to read the coils.
+
+    Args:
+        unit (int): The ID of the device.
+    """
 
     global client
 
