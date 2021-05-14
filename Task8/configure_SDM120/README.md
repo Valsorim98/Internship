@@ -115,6 +115,8 @@ def change_devide_baudrate(current_id, new_baudrate):
 ---
 # HELP:
 
+* To be able to work with the power analyzer you have to turn its power on and connect it to your computer, if you just want to read from it. But if you want to write to the power analyzer you have to push and hold the **SET** button for 2-3 seconds, then the numbers disappear and now you can see **set** on the display. Now the device is ready to be written on and you can do the changes. After the changes are made you must do a power cycle.
+
 * The functions for changing the device ID and device baudrate will only work if the user gives a proper input (integer). For example:
 
 * For new device ID: The numbers from 1 ~ 247.
@@ -126,30 +128,49 @@ If the user gives a string input or an invalid value the program will keep askin
 ---
 # Examples:
 
-* Changes the device ID:
+* Changes the device ID and baudrate:
 
 ```sh
-$ 
+$ Connected
+Enter a new ID - 1 ~ 247: 1
+For 2400 baud: 0,
+For 4800 baud: 1,
+For 9600 baud: 2,
+For 1200 baud: 5.
+Enter a new baudrate: 2
+Voltage: 237.1
+Device ID: 1
+WriteMultipleRegisterResponse (20,2)
+WriteMultipleRegisterResponse (28,2)
+Ready...
+Please do power cycle for the device.
 $ _
 ```
 
 If you type a wrong value for example (string in that case) when trying to change the id of the device:
 
 ```sh
-$ 
-$ _
-```
-
-* Changes the baudrate of the device:
-
-```sh
-$ 
+$ Connected
+Enter a new ID - 1 ~ 247: gosho
+Invalid value! Type a number 1 ~ 247.
 $ _
 ```
 
 If you type a wrong value for example (string in that case) when trying to change the baudrate of the device:
 
 ```sh
-$
+$ Connected
+Enter a new ID - 1 ~ 247: 1
+For 2400 baud: 0,
+For 4800 baud: 1,
+For 9600 baud: 2,
+For 1200 baud: 5.
+Enter a new baudrate: chushki
+Invalid value! Type a number 0, 1, 2 or 5.
+For 2400 baud: 0,
+For 4800 baud: 1,
+For 9600 baud: 2,
+For 1200 baud: 5.
+Enter a new baudrate:
 $ _
 ```
