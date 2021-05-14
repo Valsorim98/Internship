@@ -66,28 +66,43 @@ def read_humidity(unit):
     print(f"Humidity: {humidity}")
     return humidity
 
-def identify_device_id(begin_id=1, end_id=247):
-    """Function to identify device's id.
+def identify_device_id_bd(begin_id=1, end_id=247):
+    """Function to identify the device ID and baudrate.
+
+    Args:
+        begin_id (int): The ID to start searching from.
+        end_id (int): The last ID to search to.
 
     Returns:
-        int: Returns current device's id as a number.
+        list: List containing the current ID and baudrate of the device.
     """
 
     global client
 
     current_id = -1
+    baudrate_list = [9600, 14400, 19200]
+    current_id_bd = []
+    time_to_stop = False
+
     # for loop has range from 1 to 247, because of modbus specification.
-    for index in range(begin_id, end_id):
-        try:
-            read_temperature(index)
-            read_humidity(index)
-            current_id = index
+    for index in range(begin_id, end_id+1):
+        if time_to_stop == True:
             break
+        for baud_value in baudrate_list:
+            try:
+                read_temperature(index)
+                read_humidity(index)
+                current_id = index
+                current_bd = baud_value
+                current_id_bd.append(current_id)
+                current_id_bd.append(current_bd)
+                time_to_stop = True
+                break
 
-        except Exception as e:
-            print(f"No device found at id: {index}")
+            except Exception as e:
+                print(f"No device found at id: {index} baudrate: {baud_value}.")
 
-    return current_id
+    return current_id_bd
 
 def change_device_id(current_id, new_id):
     """Function to change the device id.
@@ -99,6 +114,7 @@ def change_device_id(current_id, new_id):
     Returns:
         bool : True if successful, else False.
     """
+    
     global client
 
     state = False
@@ -134,18 +150,20 @@ def change_devide_baudrate(current_id, new_baudrate):
 def main():
     """Main function.
     """
+
     global client
 
     # Pass arguments from the terminal, if not takes default.
     parser = argparse.ArgumentParser(description='Pass args from terminal.')
     parser.add_argument('--new_id', default=1, type=int, help='Set new device id.')
-    parser.add_argument('--port', default="COM5", type=str, help='Modbus COM port.')
+    parser.add_argument('--port', default="COM3", type=str, help='Modbus COM port.')
     parser.add_argument('--baudrate', default=9600, type=int, help='Rate in symbols per second.')
     parser.add_argument('--new_baudrate', default=9600, type=int, help='Set new device baudrate.')
     parser.add_argument('--identify', default="False", type=str, help="Identify device's ID.")
     parser.add_argument('--begin_id', default=1, type=int, help="The begin ID of the device to search from.")
     parser.add_argument('--end_id', default=247, type=int, help="The end ID of the device to stop searching.")
     args = parser.parse_args()
+
     # Pass arguments
     new_id = args.new_id
     port = args.port
@@ -169,21 +187,22 @@ def main():
 
 
     if identify == "True":
-        device_id = identify_device_id(begin_id, end_id)
-        print(f"Device ID: {device_id}")
+        current_id_bd = identify_device_id_bd(begin_id, end_id)
+        print("Device ID: {}".format(current_id_bd[0]))
+        print("Device baudrate: {}".format(current_id_bd[1]))
         return
     if identify == "False":
         pass
     if identify != "True" and identify != "False":
-            raise argparse.ArgumentTypeError('Invalid value! Set value to True.')
+        raise argparse.ArgumentTypeError('Invalid value! Set value to True.')
 
 
     time_to_stop = False
     # While time_to_stop is not False to identify and change device id.
     while not time_to_stop:
-        current_id = identify_device_id(begin_id, end_id)
-        state = change_device_id(current_id, new_id)
-        change_devide_baudrate(current_id, new_baudrate)
+        current_id_bd = identify_device_id_bd(begin_id, end_id)
+        state = change_device_id(current_id_bd[0], new_id)
+        change_devide_baudrate(current_id_bd[0], new_baudrate)
 
         # If state is True it means that device id changed successfuly.
         if state:
