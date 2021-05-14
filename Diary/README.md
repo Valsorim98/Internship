@@ -608,3 +608,9 @@ def change_device_id(current_id, new_id):
 * Create a device_identification folder with a README file. It contains each usable device's name and history of ID and baudrate changing, with date of change and the person who changed it.
 
 * Finished documentation for power analyzer (See in Task8 -> README).
+
+> # April 14:
+
+* Added documentation for configure_HHC-R4I4D project.
+
+* Created a function to **identify the device's ID and baudrate** at the same time and updated the documentation in Task7.
