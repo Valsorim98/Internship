@@ -20,6 +20,10 @@ pip install opencv-python
 pip install pyzbar
 ```
 
+> HELP:
+
+* To avoid decoding errors the barcode should be maximum 10 cm away from the camera.
+
 ---
 * The live video barcode decoding runs from main.py:
 
