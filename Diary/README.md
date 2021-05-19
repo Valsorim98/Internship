@@ -614,3 +614,17 @@ def change_device_id(current_id, new_id):
 * Added documentation for configure_HHC-R4I4D project.
 
 * Created a function to **identify the device's ID and baudrate** at the same time and updated the documentation in Task7.
+
+> # April 17:
+
+* Learning how to decode barcodes from images and from a live video from the camera.
+
+> # April 18:
+
+* Made a barcode with an online generator: https://barcode.tec-it.com/en/?data=Donkger%2FXY-MD02%2F9600%2F1
+
+* Saved the barcode in .png format, created a bigger blank white image for a background in python, placed the image with the barcode on top of the white background and decoded it with opencv and python.
+
+> # April 19:
+
+* Created main.py with function to decode barcodes from a live video from the camera. It prints the barcode data and the barcode type.
