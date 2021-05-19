@@ -623,7 +623,7 @@ def change_device_id(current_id, new_id):
 
 * Made a barcode with an online generator: https://barcode.tec-it.com/en/?data=Donkger%2FXY-MD02%2F9600%2F1
 
-* Saved the barcode in .png format, created a bigger blank white image for a background in python, placed the image with the barcode on top of the white background and decoded it with opencv and python.
+* Saved the barcode in .png format with 670x230 dimensions, created a bigger blank white image for a background with 400x900 dimensions in python, placed the image with the barcode on top of the white background and decoded it with opencv and python.
 
 > # April 19:
 
