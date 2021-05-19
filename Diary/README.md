@@ -628,3 +628,7 @@ def change_device_id(current_id, new_id):
 > # April 19:
 
 * Created main.py with function to decode barcodes from a live video from the camera. It prints the barcode data and the barcode type.
+
+* Merged Task7 with Task9 in a new project - barcode_decode_XY-MD02.
+
+* Created documentation for Task9 (video_read_barcode) and barcode_decode_XY-MD02.
