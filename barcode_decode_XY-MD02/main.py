@@ -35,7 +35,7 @@ def decode_barcode():
 
         # Decode the barcode
         for barcode in pyzbar.decode(frame):
-            print("Approved!")
+            print("Read a barcode.")
             print(barcode.type)
             print(barcode.data.decode('utf-8'))
 
@@ -44,9 +44,7 @@ def decode_barcode():
             bc_data_split = bc_data.split("/")[-0:]
 
             manufacturer = bc_data_split[0]
-            print(f"Manufacturer: {manufacturer}")
             model = bc_data_split[1]
-            print(f"Model: {model}")
 
             # Sleep for two seconds after a barcode is given
             time.sleep(2)
@@ -66,14 +64,11 @@ def decode_barcode():
             else:
                 id = int(bc_data_split[3])
                 baudrate = int(bc_data_split[2])
-                print(f"ID: {id}")
-                print(f"Baudrate: {baudrate}")
 
                 # If the list is empty to append with id and baudrate
                 if not device_settings:
                     device_settings.append(id)
                     device_settings.append(baudrate)
-                print(device_settings)
                 camera = False      # When closing the window an error pops up
 
         # Shows the window
@@ -171,12 +166,14 @@ def main():
 
     global client
 
+    device_settings = decode_barcode()
+
     # Pass arguments from the terminal, if not takes default.
     parser = argparse.ArgumentParser(description='Pass args from terminal.')
-    parser.add_argument('--id', default=2, type=int, help='The device ID to connect to.')
-    parser.add_argument('--new_id', default=1, type=int, help='Set new device id.')
+    parser.add_argument('--id', default=device_settings[0], type=int, help='The device ID to connect to.')
+    parser.add_argument('--new_id', default=2, type=int, help='Set new device id.')
     parser.add_argument('--port', default="COM3", type=str, help='Modbus COM port.')
-    parser.add_argument('--baudrate', default=9600, type=int, help='Rate in symbols per second.')
+    parser.add_argument('--baudrate', default=device_settings[1], type=int, help='Rate in symbols per second.')
     parser.add_argument('--new_baudrate', default=9600, type=int, help='Set new device baudrate.')
     args = parser.parse_args()
 
@@ -202,22 +199,15 @@ def main():
     time_to_stop = False
     # While time_to_stop is not False to identify and change device id and baudrate.
     while not time_to_stop:
-        decode_barcode()
+
         state = change_device_id(device_settings[0], new_id)
-        change_devide_baudrate(device_settings[1], new_baudrate)
+        change_devide_baudrate(device_settings[0], new_baudrate)
 
         # If state is True it means that device id changed successfuly.
         if state:
             print("Ready...")
             print("Please do power cycle for the device.")
-            answer = input("Do you want a new one?: ")
-
-            if answer == "":
-                answer = "yes"
-
-            if answer == "no":
-                time_to_stop = True
-
+            time_to_stop = True
 
 if __name__ == "__main__":
     main()
