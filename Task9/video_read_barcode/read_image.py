@@ -5,16 +5,20 @@ import cv2  # Read image/video input
 from pyzbar.pyzbar import decode    # Read barcode
 from pyzbar import pyzbar
 import numpy as np
+import os
 
 def main():
     """Main function.
     """
 
-    # Change the path
-    path = "C:\\Users\\m1ro0\\Documents\\Git_repos\\Work\\Task9\\video_read_barcode\\donkger.png"
+    # Change directory
+    config_path = os.path.join(
+        os.getcwd(),
+        os.path.dirname(__file__),
+        "donkger.png")
 
     # Read the image
-    img = cv2.imread(path)
+    img = cv2.imread(config_path)
 
     # Decode the barcode from the image
     barcode = pyzbar.decode(img)
