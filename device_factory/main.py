@@ -103,8 +103,15 @@ def change_sensor_baudrate(id, new_baudrate):
 
     return state
 
-
 def create_configuration(barcode_data):
+    """Function to create a configuration for the device.
+
+    Args:
+        barcode_data (string): The read data from the barcode.
+
+    Returns:
+        list: A list with device ID, baudrate and the device to configure.
+    """
 
     device_configuration = []
 
@@ -179,12 +186,16 @@ def create_configuration(barcode_data):
             device_configuration.append("white_island")
 
     else:
-        print("Not suported device.")
+        print("Not supported device.")
 
     return device_configuration
 
-
 def decode_barcode():
+    """Function to decode the given barcode.
+
+    Returns:
+        list: A list with device ID, baudrate and the device to configure.
+    """
 
     device_configuration = []
 
@@ -203,7 +214,7 @@ def decode_barcode():
 
             barcode_data = barcode.data.decode('utf-8')
 
-            print("Barcode type {}; content {}".format(barcode.type, barcode_data))
+            print("Barcode type: {}; content: {}".format(barcode.type, barcode_data))
 
             # Hardcode value for the test.
             if barcode_data == "74897":
