@@ -13,8 +13,6 @@ client = None
 """Client instance for modbus master.
 """
 
-
-
 def read_temperature(id):
     """Function to read the temperature.
 
@@ -107,7 +105,7 @@ def change_sensor_baudrate(id, new_baudrate):
 
 
 def create_configuration(barcode_data):
-    
+
     device_configuration = []
 
     # Split the string data.
@@ -187,7 +185,7 @@ def create_configuration(barcode_data):
 
 
 def decode_barcode():
-    
+
     device_configuration = []
 
     # Capture video
