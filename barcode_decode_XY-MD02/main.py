@@ -7,7 +7,6 @@ from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 import cv2  # Read image/video input
 from pyzbar.pyzbar import decode    # Read barcode
 from pyzbar import pyzbar
-import numpy as np
 import time
 
 client = None
@@ -21,8 +20,9 @@ def decode_barcode():
         list: The decoded ID and baudrate of the barcode.
     """
 
-    # Read video
-    cap = cv2.VideoCapture(0)
+    # Capture video
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    # Make a window with these dimensions
     cap.set(3, 640) # 3 Width, 640 pixels
     cap.set(4, 480) # 4 Height, 480 pixels
 
@@ -69,7 +69,7 @@ def decode_barcode():
                 if not device_settings:
                     device_settings.append(id)
                     device_settings.append(baudrate)
-                camera = False      # When closing the window an error pops up
+                    camera = False
 
         # Shows the window
         cv2.imshow("Video capture", frame)
@@ -199,7 +199,8 @@ def main():
     time_to_stop = False
     # While time_to_stop is not False to identify and change device id and baudrate.
     while not time_to_stop:
-
+        read_temperature(id)
+        read_humidity(id)
         state = change_device_id(device_settings[0], new_id)
         change_devide_baudrate(device_settings[0], new_baudrate)
 
