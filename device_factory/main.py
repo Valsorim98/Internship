@@ -128,7 +128,7 @@ def create_configuration(barcode_data):
     time.sleep(2)
 
     # Check which barcode is given
-    if vendor == "Donkger" and model == "XY-MD02":
+    if vendor == "DONKGER" and model == "XY-MD02":
 
         id_value = int(bc_data_split[3])
         if id_value < 1 or id_value > 247:
@@ -146,7 +146,7 @@ def create_configuration(barcode_data):
             device_configuration.append(baudrate_value)
             device_configuration.append("sensor")
 
-    elif vendor == "Eastron" and model == "SDM120":
+    elif vendor == "EASTRON" and model == "SDM120":
 
         id_value = int(bc_data_split[3])
         if id_value < 1 or id_value > 247:
@@ -165,7 +165,7 @@ def create_configuration(barcode_data):
             device_configuration.append(baudrate_value)
             device_configuration.append("power_analyzer")
 
-    elif vendor == "Mainland" and model == "HHC-R4I4D":
+    elif vendor == "MAINLAND" and model == "HHC-R4I4D":
 
         id_value = int(bc_data_split[3])
         if id_value < 1 or id_value > 247:
@@ -217,8 +217,15 @@ def decode_barcode():
             print("Barcode type: {}; content: {}".format(barcode.type, barcode_data))
 
             # Hardcode value for the test.
-            if barcode_data == "74897":
-                barcode_data = "Donkger/XY-MD02/9600/2"
+            # if barcode_data == "74897":
+            #     barcode_data = "Donkger/XY-MD02/9600/2"
+
+            # Trim leading and trailing whitespaces in the string.
+            barcode_data = barcode_data.replace(" ", "")
+            barcode_data = barcode_data.replace("\r", "")
+            barcode_data = barcode_data.replace("\n", "")
+            barcode_data = barcode_data.replace("\t", "")
+            barcode_data = barcode_data.upper()
 
             device_configuration = create_configuration(barcode_data)
 
@@ -233,6 +240,10 @@ def decode_barcode():
 def config_device():
 
     global client
+
+    device_configuration = []
+
+    state = False
 
     # Get the return from decode_barcode function
     device_configuration = decode_barcode()
@@ -256,36 +267,99 @@ def config_device():
             return
 
         time_to_stop = False
+        stop_for_cycle = False
+        current_id = -1
+
         # While time_to_stop is not False to identify and change device id and baudrate.
         while not time_to_stop:
-            read_temperature(device_configuration[0])
-            read_humidity(device_configuration[0])
 
-            answer = input("Do you want to change the sensor ID? ")
-            if answer == "yes":
+            # Identify the device.
+            for index in range(1, 248):
+                if stop_for_cycle == True:
+                    break
+                try:
+                    read_temperature(index)
+                    read_humidity(index)
+                    current_id = index
+                    print(f"The ID of the sensor is {current_id}.")
+                    print("The baudrate of the sensor is {}.".format(device_configuration[1]))
+                    stop_for_cycle = True
+                    break
+
+                except Exception as e:
+                    print(f"No device found at id: {index}.")
+
+            # User input - id/baudrate/no
+            answer = input("Do you want to change the sensor ID or baudrate?: ")
+
+            if answer != "id" and answer != "baudrate" and answer != "no":
+                print("Invalid answer. Answer with: id, baudrate or no.")
+
+            # Changes ID.
+            if answer == "id":
                 input_id = input("Enter a new ID 1 ~ 247: ")
                 new_id = int(input_id)
                 state = change_sensor_id(device_configuration[0], new_id)
-                print("Sensor ID changed")
+                if state == True:
+                    print("Sensor ID changed.")
+                # If the user wants to also change the baudrate.
+                answer = input("Do you want to change the sensor baudrate?: ")
+
+                # Changes baudrate.
+                if answer == "yes":
+                    input_bd = input("Enter a new baudrate - 9600, 14400 or 19200: ")
+                    new_baudrate = int(input_bd)
+                    state = change_sensor_baudrate(device_configuration[0], new_baudrate)
+                    if state == True:
+                        print("Sensor baudrate changed.")
+                        print("Ready...")
+                        print("Please do power cycle for the device.")
+                        time_to_stop = True
+                    time_to_stop = True
+                    state = False
+
+                # If the user only wants to change the ID.
+                if answer == "no":
+                    break
+
+            # If the user doesnt want to change device settings.
             if answer == "no":
-                continue
-            answer = input("Do you want to change the sensor's baudrate? ")
-            if answer == "yes":
+                break
+
+            # Changes baudrate.
+            if answer == "baudrate":
                 input_bd = input("Enter a new baudrate - 9600, 14400 or 19200: ")
                 new_baudrate = int(input_bd)
                 state = change_sensor_baudrate(device_configuration[0], new_baudrate)
-                print("Sensor baudrate changed.")
-            if answer == "no":
-                continue
+                if state == True:
+                    print("Sensor baudrate changed.")
+                answer = input("Do you want to change the sensor ID?: ")
 
-            # If state is True it means that device id changed successfuly.
-            if state:
-                print("Ready...")
-                print("Please do power cycle for the device.")
-                time_to_stop = True
+                # Changes ID.
+                if answer == "yes":
+                    input_id = input("Enter a new ID 1 ~ 247: ")
+                    new_id = int(input_id)
+                    state = change_sensor_id(device_configuration[0], new_id)
+                    if state == True:
+                        print("Sensor ID changed")
+                        print("Ready...")
+                        print("Please do power cycle for the device.")
+                        time_to_stop = True
+                    time_to_stop = True
+                    state = False
 
-            # If the user doesnt want to change the id or baudrate to also stop.
+                # If the user only wants to change the baudrate.
+                if answer == "no":
+                    break
+
+        # If state is True that means that there were changes to the device settings.
+        if state:
+            print("Ready...")
+            print("Please do power cycle for the device.")
             time_to_stop = True
+
+        # If the user doesnt want to change the id or baudrate to also stop.
+        time_to_stop = True
 
     # For connection with the power analyzer
     if device == "power_analyzer":
