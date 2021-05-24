@@ -278,11 +278,58 @@ Please do power cycle for the device.
 $ _
 ```
 
-* If you want to change the baudrate only:
+If you try to give an invalid ID - "5000" in that case, shows an error:
 
 ```sh
 $ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+Connected
+No device found at id: 1.
+No device found at id: 2.
+Temperature: 27.0
+Humidity: 44.8
+The ID of the sensor is 3.
+The baudrate of the sensor is 9600.
+Do you want to change the sensor ID or baudrate?: id
+Enter a new ID 1 ~ 247: 5000
+Invalid value! Insert 1 ~ 247.
+Do you want to change the sensor baudrate?: no
+$ _
+```
 
+* If you want to change the baudrate to 14400:
+
+```sh
+$ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+Connected
+No device found at id: 1.
+Temperature: 26.6
+Humidity: 45.4
+The ID of the sensor is 2.
+The baudrate of the sensor is 9600.
+Do you want to change the sensor ID or baudrate?: baudrate
+Enter a new baudrate - 9600, 14400 or 19200: 14400
+WriteRegisterResponse 258 => 14400
+Sensor baudrate changed.
+Do you want to change the sensor ID?: no
+Ready...
+Please do power cycle for the device.
+$ _
+```
+
+If you try to give an invalid baudrate - "pesho" in that case, shows an error:
+
+```sh
+$ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+Connected
+No device found at id: 1.
+Temperature: 27.0
+Humidity: 45.6
+The ID of the sensor is 2.
+The baudrate of the sensor is 9600.
+Do you want to change the sensor ID or baudrate?: baudrate
+Enter a new baudrate - 9600, 14400 or 19200: pesho
+Invalid input! Enter a valid baudrate - 9600, 14400 or 19200.
+Do you want to change the sensor ID?: no
 $ _
 ```
 
@@ -290,6 +337,21 @@ $ _
 
 ```sh
 $ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
-
+Connected
+No device found at id: 1.
+Temperature: 27.0
+Humidity: 44.5
+The ID of the sensor is 2.
+The baudrate of the sensor is 9600.
+Do you want to change the sensor ID or baudrate?: id
+Enter a new ID 1 ~ 247: 3
+WriteRegisterResponse 257 => 3
+Sensor ID changed.
+Do you want to change the sensor baudrate?: yes
+Enter a new baudrate - 9600, 14400 or 19200: 14400
+WriteRegisterResponse 258 => 14400
+Sensor baudrate changed.
+Ready...
+Please do power cycle for the device.
 $ _
 ```
