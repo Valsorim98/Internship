@@ -298,8 +298,11 @@ def config_device():
             # Changes ID.
             if answer == "id":
                 input_id = input("Enter a new ID 1 ~ 247: ")
-                new_id = int(input_id)
-                state = change_sensor_id(device_configuration[0], new_id)
+                if input_id.isalpha():
+                    print("Invalid input! Enter a number 1 ~ 247.")
+                if input_id.isdigit():
+                    new_id = int(input_id)
+                    state = change_sensor_id(device_configuration[0], new_id)
                 if state == True:
                     print("Sensor ID changed.")
                 # If the user wants to also change the baudrate.
@@ -308,8 +311,11 @@ def config_device():
                 # Changes baudrate.
                 if answer == "yes":
                     input_bd = input("Enter a new baudrate - 9600, 14400 or 19200: ")
-                    new_baudrate = int(input_bd)
-                    state = change_sensor_baudrate(device_configuration[0], new_baudrate)
+                    if input_bd.isalpha():
+                        print("Invalid input! Enter a valid baudrate - 9600, 14400 or 19200.")
+                    if input_bd.isdigit():
+                        new_baudrate = int(input_bd)
+                        state = change_sensor_baudrate(device_configuration[0], new_baudrate)
                     if state == True:
                         print("Sensor baudrate changed.")
                         print("Ready...")
@@ -329,8 +335,11 @@ def config_device():
             # Changes baudrate.
             if answer == "baudrate":
                 input_bd = input("Enter a new baudrate - 9600, 14400 or 19200: ")
-                new_baudrate = int(input_bd)
-                state = change_sensor_baudrate(device_configuration[0], new_baudrate)
+                if input_bd.isalpha():
+                    print("Invalid input! Enter a valid baudrate - 9600, 14400 or 19200.")
+                if input_bd.isdigit():
+                    new_baudrate = int(input_bd)
+                    state = change_sensor_baudrate(device_configuration[0], new_baudrate)
                 if state == True:
                     print("Sensor baudrate changed.")
                 answer = input("Do you want to change the sensor ID?: ")
@@ -338,8 +347,11 @@ def config_device():
                 # Changes ID.
                 if answer == "yes":
                     input_id = input("Enter a new ID 1 ~ 247: ")
-                    new_id = int(input_id)
-                    state = change_sensor_id(device_configuration[0], new_id)
+                    if input_id.isalpha():
+                        print("Invalid input! Enter a number 1 ~ 247.")
+                    if input_id.isdigit():
+                        new_id = int(input_id)
+                        state = change_sensor_id(device_configuration[0], new_id)
                     if state == True:
                         print("Sensor ID changed")
                         print("Ready...")
