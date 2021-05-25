@@ -7,6 +7,7 @@ import cv2  # Read image/video input
 from pyzbar.pyzbar import decode    # Read barcode
 from pyzbar import pyzbar
 import numpy as np
+from struct import pack, unpack
 import time
 
 client = None
@@ -55,6 +56,24 @@ def read_humidity(id):
     print(f"Humidity: {humidity}")
 
     return humidity
+
+def read_voltage(unit):
+    """Function to read the voltage.
+    """
+
+    response = client.read_input_registers(
+    address=0,
+    count=2,
+    unit=unit)
+
+    # Pack the response to bytes from the registers
+    response_bytes = pack("<HH", response.registers[1], response.registers[0])
+    # Unpack the response as a float
+    response_float = unpack("f", response_bytes)
+    voltage = response_float[0]
+
+    print(f"Voltage: {round(voltage, 2)}")
+    return round(voltage, 2)
 
 def change_sensor_id(id, new_id):
     """Function to change the device id.
@@ -217,8 +236,8 @@ def decode_barcode():
             print("Barcode type: {}; content: {}".format(barcode.type, barcode_data))
 
             # Hardcode value for the test.
-            # if barcode_data == "74897":
-            #     barcode_data = "Donkger/XY-MD02/9600/2"
+            if barcode_data == "74897":
+                barcode_data = "Donkger/XY-MD02/9600/2"
 
             # Trim leading and trailing whitespaces in the string.
             barcode_data = barcode_data.replace(" ", "")
@@ -254,7 +273,7 @@ def config_device():
     # For connection with the sensor
     if device == "sensor":
 
-        # Create a connection with the device.
+        # Create a connection with the sensor.
         client = ModbusClient(method="rtu", port="COM3",
         timeout=1, stopbits=1, bytesize=8,
         parity="N", baudrate=device_configuration[1])
@@ -289,7 +308,7 @@ def config_device():
                 except Exception as e:
                     print(f"No device found at id: {index}.")
 
-            # User input - id/baudrate/no
+            # User input - id/baudrate/no.
             answer = input("Do you want to change the sensor ID or baudrate?: ")
 
             if answer != "id" and answer != "baudrate" and answer != "no":
@@ -375,11 +394,55 @@ def config_device():
 
     # For connection with the power analyzer
     if device == "power_analyzer":
-        pass
+
+        # Create a connection with the power analyzer.
+        client = ModbusClient(method="rtu", port="COM3",
+        timeout=1, stopbits=1, bytesize=8,
+        parity="N", baudrate=device_configuration[1])
+        connection = client.connect()
+
+        if connection:
+            print("Connected")
+        else:
+            print("No connection")
+            return
+
+        time_to_stop = False
+        stop_for_cycle = False
+        current_id = -1
+
+        # While time_to_stop is not False to identify and change device id and baudrate.
+        while not time_to_stop:
+
+            # Identify the device.
+            for index in range(1, 248):
+                if stop_for_cycle == True:
+                    break
+                try:
+                    read_voltage(index)
+                    current_id = index
+                    print(f"The ID of the sensor is {current_id}.")
+                    print("The baudrate of the sensor is {}.".format(device_configuration[1]))
+                    stop_for_cycle = True
+                    break
+
+                except Exception as e:
+                    print(f"No device found at id: {index}.")
 
     # For connetion with the white island
     if device == "white_island":
-        pass
+
+        # Create a connection with the white island.
+        client = ModbusClient(method="rtu", port="COM3",
+        timeout=1, stopbits=1, bytesize=8,
+        parity="N", baudrate=device_configuration[1])
+        connection = client.connect()
+
+        if connection:
+            print("Connected")
+        else:
+            print("No connection")
+            return
 
 def main():
     """Main function.
