@@ -632,3 +632,19 @@ def change_device_id(current_id, new_id):
 * Merged Task7 with Task9 in a new project - barcode_decode_XY-MD02.
 
 * Created documentation for Task9 (video_read_barcode) and barcode_decode_XY-MD02.
+
+> # April 20:
+
+* Created a program in configure_from_barcode.py in device_factory folder to decode a given barcode from live video and read and configure from/to the device that was read.
+
+> # April 21:
+
+* Process the barcode data string, identify the connected device, check for valid user inputs and if the user wants to configure the sensor's ID and baudrate.
+
+> # April 25:
+
+* Add function to read the voltage from the power analyzer in configure_from_barcode.py project in device factory.
+
+* Created gui_config.py for a new project. Create a GUI for the user to work with and to read and configure the connected device.
+
+* Created a config.ini file with default values for ID, baudrate and port for the devices.
