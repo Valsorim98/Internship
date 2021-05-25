@@ -247,7 +247,7 @@ def decode_barcode():
 * If you just want to read the temperature and humidity from the device:
 
 ```sh
-$ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+$ Barcode type: CODE128; content: Donkger/XY-MD02/9600/2
 Connected
 No device found at id: 1.
 Temperature: 24.5
@@ -261,7 +261,7 @@ $ _
 * If you want to change the ID to 3:
 
 ```sh
-$ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+$ Barcode type: CODE128; content: Donkger/XY-MD02/9600/2
 Connected
 No device found at id: 1.
 Temperature: 24.5
@@ -281,7 +281,7 @@ $ _
 If you try to give an invalid ID - "5000" in that case, shows an error:
 
 ```sh
-$ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+$ Barcode type: CODE128; content: Donkger/XY-MD02/9600/2
 Connected
 No device found at id: 1.
 No device found at id: 2.
@@ -299,7 +299,7 @@ $ _
 * If you want to change the baudrate to 14400:
 
 ```sh
-$ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+$ Barcode type: CODE128; content: Donkger/XY-MD02/9600/2
 Connected
 No device found at id: 1.
 Temperature: 26.6
@@ -319,7 +319,7 @@ $ _
 If you try to give an invalid baudrate - "pesho" in that case, shows an error:
 
 ```sh
-$ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+$ Barcode type: CODE128; content: Donkger/XY-MD02/9600/2
 Connected
 No device found at id: 1.
 Temperature: 27.0
@@ -336,7 +336,7 @@ $ _
 * If you want to change ID and baudrate:
 
 ```sh
-$ Barcode type: Code-128; content: Donkger/XY-MD02/9600/2
+$ Barcode type: CODE128; content: Donkger/XY-MD02/9600/2
 Connected
 No device found at id: 1.
 Temperature: 27.0
