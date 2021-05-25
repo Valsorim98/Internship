@@ -6,6 +6,7 @@ from tkinter import filedialog, Text
 import pymodbus
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 import os
+import configparser
 
 client = None
 """Client instance for modbus master.
@@ -79,6 +80,22 @@ def main():
     else:
         print("No connection")
         return
+
+    # Change directory
+    config_path = os.path.join(
+            os.getcwd(),
+            os.path.dirname(__file__),
+            "config.ini")
+
+    # Read config.ini file.
+    config = configparser.ConfigParser()
+    configFilePath = config_path
+    config.read(configFilePath)
+
+    # Get ID, baudrate and port values.
+    power_analyzer_id = config['Power_analyzer']['id']
+    power_analyzer_bd = config['Power_analyzer']['baudrate']
+    power_analyzer_port = config['Power_analyzer']['port']
 
     label = tk.Label(text="Which device do you want to configure?", fg="white", bg="#A37CF7")
     label.pack()
