@@ -1,6 +1,6 @@
 > # Documentation for device_factory project:
 
-* The project runs from main function in main.py.
+* The project runs from main function in configure_from_barcode.py.
 
 > Environment:
 
