@@ -26,12 +26,35 @@ def read_coils(unit, baud_value):
 
     print(response.bits[:4])
 
-def change_device_id_bd(current_id, new_id, new_baudrate):
-    """Function to change the device id and baudrate.
+def change_device_id(current_id, new_id):
+    """Function to change the device id.
 
     Args:
         current_id (int): Current device id.
-        new_id (int): Set new device id.
+        new_id(int): Set new device id.
+
+    Returns:
+        bool : True if successful, else False.
+    """
+
+    global client
+
+    state = False
+
+    # Change device ID.
+    # ATTENTION: register address 1 changes the ID, mistake in the documentation(2)!
+    response = client.write_register(address=1, value=6, unit=0)
+    print(response)
+
+    state = True
+
+    return state
+
+def change_device_bd(current_id, new_baudrate):
+    """Function to change the device baudrate.
+
+    Args:
+        current_id (int): Current device id.
         new_baudrate(int): Set new device baudrate.
 
     Returns:
@@ -42,10 +65,8 @@ def change_device_id_bd(current_id, new_id, new_baudrate):
 
     state = False
 
-    # ADD CHANGE TO DEVICE ID HERE
-
     # Write device baudrate.
-    # ATTENTION: address 2 changes the baudrate, mistake in the documentation(3)!
+    # ATTENTION: register address 2 changes the baudrate, mistake in the documentation(3)!
     response = client.write_register(address=2, value=4, unit=0)
     print(response)
 
@@ -102,7 +123,8 @@ def main():
     # While time_to_stop is not False to identify and change device id.
     while not time_to_stop:
         current_id_bd = identify_device_id_bd()
-        state = change_device_id_bd(current_id_bd[0], new_id=4, new_baudrate=4)
+        state = change_device_id(current_id_bd[0], new_id=6)
+        state = change_device_bd(current_id_bd[0], new_baudrate=4)
 
         if state == True:
             print("Ready...")
