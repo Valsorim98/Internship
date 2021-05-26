@@ -648,3 +648,9 @@ def change_device_id(current_id, new_id):
 * Created gui_config.py for a new project. Create a GUI for the user to work with and to read and configure the connected device.
 
 * Created a config.ini file with default values for ID, baudrate and port for the devices.
+
+> # April 26:
+
+* Added functions to identify and change the sensor's ID and baudrate, read the config file and pass device's id and baudrate as arguments for new ID and baudrate.
+
+* Refactored the project in configure_HHC-R4I4D. Changed the ID to 6 and baudrate to 9600 of the white island.
