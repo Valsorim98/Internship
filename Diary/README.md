@@ -654,3 +654,17 @@ def change_device_id(current_id, new_id):
 * Added functions to identify and change the sensor's ID and baudrate, read the config file and pass device's id and baudrate as arguments for new ID and baudrate.
 
 * Refactored the project in configure_HHC-R4I4D. Changed the ID to 6 and baudrate to 9600 of the white island.
+
+> # April 27:
+
+* Added functions to read the voltage, identify and change the ID and baudrate of the power analyzer.
+
+* Added functions to read the coils, identify and change the ID and baudrate of the white island.
+
+* Updated the config file in gui_configure project.
+
+* Pass the COM port that was read from the config file as argument to the functions for reading from the devices.
+
+* Centralise the tkinter window on the screen.
+
+* Added a function to display a pop up window when a device is configured from the GUI.
