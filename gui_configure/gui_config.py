@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 
 import tkinter as tk
-from tkinter import filedialog, Text
+from tkinter import messagebox
 import pymodbus
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 import os
@@ -14,7 +14,7 @@ client = None
 """Client instance for modbus master.
 """
 
-def read_temperature(unit, baud_value):
+def read_temperature(unit, baud_value, port):
     """Function to read the temperature from a sensor.
 
     Args:
@@ -27,7 +27,7 @@ def read_temperature(unit, baud_value):
     global client
 
     # Make a connection with the device.
-    client = ModbusClient(method="rtu", port="COM3",
+    client = ModbusClient(method="rtu", port=port,
     timeout=0.4, stopbits=1, bytesize=8,
     parity="N", baudrate=baud_value)
     connection = client.connect()
@@ -64,14 +64,14 @@ def read_humidity(unit):
 
     return humidity
 
-def read_voltage(unit, baud_value):
+def read_voltage(unit, baud_value, port):
     """Function to read the voltage from the power analyzer.
     """
 
     global client
 
     # Make a connection with the device.
-    client = ModbusClient(method="rtu", port="COM3",
+    client = ModbusClient(method="rtu", port=port,
     timeout=0.4, stopbits=1, bytesize=8,
     parity="N", baudrate=baud_value)
     connection = client.connect()
@@ -91,7 +91,7 @@ def read_voltage(unit, baud_value):
 
     return round(voltage, 2)
 
-def read_coils(unit, baud_value):
+def read_coils(unit, baud_value, port):
     """Function to read the coils.
 
     Args:
@@ -100,8 +100,8 @@ def read_coils(unit, baud_value):
 
     global client
 
-    # Make a connection
-    client = ModbusClient(method="rtu", port="COM3",
+    # Make a connection.
+    client = ModbusClient(method="rtu", port=port,
     timeout=0.5, stopbits=1, bytesize=8,
     parity="N", baudrate=baud_value)
     connection = client.connect()
@@ -149,7 +149,7 @@ def change_sensor_id_bd(current_id, new_id, new_baudrate):
 
     return state
 
-def identify_sensor_id_bd(begin_id=1, end_id=247):
+def identify_sensor_id_bd(begin_id, end_id, port):
     """Function to identify the sensor ID and baudrate.
 
     Args:
@@ -173,7 +173,7 @@ def identify_sensor_id_bd(begin_id=1, end_id=247):
             break
         for baud_value in baudrate_list:
             try:
-                read_temperature(index, baud_value)
+                read_temperature(index, baud_value, port)
                 read_humidity(index)
                 current_id = index
                 current_bd = baud_value
@@ -251,7 +251,7 @@ def change_power_analyzer_id_bd(current_id, new_id, new_baudrate):
 
     return state
 
-def identify_power_analyzer_id_bd(begin_id=1, end_id=247):
+def identify_power_analyzer_id_bd(begin_id, end_id, port):
     """Function to identify the power analyzer ID and baudrate.
 
     Args:
@@ -275,7 +275,7 @@ def identify_power_analyzer_id_bd(begin_id=1, end_id=247):
             break
         for baud_value in baudrate_list:
             try:
-                read_voltage(index, baud_value)
+                read_voltage(index, baud_value, port)
                 current_id = index
                 current_bd = baud_value
                 current_id_bd.append(current_id)
@@ -330,7 +330,7 @@ def change_white_island_id_bd(current_id, new_id, new_baudrate):
 
     return state
 
-def identify_white_island_id_bd(begin_id=1, end_id=247):
+def identify_white_island_id_bd(begin_id, end_id, port):
     """Function to identify the white island ID and baudrate.
 
     Args:
@@ -354,7 +354,7 @@ def identify_white_island_id_bd(begin_id=1, end_id=247):
             break
         for baud_value in baudrate_list:
             try:
-                read_coils(index, baud_value)
+                read_coils(index, baud_value, port)
                 current_id = index
                 current_bd = baud_value
                 current_id_bd.append(current_id)
@@ -374,11 +374,25 @@ def main():
 
     # Create the window for GUI.
     root = tk.Tk()
+
     # Set window name.
     root.title("Configuration")
+
+    # Prevents resizing.
+    root.resizable(False, False)
+
     # Set window size.
-    root.geometry("500x500")
-    # Set window background.
+    root_width = 500
+    root_height = 500
+
+    # Place the window in the center of the screen.
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x_cordinate = int((screen_width/2) - (root_width/2))
+    y_cordinate = int((screen_height/2) - (root_height/2))
+    root.geometry("{}x{}+{}+{}".format(root_width, root_height, x_cordinate, y_cordinate))
+
+    # Set window background colour.
     root.configure(bg='#A37CF7')
 
     # Create a connection with the device.
@@ -440,28 +454,31 @@ def main():
 
     # Button to configure the power analyzer.
     power_analyzer = tk.Button(text="Power analyzer", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_power_analyzer_id_bd(), change_power_analyzer_id_bd(2, power_analyzer_id, power_analyzer_bd)])
+            command=lambda :[identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port), change_power_analyzer_id_bd(2, power_analyzer_id, power_analyzer_bd)])
     power_analyzer.pack()
 
     # Button to configure the upper sensor.
     upper_sensor = tk.Button(text="Upper sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(), change_sensor_id_bd(3, upper_sensor_id, upper_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(1, 247, str_upper_sensor_port), change_sensor_id_bd(3, upper_sensor_id, upper_sensor_bd)])
     upper_sensor.pack()
 
     # Button to configure the middle sensor.
     middle_sensor = tk.Button(text="Middle sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(), change_sensor_id_bd(4, middle_sensor_id, middle_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(1, 247, str_middle_sensor_port), change_sensor_id_bd(4, middle_sensor_id, middle_sensor_bd)])
     middle_sensor.pack()
 
     # Button to configure the lower sensor.
     lower_sensor = tk.Button(text="Lower sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(), change_sensor_id_bd(5, lower_sensor_id, lower_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(1, 247, str_lower_sensor_port), change_sensor_id_bd(5, lower_sensor_id, lower_sensor_bd)])
     lower_sensor.pack()
 
     # Button to configure the white island.
     white_island = tk.Button(text="White island", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_white_island_id_bd(), change_white_island_id_bd(6, white_island_id, white_island_bd)])
+            command=lambda :[identify_white_island_id_bd(1, 247, str_white_island_port), change_white_island_id_bd(6, white_island_id, white_island_bd)])
     white_island.pack()
+
+    label = tk.Label(text="Configuration done!", fg="white", bg="#A37CF7")
+    label.pack()
 
     root.mainloop()
 
