@@ -146,6 +146,8 @@ def change_sensor_id_bd(current_id, new_id, new_baudrate):
 
     if state:
         print("Please do power cycle for the device.")
+        # Shows a pop up.
+        onClick()
 
     return state
 
@@ -247,6 +249,8 @@ def change_power_analyzer_id_bd(current_id, new_id, new_baudrate):
         state = True
 
     if state:
+        # Shows a pop up.
+        onClick()
         print("Please do power cycle for the device.")
 
     return state
@@ -326,6 +330,8 @@ def change_white_island_id_bd(current_id, new_id, new_baudrate):
         state = True
 
     if state:
+        # Shows a pop up.
+        onClick()
         print("Please do a power cycle for the device.")
 
     return state
@@ -368,6 +374,11 @@ def identify_white_island_id_bd(begin_id, end_id, port):
 
     return current_id_bd
 
+def onClick():
+
+    # Shows a pop up window when the configuration is done.
+    messagebox.showinfo('Done', 'Configuration complete.')
+
 def main():
 
     global client
@@ -394,18 +405,6 @@ def main():
 
     # Set window background colour.
     root.configure(bg='#A37CF7')
-
-    # Create a connection with the device.
-    # client = ModbusClient(method="rtu", port="COM3",
-    # timeout=0.4, stopbits=1, bytesize=8,
-    # parity="N", baudrate=9600)
-    # connection = client.connect()
-
-    # if connection:
-    #     print("Connected")
-    # else:
-    #     print("No connection")
-    #     return
 
     # Change directory
     config_path = os.path.join(
@@ -454,31 +453,33 @@ def main():
 
     # Button to configure the power analyzer.
     power_analyzer = tk.Button(text="Power analyzer", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port), change_power_analyzer_id_bd(2, power_analyzer_id, power_analyzer_bd)])
+            command=lambda :[identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port),
+                            change_power_analyzer_id_bd(2, power_analyzer_id, power_analyzer_bd)])
     power_analyzer.pack()
 
     # Button to configure the upper sensor.
     upper_sensor = tk.Button(text="Upper sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(1, 247, str_upper_sensor_port), change_sensor_id_bd(3, upper_sensor_id, upper_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(1, 247, str_upper_sensor_port),
+                            change_sensor_id_bd(3, upper_sensor_id, upper_sensor_bd)])
     upper_sensor.pack()
 
     # Button to configure the middle sensor.
     middle_sensor = tk.Button(text="Middle sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(1, 247, str_middle_sensor_port), change_sensor_id_bd(4, middle_sensor_id, middle_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(1, 247, str_middle_sensor_port),
+                            change_sensor_id_bd(4, middle_sensor_id, middle_sensor_bd)])
     middle_sensor.pack()
 
     # Button to configure the lower sensor.
     lower_sensor = tk.Button(text="Lower sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(1, 247, str_lower_sensor_port), change_sensor_id_bd(5, lower_sensor_id, lower_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(1, 247, str_lower_sensor_port),
+                            change_sensor_id_bd(5, lower_sensor_id, lower_sensor_bd)])
     lower_sensor.pack()
 
     # Button to configure the white island.
     white_island = tk.Button(text="White island", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_white_island_id_bd(1, 247, str_white_island_port), change_white_island_id_bd(6, white_island_id, white_island_bd)])
+            command=lambda :[identify_white_island_id_bd(1, 247, str_white_island_port),
+                            change_white_island_id_bd(6, white_island_id, white_island_bd)])
     white_island.pack()
-
-    label = tk.Label(text="Configuration done!", fg="white", bg="#A37CF7")
-    label.pack()
 
     root.mainloop()
 
