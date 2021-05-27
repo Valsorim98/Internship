@@ -8,13 +8,14 @@ from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 import os
 import configparser
 import argparse
+from struct import pack, unpack
 
 client = None
 """Client instance for modbus master.
 """
 
 def read_temperature(unit, baud_value):
-    """Function to read the temperature.
+    """Function to read the temperature from a sensor.
 
     Args:
         unit (int): Unit id.
@@ -25,6 +26,7 @@ def read_temperature(unit, baud_value):
 
     global client
 
+    # Make a connection with the device.
     client = ModbusClient(method="rtu", port="COM3",
     timeout=0.4, stopbits=1, bytesize=8,
     parity="N", baudrate=baud_value)
@@ -41,7 +43,7 @@ def read_temperature(unit, baud_value):
     return temperature
 
 def read_humidity(unit):
-    """Function to read the humidity.
+    """Function to read the humidity from a sensor.
 
     Args:
         unit (int): Unit id.
@@ -62,17 +64,44 @@ def read_humidity(unit):
 
     return humidity
 
+def read_voltage(unit, baud_value):
+    """Function to read the voltage from the power analyzer.
+    """
+
+    global client
+
+    # Make a connection with the device.
+    client = ModbusClient(method="rtu", port="COM3",
+    timeout=0.4, stopbits=1, bytesize=8,
+    parity="N", baudrate=baud_value)
+    connection = client.connect()
+
+    response = client.read_input_registers(
+    address=0,
+    count=2,
+    unit=unit)
+
+    # Pack the response to bytes from the registers
+    response_bytes = pack("<HH", response.registers[1], response.registers[0])
+    # Unpack the response as a float
+    response_float = unpack("f", response_bytes)
+    voltage = response_float[0]
+
+    print(f"Voltage: {round(voltage, 2)}")
+
+    return round(voltage, 2)
+
 def change_sensor_id_bd(current_id, new_id, new_baudrate):
-    """Function to change the device id and baudrate.
+    """Function to change the sensor id and baudrate.
 
     Args:
-        current_id (int): Current device id.
-        new_id (int): Set new device id.
+        current_id (int): Current sensor id.
+        new_id (int): Set new sensor id.
 
     Returns:
         bool : True if successful, else False.
     """
-    
+
     global client
 
     state = False
@@ -98,15 +127,15 @@ def change_sensor_id_bd(current_id, new_id, new_baudrate):
 
     return state
 
-def identify_device_id_bd(begin_id=1, end_id=247):
-    """Function to identify the device ID and baudrate.
+def identify_sensor_id_bd(begin_id=1, end_id=247):
+    """Function to identify the sensor ID and baudrate.
 
     Args:
         begin_id (int): The ID to start searching from.
         end_id (int): The last ID to search to.
 
     Returns:
-        list: List containing the current ID and baudrate of the device.
+        list: List containing the current ID and baudrate of the sensor.
     """
 
     global client
@@ -137,6 +166,102 @@ def identify_device_id_bd(begin_id=1, end_id=247):
 
     return current_id_bd
 
+def change_power_analyzer_id_bd(current_id, new_id, new_baudrate):
+    """Function to change the power analyzer ID and baudrate.
+
+    Args:
+        current_id (int): Current power analyzer id.
+        new_id (int): Set new power analyzer id.
+        new_baudrate(int): Set new power analyzer baudrate.
+
+    Returns:
+        bool : True if successful, else False.
+    """
+
+    global client
+
+    state = False
+
+    # CHANGING ID:
+    # Pack new_id from float to bytes.
+    byte_value = pack("f", new_id)
+
+    # Unpack bytes to binary.
+    unpack_value = unpack("<HH", byte_value)
+
+    # Append the lower number on last position for little-endian.
+    regs_value = []
+    regs_value.append(unpack_value[1])
+    regs_value.append(unpack_value[0])
+
+    # Write registers 20,21 with the float number to change the ID.
+    # Only values from 1 to 247 can be passed.
+    if new_id < 1 or new_id > 247:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 247.')
+    else:
+        response = client.write_registers(20, regs_value, unit=current_id)
+        print(response)
+        state = True
+
+    # CHANGING BAUDRATE:
+    # Pack new_baudrate from float to bytes.
+    baudrate_byte_value = pack("f", new_baudrate)
+
+    # Unpack bytes to binary.
+    baudrate_unpack_value = unpack("<HH", baudrate_byte_value)
+
+    # Append the lower number on last position for little-endian.
+    baudrate_regs_value = []
+    baudrate_regs_value.append(baudrate_unpack_value[1])
+    baudrate_regs_value.append(baudrate_unpack_value[0])
+
+    # Write registers 28,29 with the float number to change the baudrate.
+    response = client.write_registers(28, baudrate_regs_value, unit=current_id)
+    print(response)
+
+    if state:
+        print("Please do power cycle for the device.")
+
+    return state
+
+def identify_power_analyzer_id_bd(begin_id=1, end_id=247):
+    """Function to identify the power analyzer ID and baudrate.
+
+    Args:
+        begin_id (int): The ID to start searching from.
+        end_id (int): The last ID to search to.
+
+    Returns:
+        list: List containing the current ID and baudrate of the power analyzer.
+    """
+
+    global client
+
+    current_id = -1
+    baudrate_list = [1200, 2400, 4800, 9600]
+    current_id_bd = []
+    time_to_stop = False
+
+    # for loop has range from 1 to 247, because of modbus specification.
+    for index in range(begin_id, end_id+1):
+        if time_to_stop == True:
+            break
+        for baud_value in baudrate_list:
+            try:
+                read_voltage(index, baud_value)
+                current_id = index
+                current_bd = baud_value
+                current_id_bd.append(current_id)
+                current_id_bd.append(current_bd)
+                time_to_stop = True
+                print(current_id_bd)
+                break
+
+            except Exception as e:
+                print(f"No device found at id: {index} baudrate: {baud_value}.")
+
+    return current_id_bd
+
 def main():
 
     global client
@@ -149,10 +274,6 @@ def main():
     root.geometry("500x500")
     # Set window background.
     root.configure(bg='#A37CF7')
-
-    # Create a frame.
-    # frame = tk.Frame(root)
-    # frame.pack()
 
     # Create a connection with the device.
     # client = ModbusClient(method="rtu", port="COM3",
@@ -179,7 +300,7 @@ def main():
 
     # Get ID, baudrate and port values for every device.
     str_power_analyzer_id = config['Power_analyzer']['id']
-    str_power_analyzer_bd = config['Power_analyzer']['baudrate']
+    str_power_analyzer_bd = config['Power_analyzer']['for_9600_baudrate']
     str_power_analyzer_port = config['Power_analyzer']['port']
     power_analyzer_id = int(str_power_analyzer_id)
     power_analyzer_bd = int(str_power_analyzer_bd)
@@ -212,32 +333,28 @@ def main():
     label.pack()
 
     # Button to configure the power analyzer.
-    power_analyzer = tk.Button(text="Power analyzer", width=15, height=2, fg="white", bg="#6DA536")
+    power_analyzer = tk.Button(text="Power analyzer", width=15, height=2, fg="white", bg="#6DA536",
+            command=lambda :[identify_power_analyzer_id_bd(), change_power_analyzer_id_bd(2, power_analyzer_id, power_analyzer_bd)])
     power_analyzer.pack()
 
     # Button to configure the upper sensor.
     upper_sensor = tk.Button(text="Upper sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_device_id_bd(), change_sensor_id_bd(3, upper_sensor_id, upper_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(), change_sensor_id_bd(3, upper_sensor_id, upper_sensor_bd)])
     upper_sensor.pack()
 
     # Button to configure the middle sensor.
     middle_sensor = tk.Button(text="Middle sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_device_id_bd(), change_sensor_id_bd(4, middle_sensor_id, middle_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(), change_sensor_id_bd(4, middle_sensor_id, middle_sensor_bd)])
     middle_sensor.pack()
 
     # Button to configure the lower sensor.
     lower_sensor = tk.Button(text="Lower sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_device_id_bd(), change_sensor_id_bd(5, lower_sensor_id, lower_sensor_bd)])
+            command=lambda :[identify_sensor_id_bd(), change_sensor_id_bd(5, lower_sensor_id, lower_sensor_bd)])
     lower_sensor.pack()
 
     # Button to configure the white island.
     white_island = tk.Button(text="White island", width=15, height=2, fg="white", bg="#6DA536")
     white_island.pack()
-
-    # Button to read the temperature and humidity.
-    temp_humidity = tk.Button(text="Show temperature and humidity", padx=10, pady=5, fg="white",
-                            bg="#6DA536", command=lambda :[read_temperature(upper_sensor_id),read_humidity(upper_sensor_id)])
-    temp_humidity.pack()
 
     root.mainloop()
 
