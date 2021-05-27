@@ -91,6 +91,28 @@ def read_voltage(unit, baud_value):
 
     return round(voltage, 2)
 
+def read_coils(unit, baud_value):
+    """Function to read the coils.
+
+    Args:
+        unit (int): The ID of the device.
+    """
+
+    global client
+
+    # Make a connection
+    client = ModbusClient(method="rtu", port="COM3",
+    timeout=0.5, stopbits=1, bytesize=8,
+    parity="N", baudrate=baud_value)
+    connection = client.connect()
+
+    response = client.read_coils(
+        address=16,
+        count=4,
+        unit=unit)
+
+    print(response.bits[:4])
+
 def change_sensor_id_bd(current_id, new_id, new_baudrate):
     """Function to change the sensor id and baudrate.
 
@@ -216,8 +238,13 @@ def change_power_analyzer_id_bd(current_id, new_id, new_baudrate):
     baudrate_regs_value.append(baudrate_unpack_value[0])
 
     # Write registers 28,29 with the float number to change the baudrate.
-    response = client.write_registers(28, baudrate_regs_value, unit=current_id)
-    print(response)
+    # Only values equal to 2400, 4800, 9600 or 1200 baudrate can be passed.
+    if new_baudrate != 0 and new_baudrate != 1 and new_baudrate != 2 and new_baudrate != 5:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 0, 1, 2 or 5.')
+    else:
+        response = client.write_registers(28, baudrate_regs_value, unit=current_id)
+        print(response)
+        state = True
 
     if state:
         print("Please do power cycle for the device.")
@@ -249,6 +276,85 @@ def identify_power_analyzer_id_bd(begin_id=1, end_id=247):
         for baud_value in baudrate_list:
             try:
                 read_voltage(index, baud_value)
+                current_id = index
+                current_bd = baud_value
+                current_id_bd.append(current_id)
+                current_id_bd.append(current_bd)
+                time_to_stop = True
+                print(current_id_bd)
+                break
+
+            except Exception as e:
+                print(f"No device found at id: {index} baudrate: {baud_value}.")
+
+    return current_id_bd
+
+def change_white_island_id_bd(current_id, new_id, new_baudrate):
+    """Function to change the white island id and baudrate.
+
+    Args:
+        current_id (int): Current device id.
+        new_id(int): Set new device id.
+        new_baudrate(int): Set new device baudrate.
+
+    Returns:
+        bool : True if successful, else False.
+    """
+
+    global client
+
+    state = False
+
+    # Change device ID.
+    # ATTENTION: register address 1 changes the ID, mistake in the documentation(2)!
+    # Only values from 1 to 247 can be passed.
+    if new_id < 1 or new_id > 247:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 247.')
+    else:
+        response = client.write_register(address=1, value=6, unit=0)
+        print(response)
+        state = True
+
+    # Write device baudrate.
+    # ATTENTION: register address 2 changes the baudrate, mistake in the documentation(3)!
+    # Only values equal to 9600, 14400 or 19200 can be passed.
+    if new_baudrate != 1 and new_baudrate != 2 and new_baudrate != 3 and new_baudrate != 4 and new_baudrate != 5:
+        raise argparse.ArgumentTypeError('Invalid value! Insert 1, 2, 3, 4 or 5.')
+    else:
+        response = client.write_register(address=2, value=4, unit=0)
+        print(response)
+        state = True
+
+    if state:
+        print("Please do a power cycle for the device.")
+
+    return state
+
+def identify_white_island_id_bd(begin_id=1, end_id=247):
+    """Function to identify the white island ID and baudrate.
+
+    Args:
+        begin_id (int): The ID to start searching from.
+        end_id (int): The last ID to search to.
+
+    Returns:
+        list: List containing the current ID and baudrate of the white island.
+    """
+
+    global client
+
+    current_id = -1
+    baudrate_list = [1200, 2400, 4800, 9600, 19200]
+    current_id_bd = []
+    time_to_stop = False
+
+    # for loop has range from 1 to 247, because of modbus specification.
+    for index in range(begin_id, end_id+1):
+        if time_to_stop == True:
+            break
+        for baud_value in baudrate_list:
+            try:
+                read_coils(index, baud_value)
                 current_id = index
                 current_bd = baud_value
                 current_id_bd.append(current_id)
@@ -324,7 +430,7 @@ def main():
     lower_sensor_bd = int(str_lower_sensor_bd)
 
     str_white_island_id = config['White_island']['id']
-    str_white_island_bd = config['White_island']['baudrate']
+    str_white_island_bd = config['White_island']['for_9600_baudrate']
     str_white_island_port = config['White_island']['port']
     white_island_id = int(str_white_island_id)
     white_island_bd = int(str_white_island_bd)
@@ -353,7 +459,8 @@ def main():
     lower_sensor.pack()
 
     # Button to configure the white island.
-    white_island = tk.Button(text="White island", width=15, height=2, fg="white", bg="#6DA536")
+    white_island = tk.Button(text="White island", width=15, height=2, fg="white", bg="#6DA536",
+            command=lambda :[identify_white_island_id_bd(), change_white_island_id_bd(6, white_island_id, white_island_bd)])
     white_island.pack()
 
     root.mainloop()
