@@ -1,6 +1,6 @@
 > # Documentation for gui_configure project:
 
-* The project runs from main function in gui_config.py.
+* The project runs from main function in main.py.
 
 > Environment:
 
@@ -26,6 +26,11 @@ pip install tk
 * configparser - install with command in cmd:
 ```py
 pip install configparser
+```
+
+* threading - install with command in cmd:
+```py
+pip install threaded
 ```
 
 > The program identifies and configures the connected device's ID and baudrate if the connected device matches the button for it. For example if you connected a power analyzer and try to configure it as a sensor you wont be able to. The program wont be able to identify and configure the connected device. But if you connected a power analyzer and try to configure it as a power analyzer it will work.
