@@ -18,8 +18,8 @@ config = None
 """Config instance of the read config file.
 """
 
-def read_temperature(unit, baud_value, port):
-    """Function to read the temperature from a sensor.
+def read_sensor_parameters(unit, baud_value, port):
+    """Function to read the temperature and humidity from a sensor.
 
     Args:
         unit (int): Unit id.
@@ -36,6 +36,7 @@ def read_temperature(unit, baud_value, port):
     parity="N", baudrate=baud_value)
     connection = client.connect()
 
+    # READ TEMPERATURE:
     response = client.read_input_registers(
         address=1,
         count=1,
@@ -44,20 +45,7 @@ def read_temperature(unit, baud_value, port):
     temperature = int(response.registers[0]) / 10
     print(f"Temperature: {temperature}")
 
-    return temperature
-
-def read_humidity(unit):
-    """Function to read the humidity from a sensor.
-
-    Args:
-        unit (int): Unit id.
-
-    Returns:
-        float: Returns humidity.
-    """
-
-    global client
-
+    # READ HUMIDITY:
     response = client.read_input_registers(
         address=2,
         count=1,
@@ -65,8 +53,6 @@ def read_humidity(unit):
 
     humidity = int(response.registers[0]) / 10
     print(f"Humidity: {humidity}")
-
-    return humidity
 
 def read_voltage(unit, baud_value, port):
     """Function to read the voltage from the power analyzer.
@@ -183,8 +169,7 @@ def identify_sensor_id_bd(begin_id, end_id, port):
         # Search for every baudrate value in the baudrate_list.
         for baud_value in baudrate_list:
             try:
-                read_temperature(index, baud_value, port)
-                read_humidity(index)
+                read_sensor_parameters(index, baud_value, port)
                 current_id = index
                 current_bd = baud_value
                 # Append the dictionary with id and baudrate.
@@ -498,9 +483,9 @@ def on_click_white_island():
     current_settings = identify_white_island_id_bd(1, 247, str_white_island_port)
     change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
 
-def main():
-
-    global client, config
+def create_gui():
+    """Function to create GUI form.
+    """
 
     # Create the window for GUI.
     root = tk.Tk()
@@ -524,17 +509,6 @@ def main():
 
     # Set window background colour.
     root.configure(bg='#A37CF7')
-
-    # Change directory
-    config_path = os.path.join(
-            os.getcwd(),
-            os.path.dirname(__file__),
-            "config.ini")
-
-    # Read config.ini file.
-    config = configparser.ConfigParser()
-    configFilePath = config_path
-    config.read(configFilePath)
 
     label = tk.Label(text="Which device do you want to configure?", fg="white", bg="#A37CF7")
     label.config(font=("Courier", 12))
@@ -596,6 +570,30 @@ def main():
     white_island.pack(pady=10)
 
     root.mainloop()
+
+def read_config():
+    """Function to read the config file.
+    """
+
+    global config
+
+    # Change directory
+    config_path = os.path.join(
+            os.getcwd(),
+            os.path.dirname(__file__),
+            "config.ini")
+
+    # Read config.ini file.
+    config = configparser.ConfigParser()
+    configFilePath = config_path
+    config.read(configFilePath)
+
+def main():
+    """Main function for the project.
+    """
+
+    read_config()
+    create_gui()
 
 if __name__ == "__main__":
     main()
