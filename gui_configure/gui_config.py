@@ -14,6 +14,10 @@ client = None
 """Client instance for modbus master.
 """
 
+config = None
+"""Config instance of the read config file.
+"""
+
 def read_temperature(unit, baud_value, port):
     """Function to read the temperature from a sensor.
 
@@ -147,7 +151,7 @@ def change_sensor_id_bd(current_id, new_id, new_baudrate):
     if state:
         print("Please do power cycle for the device.")
         # Shows a pop up.
-        onClick()
+        show_pop_up()
 
     return state
 
@@ -159,28 +163,33 @@ def identify_sensor_id_bd(begin_id, end_id, port):
         end_id (int): The last ID to search to.
 
     Returns:
-        list: List containing the current ID and baudrate of the sensor.
+        dict: Dict containing the current ID and baudrate of the sensor.
     """
 
     global client
 
     current_id = -1
     baudrate_list = [9600, 14400, 19200]
-    current_id_bd = []
+    current_id_bd = {}
     time_to_stop = False
 
     # for loop has range from 1 to 247, because of modbus specification.
     for index in range(begin_id, end_id+1):
+
+        # If the device ID and baudrate are found to stop.
         if time_to_stop == True:
             break
+
+        # Search for every baudrate value in the baudrate_list.
         for baud_value in baudrate_list:
             try:
                 read_temperature(index, baud_value, port)
                 read_humidity(index)
                 current_id = index
                 current_bd = baud_value
-                current_id_bd.append(current_id)
-                current_id_bd.append(current_bd)
+                # Append the dictionary with id and baudrate.
+                current_id_bd["id"] = current_id
+                current_id_bd["baudrate"] = current_bd
                 time_to_stop = True
                 print(current_id_bd)
                 break
@@ -249,9 +258,9 @@ def change_power_analyzer_id_bd(current_id, new_id, new_baudrate):
         state = True
 
     if state:
-        # Shows a pop up.
-        onClick()
         print("Please do power cycle for the device.")
+        # Shows a pop up.
+        show_pop_up()
 
     return state
 
@@ -263,27 +272,32 @@ def identify_power_analyzer_id_bd(begin_id, end_id, port):
         end_id (int): The last ID to search to.
 
     Returns:
-        list: List containing the current ID and baudrate of the power analyzer.
+        dict: Dict containing the current ID and baudrate of the power analyzer.
     """
 
     global client
 
     current_id = -1
     baudrate_list = [1200, 2400, 4800, 9600]
-    current_id_bd = []
+    current_id_bd = {}
     time_to_stop = False
 
     # for loop has range from 1 to 247, because of modbus specification.
     for index in range(begin_id, end_id+1):
+
+        # If the device ID and baudrate are found to stop.
         if time_to_stop == True:
             break
+
+        # Search for every baudrate value in the baudrate_list.
         for baud_value in baudrate_list:
             try:
                 read_voltage(index, baud_value, port)
                 current_id = index
                 current_bd = baud_value
-                current_id_bd.append(current_id)
-                current_id_bd.append(current_bd)
+                # Append the dictionary with id and baudrate.
+                current_id_bd["id"] = current_id
+                current_id_bd["baudrate"] = current_bd
                 time_to_stop = True
                 print(current_id_bd)
                 break
@@ -330,9 +344,9 @@ def change_white_island_id_bd(current_id, new_id, new_baudrate):
         state = True
 
     if state:
-        # Shows a pop up.
-        onClick()
         print("Please do a power cycle for the device.")
+        # Show a pop up.
+        show_pop_up()
 
     return state
 
@@ -344,27 +358,32 @@ def identify_white_island_id_bd(begin_id, end_id, port):
         end_id (int): The last ID to search to.
 
     Returns:
-        list: List containing the current ID and baudrate of the white island.
+        dict: Dict containing the current ID and baudrate of the white island.
     """
 
     global client
 
     current_id = -1
     baudrate_list = [1200, 2400, 4800, 9600, 19200]
-    current_id_bd = []
+    current_id_bd = {}
     time_to_stop = False
 
     # for loop has range from 1 to 247, because of modbus specification.
     for index in range(begin_id, end_id+1):
+
+        # If the device ID and baudrate are found to stop.
         if time_to_stop == True:
             break
+
+        # Search for every baudrate value in the baudrate_list.
         for baud_value in baudrate_list:
             try:
                 read_coils(index, baud_value, port)
                 current_id = index
                 current_bd = baud_value
-                current_id_bd.append(current_id)
-                current_id_bd.append(current_bd)
+                # Append the dictionary with id and baudrate.
+                current_id_bd["id"] = current_id
+                current_id_bd["baudrate"] = current_bd
                 time_to_stop = True
                 print(current_id_bd)
                 break
@@ -374,14 +393,114 @@ def identify_white_island_id_bd(begin_id, end_id, port):
 
     return current_id_bd
 
-def onClick():
+def show_pop_up():
 
     # Shows a pop up window when the configuration is done.
     messagebox.showinfo('Done', 'Configuration complete.')
 
+def on_click_power_analyzer():
+    """Function to call identify, change and show pop up functions on button click.
+    """
+
+    global config
+
+    if config == None:
+        return
+
+    # Get ID, baudrate and port values for the power analyzer.
+    str_power_analyzer_id = config['Power_analyzer']['id']
+    str_power_analyzer_bd = config['Power_analyzer']['for_9600_baudrate']
+    str_power_analyzer_port = config['Power_analyzer']['port']
+    power_analyzer_id = int(str_power_analyzer_id)
+    power_analyzer_bd = int(str_power_analyzer_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port)
+    change_power_analyzer_id_bd(current_settings["id"], power_analyzer_id, power_analyzer_bd)
+
+def on_click_upper_sensor():
+    """Function to call identify, change and show pop up functions on button click.
+    """
+
+    global config
+
+    if config == None:
+        return
+
+    # Get ID, baudrate and port values for the upper sensor.
+    str_upper_sensor_id = config['Upper_sensor']['id']
+    str_upper_sensor_bd = config['Upper_sensor']['baudrate']
+    str_upper_sensor_port = config['Upper_sensor']['port']
+    upper_sensor_id = int(str_upper_sensor_id)
+    upper_sensor_bd = int(str_upper_sensor_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_sensor_id_bd(1, 247, str_upper_sensor_port)
+    change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
+
+def on_click_middle_sensor():
+    """Function to call identify, change and show pop up functions on button click.
+    """
+
+    global config
+
+    if config == None:
+        return
+
+    # Get ID, baudrate and port values for the middle sensor.
+    str_middle_sensor_id = config['Middle_sensor']['id']
+    str_middle_sensor_bd = config['Middle_sensor']['baudrate']
+    str_middle_sensor_port = config['Middle_sensor']['port']
+    middle_sensor_id = int(str_middle_sensor_id)
+    middle_sensor_bd = int(str_middle_sensor_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_sensor_id_bd(1, 247, str_middle_sensor_port)
+    change_sensor_id_bd(current_settings["id"], middle_sensor_id, middle_sensor_bd)
+
+def on_click_lower_sensor():
+    """Function to call identify, change and show pop up functions on button click.
+    """
+
+    global config
+
+    if config == None:
+        return
+
+    # Get ID, baudrate and port values for the lower sensor.
+    str_lower_sensor_id = config['Lower_sensor']['id']
+    str_lower_sensor_bd = config['Lower_sensor']['baudrate']
+    str_lower_sensor_port = config['Lower_sensor']['port']
+    lower_sensor_id = int(str_lower_sensor_id)
+    lower_sensor_bd = int(str_lower_sensor_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_sensor_id_bd(1, 247, str_lower_sensor_port)
+    change_sensor_id_bd(current_settings["id"], lower_sensor_id, lower_sensor_bd)
+
+def on_click_white_island():
+    """Function to call identify, change and show pop up functions on button click.
+    """
+
+    global config
+
+    if config == None:
+        return
+
+    # Get ID, baudrate and port values for the white island.
+    str_white_island_id = config['White_island']['id']
+    str_white_island_bd = config['White_island']['for_9600_baudrate']
+    str_white_island_port = config['White_island']['port']
+    white_island_id = int(str_white_island_id)
+    white_island_bd = int(str_white_island_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_white_island_id_bd(1, 247, str_white_island_port)
+    change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
+
 def main():
 
-    global client
+    global client, config
 
     # Create the window for GUI.
     root = tk.Tk()
@@ -417,68 +536,62 @@ def main():
     configFilePath = config_path
     config.read(configFilePath)
 
-    # Get ID, baudrate and port values for every device.
-    str_power_analyzer_id = config['Power_analyzer']['id']
-    str_power_analyzer_bd = config['Power_analyzer']['for_9600_baudrate']
-    str_power_analyzer_port = config['Power_analyzer']['port']
-    power_analyzer_id = int(str_power_analyzer_id)
-    power_analyzer_bd = int(str_power_analyzer_bd)
-
-    str_upper_sensor_id = config['Upper_sensor']['id']
-    str_upper_sensor_bd = config['Upper_sensor']['baudrate']
-    str_upper_sensor_port = config['Upper_sensor']['port']
-    upper_sensor_id = int(str_upper_sensor_id)
-    upper_sensor_bd = int(str_upper_sensor_bd)
-
-    str_middle_sensor_id = config['Middle_sensor']['id']
-    str_middle_sensor_bd = config['Middle_sensor']['baudrate']
-    str_middle_sensor_port = config['Middle_sensor']['port']
-    middle_sensor_id = int(str_middle_sensor_id)
-    middle_sensor_bd = int(str_middle_sensor_bd)
-
-    str_lower_sensor_id = config['Lower_sensor']['id']
-    str_lower_sensor_bd = config['Lower_sensor']['baudrate']
-    str_lower_sensor_port = config['Lower_sensor']['port']
-    lower_sensor_id = int(str_lower_sensor_id)
-    lower_sensor_bd = int(str_lower_sensor_bd)
-
-    str_white_island_id = config['White_island']['id']
-    str_white_island_bd = config['White_island']['for_9600_baudrate']
-    str_white_island_port = config['White_island']['port']
-    white_island_id = int(str_white_island_id)
-    white_island_bd = int(str_white_island_bd)
-
     label = tk.Label(text="Which device do you want to configure?", fg="white", bg="#A37CF7")
     label.pack()
 
     # Button to configure the power analyzer.
-    power_analyzer = tk.Button(text="Power analyzer", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port),
-                            change_power_analyzer_id_bd(2, power_analyzer_id, power_analyzer_bd)])
+    power_analyzer = tk.Button(
+        text="Power analyzer",
+        width=15,
+        height=2,
+        fg="white",
+        bg="#6DA536",
+        command=on_click_power_analyzer)
+
     power_analyzer.pack()
 
     # Button to configure the upper sensor.
-    upper_sensor = tk.Button(text="Upper sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(1, 247, str_upper_sensor_port),
-                            change_sensor_id_bd(3, upper_sensor_id, upper_sensor_bd)])
+    upper_sensor = tk.Button(
+        text="Upper sensor",
+        width=15,
+        height=2,
+        fg="white",
+        bg="#6DA536",
+        command=on_click_upper_sensor)
+
     upper_sensor.pack()
 
     # Button to configure the middle sensor.
-    middle_sensor = tk.Button(text="Middle sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(1, 247, str_middle_sensor_port),
-                            change_sensor_id_bd(4, middle_sensor_id, middle_sensor_bd)])
+    middle_sensor = tk.Button(
+        text="Middle sensor",
+        width=15,
+        height=2,
+        fg="white",
+        bg="#6DA536",
+        command=on_click_middle_sensor)
+
     middle_sensor.pack()
 
     # Button to configure the lower sensor.
-    lower_sensor = tk.Button(text="Lower sensor", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_sensor_id_bd(1, 247, str_lower_sensor_port),
-                            change_sensor_id_bd(5, lower_sensor_id, lower_sensor_bd)])
+    lower_sensor = tk.Button(
+        text="Lower sensor",
+        width=15,
+        height=2,
+        fg="white",
+        bg="#6DA536",
+        command=on_click_lower_sensor)
+
     lower_sensor.pack()
 
     # Button to configure the white island.
-    white_island = tk.Button(text="White island", width=15, height=2, fg="white", bg="#6DA536",
-            command=lambda :[identify_white_island_id_bd(1, 247, str_white_island_port),
-                            change_white_island_id_bd(6, white_island_id, white_island_bd)])
+    white_island = tk.Button(
+        text="White island",
+        width=15,
+        height=2,
+        fg="white",
+        bg="#6DA536",
+        command=on_click_white_island)
+
     white_island.pack()
 
     root.mainloop()
