@@ -537,7 +537,8 @@ def main():
     config.read(configFilePath)
 
     label = tk.Label(text="Which device do you want to configure?", fg="white", bg="#A37CF7")
-    label.pack()
+    label.config(font=("Courier", 12))
+    label.pack(pady=20)
 
     # Button to configure the power analyzer.
     power_analyzer = tk.Button(
@@ -548,7 +549,7 @@ def main():
         bg="#6DA536",
         command=on_click_power_analyzer)
 
-    power_analyzer.pack()
+    power_analyzer.pack(pady=10)
 
     # Button to configure the upper sensor.
     upper_sensor = tk.Button(
@@ -559,7 +560,7 @@ def main():
         bg="#6DA536",
         command=on_click_upper_sensor)
 
-    upper_sensor.pack()
+    upper_sensor.pack(pady=10)
 
     # Button to configure the middle sensor.
     middle_sensor = tk.Button(
@@ -570,7 +571,7 @@ def main():
         bg="#6DA536",
         command=on_click_middle_sensor)
 
-    middle_sensor.pack()
+    middle_sensor.pack(pady=10)
 
     # Button to configure the lower sensor.
     lower_sensor = tk.Button(
@@ -581,7 +582,7 @@ def main():
         bg="#6DA536",
         command=on_click_lower_sensor)
 
-    lower_sensor.pack()
+    lower_sensor.pack(pady=10)
 
     # Button to configure the white island.
     white_island = tk.Button(
@@ -592,7 +593,7 @@ def main():
         bg="#6DA536",
         command=on_click_white_island)
 
-    white_island.pack()
+    white_island.pack(pady=10)
 
     root.mainloop()
 
