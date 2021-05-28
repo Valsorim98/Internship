@@ -3,12 +3,15 @@
 
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import *
 import pymodbus
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 import os
 import configparser
 import argparse
 from struct import pack, unpack
+import threading
+import time
 
 client = None
 """Client instance for modbus master.
@@ -17,6 +20,12 @@ client = None
 config = None
 """Config instance of the read config file.
 """
+
+power_analyzer = None
+upper_sensor = None
+middle_sensor = None
+lower_sensor = None
+white_island = None
 
 def read_sensor_parameters(unit, baud_value, port):
     """Function to read the temperature and humidity from a sensor.
@@ -383,14 +392,39 @@ def show_pop_up():
     # Shows a pop up window when the configuration is done.
     messagebox.showinfo('Done', 'Configuration complete.')
 
-def on_click_power_analyzer():
-    """Function to call identify, change and show pop up functions on button click.
+def enable_buttons():
+    """Function to enable all buttons.
     """
 
-    global config
+    # Turn all buttons back to normal state.
+    power_analyzer.configure(state=NORMAL)
+    upper_sensor.configure(state=NORMAL)
+    middle_sensor.configure(state=NORMAL)
+    lower_sensor.configure(state=NORMAL)
+    white_island.configure(state=NORMAL)
+
+def disable_buttons():
+    """Function to disable all buttons.
+    """
+
+    power_analyzer.configure(state=DISABLED)
+    upper_sensor.configure(state=DISABLED)
+    middle_sensor.configure(state=DISABLED)
+    lower_sensor.configure(state=DISABLED)
+    white_island.configure(state=DISABLED)
+
+def on_config_power_analyzer(name):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
 
     if config == None:
         return
+
+    print("Thread %s: starting", name)
 
     # Get ID, baudrate and port values for the power analyzer.
     str_power_analyzer_id = config['Power_analyzer']['id']
@@ -403,14 +437,34 @@ def on_click_power_analyzer():
     current_settings = identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port)
     change_power_analyzer_id_bd(current_settings["id"], power_analyzer_id, power_analyzer_bd)
 
-def on_click_upper_sensor():
-    """Function to call identify, change and show pop up functions on button click.
+    print("Thread %s: finishing", name)
+
+    enable_buttons()
+
+def on_click_power_analyzer():
+    """Power analyzer on click event function.
     """
 
-    global config
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_power_analyzer, args=(1,))
+    x.start()
+
+def on_config_upper_sensor(name):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
 
     if config == None:
         return
+
+    print("Thread %s: starting", name)
 
     # Get ID, baudrate and port values for the upper sensor.
     str_upper_sensor_id = config['Upper_sensor']['id']
@@ -423,14 +477,34 @@ def on_click_upper_sensor():
     current_settings = identify_sensor_id_bd(1, 247, str_upper_sensor_port)
     change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
 
-def on_click_middle_sensor():
-    """Function to call identify, change and show pop up functions on button click.
+    print("Thread %s: finishing", name)
+
+    enable_buttons()
+
+def on_click_upper_sensor():
+    """Upper sensor on click event function.
     """
 
-    global config
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_upper_sensor, args=(1,))
+    x.start()
+
+def on_config_middle_sensor(name):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
 
     if config == None:
         return
+
+    print("Thread %s: starting", name)
 
     # Get ID, baudrate and port values for the middle sensor.
     str_middle_sensor_id = config['Middle_sensor']['id']
@@ -443,14 +517,34 @@ def on_click_middle_sensor():
     current_settings = identify_sensor_id_bd(1, 247, str_middle_sensor_port)
     change_sensor_id_bd(current_settings["id"], middle_sensor_id, middle_sensor_bd)
 
-def on_click_lower_sensor():
-    """Function to call identify, change and show pop up functions on button click.
+    print("Thread %s: finishing", name)
+
+    enable_buttons()
+
+def on_click_middle_sensor():
+    """Middle sensor on click event function.
     """
 
-    global config
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_middle_sensor, args=(1,))
+    x.start()
+
+def on_config_lower_sensor(name):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
 
     if config == None:
         return
+
+    print("Thread %s: starting", name)
 
     # Get ID, baudrate and port values for the lower sensor.
     str_lower_sensor_id = config['Lower_sensor']['id']
@@ -463,14 +557,34 @@ def on_click_lower_sensor():
     current_settings = identify_sensor_id_bd(1, 247, str_lower_sensor_port)
     change_sensor_id_bd(current_settings["id"], lower_sensor_id, lower_sensor_bd)
 
-def on_click_white_island():
-    """Function to call identify, change and show pop up functions on button click.
+    print("Thread %s: finishing", name)
+
+    enable_buttons()
+
+def on_click_lower_sensor():
+    """Lower sensor on click event function.
     """
 
-    global config
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_lower_sensor, args=(1,))
+    x.start()
+
+def on_config_white_island(name):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
 
     if config == None:
         return
+
+    print("Thread %s: starting", name)
 
     # Get ID, baudrate and port values for the white island.
     str_white_island_id = config['White_island']['id']
@@ -483,9 +597,27 @@ def on_click_white_island():
     current_settings = identify_white_island_id_bd(1, 247, str_white_island_port)
     change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
 
+    print("Thread %s: finishing", name)
+
+    enable_buttons()
+
+def on_click_white_island():
+    """White island on click event function.
+    """
+
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_white_island, args=(1,))
+    x.start()
+
 def create_gui():
     """Function to create GUI form.
     """
+
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
 
     # Create the window for GUI.
     root = tk.Tk()
