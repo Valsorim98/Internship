@@ -4,6 +4,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
+from tkinter.ttk import Progressbar
 import pymodbus
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 import os
@@ -39,6 +40,8 @@ def read_sensor_parameters(unit, baud_value, port):
 
     global client
 
+    room_temp_humid = {}
+
     # Make a connection with the device.
     client = ModbusClient(method="rtu", port=port,
     timeout=0.4, stopbits=1, bytesize=8,
@@ -52,6 +55,7 @@ def read_sensor_parameters(unit, baud_value, port):
         unit=unit)
 
     temperature = int(response.registers[0]) / 10
+    room_temp_humid["temperature"] = temperature
     print(f"Temperature: {temperature}")
 
     # READ HUMIDITY:
@@ -61,7 +65,10 @@ def read_sensor_parameters(unit, baud_value, port):
         unit=unit)
 
     humidity = int(response.registers[0]) / 10
+    room_temp_humid["humidity"] = humidity
     print(f"Humidity: {humidity}")
+
+    return room_temp_humid
 
 def read_voltage(unit, baud_value, port):
     """Function to read the voltage from the power analyzer.
@@ -112,6 +119,182 @@ def read_coils(unit, baud_value, port):
 
     print(response.bits[:4])
 
+def progress_bar():
+    """Function to create a progress bar.
+    """
+
+    global root
+
+    # Create a progress bar.
+    pb = Progressbar(orient=HORIZONTAL, length=150, mode='indeterminate')
+    pb.pack(expand=True)
+
+    global stop_progress_bar_thread
+
+    # The progress bar is moving until the device has been configured,
+    # then the thread and the bar are destroyed.
+    while True:
+
+        pb['value'] = 0
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 10
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 20
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 30
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 40
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 50
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 60
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 70
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 80
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 90
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 100
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 90
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 80
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 70
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 60
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 50
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 40
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 30
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 20
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
+        pb['value'] = 10
+        root.update_idletasks()
+        time.sleep(0.3)
+
+        if stop_progress_bar_thread:
+            pb.destroy()
+            break
+
 def change_sensor_id_bd(current_id, new_id, new_baudrate):
     """Function to change the sensor id and baudrate.
 
@@ -161,7 +344,7 @@ def identify_sensor_id_bd(begin_id, end_id, port):
         dict: Dict containing the current ID and baudrate of the sensor.
     """
 
-    global client
+    global client, room_temp_humid
 
     current_id = -1
     baudrate_list = [9600, 14400, 19200]
@@ -178,7 +361,7 @@ def identify_sensor_id_bd(begin_id, end_id, port):
         # Search for every baudrate value in the baudrate_list.
         for baud_value in baudrate_list:
             try:
-                read_sensor_parameters(index, baud_value, port)
+                room_temp_humid = read_sensor_parameters(index, baud_value, port)
                 current_id = index
                 current_bd = baud_value
                 # Append the dictionary with id and baudrate.
@@ -388,9 +571,15 @@ def identify_white_island_id_bd(begin_id, end_id, port):
     return current_id_bd
 
 def show_pop_up():
+    """Function to show a pop up.
+    """
+
+    global room_temp_humid
 
     # Shows a pop up window when the configuration is done.
-    messagebox.showinfo('Done', 'Configuration complete.')
+    messagebox.showinfo('Done',
+    'Temperature: {}C°, Humidity: {}%\n\
+    Configuration complete.'.format(room_temp_humid["temperature"], room_temp_humid["humidity"]))
 
 def enable_buttons():
     """Function to enable all buttons.
@@ -459,10 +648,17 @@ def on_config_upper_sensor(name):
     """
 
     global config, power_analyzer, upper_sensor,\
-    middle_sensor, lower_sensor, white_island
+    middle_sensor, lower_sensor, white_island, stop_progress_bar_thread
 
     if config == None:
         return
+
+    # Variable to stop the progress bar thread.
+    stop_progress_bar_thread = False
+
+    # Start progress bar thread.
+    progress_bar_thread = threading.Thread(target=progress_bar)
+    progress_bar_thread.start()
 
     print("Thread %s: starting", name)
 
@@ -475,11 +671,18 @@ def on_config_upper_sensor(name):
 
     # Call identify and change functions.
     current_settings = identify_sensor_id_bd(1, 247, str_upper_sensor_port)
-    change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
+    state = change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
 
     print("Thread %s: finishing", name)
 
+    # Enable the buttons.
     enable_buttons()
+
+    # When the device is configured to stop the progress bar thread.
+    if state == True:
+        stop_progress_bar_thread = True
+
+    return state
 
 def on_click_upper_sensor():
     """Upper sensor on click event function.
@@ -487,11 +690,12 @@ def on_click_upper_sensor():
 
     global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
 
+    # Disable the buttons.
     disable_buttons()
 
-    # Start thread.
-    x = threading.Thread(target=on_config_upper_sensor, args=(1,))
-    x.start()
+    # Start configuration thread.
+    config_thread = threading.Thread(target=on_config_upper_sensor, args=(1,))
+    config_thread.start()
 
 def on_config_middle_sensor(name):
     """Function to call identify, change and show pop up functions
@@ -617,7 +821,7 @@ def create_gui():
     """Function to create GUI form.
     """
 
-    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island, root
 
     # Create the window for GUI.
     root = tk.Tk()
