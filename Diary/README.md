@@ -668,3 +668,15 @@ def change_device_id(current_id, new_id):
 * Centralise the tkinter window on the screen.
 
 * Added a function to display a pop up window when a device is configured from the GUI.
+
+> # April 28:
+
+* Append the ID and baudrate to a dict from every identify function and pass the current id as an argument to every change function, show the pop up only when the configuration is done.
+
+* Created a documentation for gui_configure project.
+
+* Added spacers between the label and the buttons and add a font and size of the label text.
+
+* Combined read_temperature and read_humidity functions in one function - read_sensor_parameters and created functions create_gui and read_config.
+
+* Refactoring, added imports and functions for disabling and enabling all the buttons and renamed gui_config.py to main.py.
