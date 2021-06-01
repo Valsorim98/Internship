@@ -495,7 +495,7 @@ def on_click_power_analyzer():
     disable_buttons()
 
     # Start thread.
-    x = threading.Thread(target=on_config_power_analyzer, args=(2,))
+    x = threading.Thread(target=on_config_power_analyzer, args=(2,), daemon=True)
     x.start()
 
 
@@ -541,7 +541,7 @@ def on_click_upper_sensor():
     disable_buttons()
 
     # Start configuration thread.
-    config_thread = threading.Thread(target=on_config_upper_sensor, args=(2,))
+    config_thread = threading.Thread(target=on_config_upper_sensor, args=(2,), daemon=True)
     config_thread.start()
 
 
@@ -587,7 +587,7 @@ def on_click_middle_sensor():
     disable_buttons()
 
     # Start thread.
-    x = threading.Thread(target=on_config_middle_sensor, args=(2,))
+    x = threading.Thread(target=on_config_middle_sensor, args=(2,), daemon=True)
     x.start()
 
 
@@ -633,7 +633,7 @@ def on_click_lower_sensor():
     disable_buttons()
 
     # Start thread.
-    x = threading.Thread(target=on_config_lower_sensor, args=(2,))
+    x = threading.Thread(target=on_config_lower_sensor, args=(2,), daemon=True)
     x.start()
 
 
@@ -679,7 +679,7 @@ def on_click_white_island():
     disable_buttons()
 
     # Start thread.
-    x = threading.Thread(target=on_config_white_island, args=(2,))
+    x = threading.Thread(target=on_config_white_island, args=(2,), daemon=True)
     x.start()
 
 
