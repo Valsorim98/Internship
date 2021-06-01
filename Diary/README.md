@@ -694,3 +694,7 @@ def change_device_id(current_id, new_id):
 * Created a dict with the configured device and pass it as argument to show_pop_up function.
 
 * Added voltage, coils_status and room_temp_humidity to global.
+
+* Read about threads and python threads, daemon - a thread that is terminated on program exit.
+
+* Make every on_config thread a daemon.
