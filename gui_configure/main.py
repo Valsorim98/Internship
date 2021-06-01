@@ -27,6 +27,8 @@ upper_sensor = None
 middle_sensor = None
 lower_sensor = None
 white_island = None
+"""Instances of the devices.
+"""
 
 def read_sensor_parameters(unit, baud_value, port):
     """Function to read the temperature and humidity from a sensor.
@@ -119,181 +121,6 @@ def read_coils(unit, baud_value, port):
 
     print(response.bits[:4])
 
-def progress_bar():
-    """Function to create a progress bar.
-    """
-
-    global root
-
-    # Create a progress bar.
-    pb = Progressbar(orient=HORIZONTAL, length=150, mode='indeterminate')
-    pb.pack(expand=True)
-
-    global stop_progress_bar_thread
-
-    # The progress bar is moving until the device has been configured,
-    # then the thread and the bar are destroyed.
-    while True:
-
-        pb['value'] = 0
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 10
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 20
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 30
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 40
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 50
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 60
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 70
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 80
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 90
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 100
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 90
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 80
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 70
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 60
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 50
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 40
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 30
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 20
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
-
-        pb['value'] = 10
-        root.update_idletasks()
-        time.sleep(0.3)
-
-        if stop_progress_bar_thread:
-            pb.destroy()
-            break
 
 def change_sensor_id_bd(current_id, new_id, new_baudrate):
     """Function to change the sensor id and baudrate.
@@ -307,6 +134,9 @@ def change_sensor_id_bd(current_id, new_id, new_baudrate):
     """
 
     global client
+
+    # To store which device is configured.
+    device_configured = {}
 
     state = False
 
@@ -328,8 +158,9 @@ def change_sensor_id_bd(current_id, new_id, new_baudrate):
 
     if state:
         print("Please do power cycle for the device.")
+        device_configured["device"] = "sensor"
         # Shows a pop up.
-        show_pop_up()
+        show_pop_up(device_configured)
 
     return state
 
@@ -344,12 +175,19 @@ def identify_sensor_id_bd(begin_id, end_id, port):
         dict: Dict containing the current ID and baudrate of the sensor.
     """
 
-    global client, room_temp_humid
+    global client, room_temp_humid, root
 
     current_id = -1
     baudrate_list = [9600, 14400, 19200]
     current_id_bd = {}
     time_to_stop = False
+
+    # Create a progress bar.
+    pb = Progressbar(orient=HORIZONTAL, length=100, mode='indeterminate')
+    pb.pack(expand=True)
+
+    pb['value'] = 0
+    root.update_idletasks()
 
     # for loop has range from 1 to 247, because of modbus specification.
     for index in range(begin_id, end_id+1):
@@ -360,6 +198,11 @@ def identify_sensor_id_bd(begin_id, end_id, port):
 
         # Search for every baudrate value in the baudrate_list.
         for baud_value in baudrate_list:
+
+            # Move the progress bar.
+            pb['value'] += 25
+            root.update_idletasks()
+
             try:
                 room_temp_humid = read_sensor_parameters(index, baud_value, port)
                 current_id = index
@@ -369,12 +212,15 @@ def identify_sensor_id_bd(begin_id, end_id, port):
                 current_id_bd["baudrate"] = current_bd
                 time_to_stop = True
                 print(current_id_bd)
+                # After finding the device to destroy the progress bar.
+                pb.destroy()
                 break
 
             except Exception as e:
                 print(f"No device found at id: {index} baudrate: {baud_value}.")
 
     return current_id_bd
+
 
 def change_power_analyzer_id_bd(current_id, new_id, new_baudrate):
     """Function to change the power analyzer ID and baudrate.
@@ -389,6 +235,9 @@ def change_power_analyzer_id_bd(current_id, new_id, new_baudrate):
     """
 
     global client
+
+    # To store which device is configured.
+    device_configured = {}
 
     state = False
 
@@ -436,8 +285,9 @@ def change_power_analyzer_id_bd(current_id, new_id, new_baudrate):
 
     if state:
         print("Please do power cycle for the device.")
+        device_configured["device"] = "power_analyzer"
         # Shows a pop up.
-        show_pop_up()
+        show_pop_up(device_configured)
 
     return state
 
@@ -452,12 +302,19 @@ def identify_power_analyzer_id_bd(begin_id, end_id, port):
         dict: Dict containing the current ID and baudrate of the power analyzer.
     """
 
-    global client
+    global client, voltage
 
     current_id = -1
     baudrate_list = [1200, 2400, 4800, 9600]
     current_id_bd = {}
     time_to_stop = False
+
+    # Create a progress bar.
+    pb = Progressbar(orient=HORIZONTAL, length=100, mode='indeterminate')
+    pb.pack(expand=True)
+
+    pb['value'] = 0
+    root.update_idletasks()
 
     # for loop has range from 1 to 247, because of modbus specification.
     for index in range(begin_id, end_id+1):
@@ -468,8 +325,13 @@ def identify_power_analyzer_id_bd(begin_id, end_id, port):
 
         # Search for every baudrate value in the baudrate_list.
         for baud_value in baudrate_list:
+
+            # Move the progress bar.
+            pb['value'] += 25
+            root.update_idletasks()
+
             try:
-                read_voltage(index, baud_value, port)
+                voltage = read_voltage(index, baud_value, port)
                 current_id = index
                 current_bd = baud_value
                 # Append the dictionary with id and baudrate.
@@ -477,12 +339,15 @@ def identify_power_analyzer_id_bd(begin_id, end_id, port):
                 current_id_bd["baudrate"] = current_bd
                 time_to_stop = True
                 print(current_id_bd)
+                # After finding the device to destroy the progress bar.
+                pb.destroy()
                 break
 
             except Exception as e:
                 print(f"No device found at id: {index} baudrate: {baud_value}.")
 
     return current_id_bd
+
 
 def change_white_island_id_bd(current_id, new_id, new_baudrate):
     """Function to change the white island id and baudrate.
@@ -498,6 +363,8 @@ def change_white_island_id_bd(current_id, new_id, new_baudrate):
 
     global client
 
+    # To store which device is configured.
+    device_configured = {}
     state = False
 
     # Change device ID.
@@ -522,8 +389,9 @@ def change_white_island_id_bd(current_id, new_id, new_baudrate):
 
     if state:
         print("Please do a power cycle for the device.")
+        device_configured["device"] = "white_island"
         # Show a pop up.
-        show_pop_up()
+        show_pop_up(device_configured)
 
     return state
 
@@ -538,12 +406,19 @@ def identify_white_island_id_bd(begin_id, end_id, port):
         dict: Dict containing the current ID and baudrate of the white island.
     """
 
-    global client
+    global client, coils_status
 
     current_id = -1
     baudrate_list = [1200, 2400, 4800, 9600, 19200]
     current_id_bd = {}
     time_to_stop = False
+
+    # Create a progress bar.
+    pb = Progressbar(orient=HORIZONTAL, length=100, mode='indeterminate')
+    pb.pack(expand=True)
+
+    pb['value'] = 0
+    root.update_idletasks()
 
     # for loop has range from 1 to 247, because of modbus specification.
     for index in range(begin_id, end_id+1):
@@ -554,8 +429,13 @@ def identify_white_island_id_bd(begin_id, end_id, port):
 
         # Search for every baudrate value in the baudrate_list.
         for baud_value in baudrate_list:
+
+            # Move the progress bar.
+            pb['value'] += 25
+            root.update_idletasks()
+
             try:
-                read_coils(index, baud_value, port)
+                coils_status = read_coils(index, baud_value, port)
                 current_id = index
                 current_bd = baud_value
                 # Append the dictionary with id and baudrate.
@@ -563,6 +443,8 @@ def identify_white_island_id_bd(begin_id, end_id, port):
                 current_id_bd["baudrate"] = current_bd
                 time_to_stop = True
                 print(current_id_bd)
+                # After finding the device to destroy the progress bar.
+                pb.destroy()
                 break
 
             except Exception as e:
@@ -570,16 +452,254 @@ def identify_white_island_id_bd(begin_id, end_id, port):
 
     return current_id_bd
 
-def show_pop_up():
+
+def on_config_power_analyzer(number):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+
+    Args:
+        number (int): Number of the thread.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
+
+    if config == None:
+        return
+
+    print(f"Thread {number} starting")
+
+    # Get ID, baudrate and port values for the power analyzer.
+    str_power_analyzer_id = config['power_analyzer']['id']
+    str_power_analyzer_bd = config['power_analyzer']['for_9600_baudrate']
+    str_power_analyzer_port = config['power_analyzer']['port']
+    power_analyzer_id = int(str_power_analyzer_id)
+    power_analyzer_bd = int(str_power_analyzer_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port)
+    change_power_analyzer_id_bd(current_settings["id"], power_analyzer_id, power_analyzer_bd)
+
+    print(f"Thread {number} finishing")
+
+    # Enable the buttons.
+    enable_buttons()
+
+def on_click_power_analyzer():
+    """Power analyzer on click event function.
+    """
+
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    # Disable the buttons.
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_power_analyzer, args=(2,))
+    x.start()
+
+
+def on_config_upper_sensor(number):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+
+    Args:
+        number (int): Number of the thread.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
+
+    if config == None:
+        return
+
+    print(f"Thread {number} starting")
+
+    # Get ID, baudrate and port values for the upper sensor.
+    str_upper_sensor_id = config['upper_sensor']['id']
+    str_upper_sensor_bd = config['upper_sensor']['baudrate']
+    str_upper_sensor_port = config['upper_sensor']['port']
+    upper_sensor_id = int(str_upper_sensor_id)
+    upper_sensor_bd = int(str_upper_sensor_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_sensor_id_bd(1, 247, str_upper_sensor_port)
+    change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
+
+    print(f"Thread {number} finishing")
+
+    # Enable the buttons.
+    enable_buttons()
+
+def on_click_upper_sensor():
+    """Upper sensor on click event function.
+    """
+
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    # Disable the buttons.
+    disable_buttons()
+
+    # Start configuration thread.
+    config_thread = threading.Thread(target=on_config_upper_sensor, args=(2,))
+    config_thread.start()
+
+
+def on_config_middle_sensor(number):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+
+    Args:
+        number (int): Number of the thread.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
+
+    if config == None:
+        return
+
+    print(f"Thread {number} starting")
+
+    # Get ID, baudrate and port values for the middle sensor.
+    str_middle_sensor_id = config['middle_sensor']['id']
+    str_middle_sensor_bd = config['middle_sensor']['baudrate']
+    str_middle_sensor_port = config['middle_sensor']['port']
+    middle_sensor_id = int(str_middle_sensor_id)
+    middle_sensor_bd = int(str_middle_sensor_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_sensor_id_bd(1, 247, str_middle_sensor_port)
+    change_sensor_id_bd(current_settings["id"], middle_sensor_id, middle_sensor_bd)
+
+    print(f"Thread {number} finishing")
+
+    # Enable the buttons.
+    enable_buttons()
+
+def on_click_middle_sensor():
+    """Middle sensor on click event function.
+    """
+
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    # Disable the buttons.
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_middle_sensor, args=(2,))
+    x.start()
+
+
+def on_config_lower_sensor(number):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+
+    Args:
+        number (int): Number of the thread.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
+
+    if config == None:
+        return
+
+    print(f"Thread {number} starting")
+
+    # Get ID, baudrate and port values for the lower sensor.
+    str_lower_sensor_id = config['lower_sensor']['id']
+    str_lower_sensor_bd = config['lower_sensor']['baudrate']
+    str_lower_sensor_port = config['lower_sensor']['port']
+    lower_sensor_id = int(str_lower_sensor_id)
+    lower_sensor_bd = int(str_lower_sensor_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_sensor_id_bd(1, 247, str_lower_sensor_port)
+    change_sensor_id_bd(current_settings["id"], lower_sensor_id, lower_sensor_bd)
+
+    print(f"Thread {number} finishing")
+
+    # Enable the buttons.
+    enable_buttons()
+
+def on_click_lower_sensor():
+    """Lower sensor on click event function.
+    """
+
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    # Disable the buttons.
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_lower_sensor, args=(2,))
+    x.start()
+
+
+def on_config_white_island(number):
+    """Function to call identify, change and show pop up functions
+        and enable buttons after configuration is done on button click.
+
+    Args:
+        number (int): Number of the thread.
+    """
+
+    global config, power_analyzer, upper_sensor,\
+    middle_sensor, lower_sensor, white_island
+
+    if config == None:
+        return
+
+    print(f"Thread {number} starting")
+
+    # Get ID, baudrate and port values for the white island.
+    str_white_island_id = config['white_island']['id']
+    str_white_island_bd = config['white_island']['for_9600_baudrate']
+    str_white_island_port = config['white_island']['port']
+    white_island_id = int(str_white_island_id)
+    white_island_bd = int(str_white_island_bd)
+
+    # Call identify and change functions.
+    current_settings = identify_white_island_id_bd(1, 247, str_white_island_port)
+    change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
+
+    print(f"Thread {number} finishing")
+
+    # Enable the buttons.
+    enable_buttons()
+
+def on_click_white_island():
+    """White island on click event function.
+    """
+
+    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
+
+    # Disable the buttons.
+    disable_buttons()
+
+    # Start thread.
+    x = threading.Thread(target=on_config_white_island, args=(2,))
+    x.start()
+
+
+def show_pop_up(device_configured):
     """Function to show a pop up.
     """
 
-    global room_temp_humid
+    if device_configured["device"] == "sensor":
+        # Shows a pop up window when a sensor is configured.
+        messagebox.showinfo('Done', 'Configuration complete. Please do a power cycle.\n\
+        Temperature: {}C°, Humidity: {}%\n'.format(room_temp_humid["temperature"], room_temp_humid["humidity"]))
 
-    # Shows a pop up window when the configuration is done.
-    messagebox.showinfo('Done',
-    'Temperature: {}C°, Humidity: {}%\n\
-    Configuration complete.'.format(room_temp_humid["temperature"], room_temp_humid["humidity"]))
+    if device_configured["device"] == "power_analyzer":
+        # Shows a pop up window when a power analyzer is configured.
+        messagebox.showinfo('Done', 'Configuration complete. Please do a power cycle.\nVoltage: {}V'.format(voltage))
+
+    if device_configured["device"] == "white_island":
+        # Shows a pop up window when a power analyzer is configured.
+        messagebox.showinfo('Done', 'Configuration complete. Please do a power cycle.\n\
+        Coils status: {}'.format(coils_status))
 
 def enable_buttons():
     """Function to enable all buttons.
@@ -601,221 +721,6 @@ def disable_buttons():
     middle_sensor.configure(state=DISABLED)
     lower_sensor.configure(state=DISABLED)
     white_island.configure(state=DISABLED)
-
-def on_config_power_analyzer(name):
-    """Function to call identify, change and show pop up functions
-        and enable buttons after configuration is done on button click.
-    """
-
-    global config, power_analyzer, upper_sensor,\
-    middle_sensor, lower_sensor, white_island
-
-    if config == None:
-        return
-
-    print("Thread %s: starting", name)
-
-    # Get ID, baudrate and port values for the power analyzer.
-    str_power_analyzer_id = config['Power_analyzer']['id']
-    str_power_analyzer_bd = config['Power_analyzer']['for_9600_baudrate']
-    str_power_analyzer_port = config['Power_analyzer']['port']
-    power_analyzer_id = int(str_power_analyzer_id)
-    power_analyzer_bd = int(str_power_analyzer_bd)
-
-    # Call identify and change functions.
-    current_settings = identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port)
-    change_power_analyzer_id_bd(current_settings["id"], power_analyzer_id, power_analyzer_bd)
-
-    print("Thread %s: finishing", name)
-
-    enable_buttons()
-
-def on_click_power_analyzer():
-    """Power analyzer on click event function.
-    """
-
-    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
-
-    disable_buttons()
-
-    # Start thread.
-    x = threading.Thread(target=on_config_power_analyzer, args=(1,))
-    x.start()
-
-def on_config_upper_sensor(name):
-    """Function to call identify, change and show pop up functions
-        and enable buttons after configuration is done on button click.
-    """
-
-    global config, power_analyzer, upper_sensor,\
-    middle_sensor, lower_sensor, white_island, stop_progress_bar_thread
-
-    if config == None:
-        return
-
-    # Variable to stop the progress bar thread.
-    stop_progress_bar_thread = False
-
-    # Start progress bar thread.
-    progress_bar_thread = threading.Thread(target=progress_bar)
-    progress_bar_thread.start()
-
-    print("Thread %s: starting", name)
-
-    # Get ID, baudrate and port values for the upper sensor.
-    str_upper_sensor_id = config['Upper_sensor']['id']
-    str_upper_sensor_bd = config['Upper_sensor']['baudrate']
-    str_upper_sensor_port = config['Upper_sensor']['port']
-    upper_sensor_id = int(str_upper_sensor_id)
-    upper_sensor_bd = int(str_upper_sensor_bd)
-
-    # Call identify and change functions.
-    current_settings = identify_sensor_id_bd(1, 247, str_upper_sensor_port)
-    state = change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
-
-    print("Thread %s: finishing", name)
-
-    # Enable the buttons.
-    enable_buttons()
-
-    # When the device is configured to stop the progress bar thread.
-    if state == True:
-        stop_progress_bar_thread = True
-
-    return state
-
-def on_click_upper_sensor():
-    """Upper sensor on click event function.
-    """
-
-    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
-
-    # Disable the buttons.
-    disable_buttons()
-
-    # Start configuration thread.
-    config_thread = threading.Thread(target=on_config_upper_sensor, args=(1,))
-    config_thread.start()
-
-def on_config_middle_sensor(name):
-    """Function to call identify, change and show pop up functions
-        and enable buttons after configuration is done on button click.
-    """
-
-    global config, power_analyzer, upper_sensor,\
-    middle_sensor, lower_sensor, white_island
-
-    if config == None:
-        return
-
-    print("Thread %s: starting", name)
-
-    # Get ID, baudrate and port values for the middle sensor.
-    str_middle_sensor_id = config['Middle_sensor']['id']
-    str_middle_sensor_bd = config['Middle_sensor']['baudrate']
-    str_middle_sensor_port = config['Middle_sensor']['port']
-    middle_sensor_id = int(str_middle_sensor_id)
-    middle_sensor_bd = int(str_middle_sensor_bd)
-
-    # Call identify and change functions.
-    current_settings = identify_sensor_id_bd(1, 247, str_middle_sensor_port)
-    change_sensor_id_bd(current_settings["id"], middle_sensor_id, middle_sensor_bd)
-
-    print("Thread %s: finishing", name)
-
-    enable_buttons()
-
-def on_click_middle_sensor():
-    """Middle sensor on click event function.
-    """
-
-    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
-
-    disable_buttons()
-
-    # Start thread.
-    x = threading.Thread(target=on_config_middle_sensor, args=(1,))
-    x.start()
-
-def on_config_lower_sensor(name):
-    """Function to call identify, change and show pop up functions
-        and enable buttons after configuration is done on button click.
-    """
-
-    global config, power_analyzer, upper_sensor,\
-    middle_sensor, lower_sensor, white_island
-
-    if config == None:
-        return
-
-    print("Thread %s: starting", name)
-
-    # Get ID, baudrate and port values for the lower sensor.
-    str_lower_sensor_id = config['Lower_sensor']['id']
-    str_lower_sensor_bd = config['Lower_sensor']['baudrate']
-    str_lower_sensor_port = config['Lower_sensor']['port']
-    lower_sensor_id = int(str_lower_sensor_id)
-    lower_sensor_bd = int(str_lower_sensor_bd)
-
-    # Call identify and change functions.
-    current_settings = identify_sensor_id_bd(1, 247, str_lower_sensor_port)
-    change_sensor_id_bd(current_settings["id"], lower_sensor_id, lower_sensor_bd)
-
-    print("Thread %s: finishing", name)
-
-    enable_buttons()
-
-def on_click_lower_sensor():
-    """Lower sensor on click event function.
-    """
-
-    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
-
-    disable_buttons()
-
-    # Start thread.
-    x = threading.Thread(target=on_config_lower_sensor, args=(1,))
-    x.start()
-
-def on_config_white_island(name):
-    """Function to call identify, change and show pop up functions
-        and enable buttons after configuration is done on button click.
-    """
-
-    global config, power_analyzer, upper_sensor,\
-    middle_sensor, lower_sensor, white_island
-
-    if config == None:
-        return
-
-    print("Thread %s: starting", name)
-
-    # Get ID, baudrate and port values for the white island.
-    str_white_island_id = config['White_island']['id']
-    str_white_island_bd = config['White_island']['for_9600_baudrate']
-    str_white_island_port = config['White_island']['port']
-    white_island_id = int(str_white_island_id)
-    white_island_bd = int(str_white_island_bd)
-
-    # Call identify and change functions.
-    current_settings = identify_white_island_id_bd(1, 247, str_white_island_port)
-    change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
-
-    print("Thread %s: finishing", name)
-
-    enable_buttons()
-
-def on_click_white_island():
-    """White island on click event function.
-    """
-
-    global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island
-
-    disable_buttons()
-
-    # Start thread.
-    x = threading.Thread(target=on_config_white_island, args=(1,))
-    x.start()
 
 def create_gui():
     """Function to create GUI form.
@@ -928,7 +833,12 @@ def main():
     """Main function for the project.
     """
 
+    # Read the config file.
     read_config()
+
+    # Create GUI and call on_click function which calls disable_buttons function,
+    # then starts a new thread with function on_config,
+    # which call identify and change, enable_buttons functions
     create_gui()
 
 if __name__ == "__main__":
