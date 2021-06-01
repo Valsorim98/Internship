@@ -499,12 +499,9 @@ def on_click_power_analyzer():
     x.start()
 
 
-def on_config_upper_sensor(number):
+def on_config_upper_sensor():
     """Function to call identify, change and show pop up functions
         and enable buttons after configuration is done on button click.
-
-    Args:
-        number (int): Number of the thread.
     """
 
     global config, power_analyzer, upper_sensor,\
@@ -513,7 +510,8 @@ def on_config_upper_sensor(number):
     if config == None:
         return
 
-    print(f"Thread {number} starting")
+    # Event to terminate the thread.
+    terminate_thread = threading.Event()
 
     # Get ID, baudrate and port values for the upper sensor.
     str_upper_sensor_id = config['upper_sensor']['id']
@@ -526,10 +524,11 @@ def on_config_upper_sensor(number):
     current_settings = identify_sensor_id_bd(1, 247, str_upper_sensor_port)
     change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
 
-    print(f"Thread {number} finishing")
-
     # Enable the buttons.
     enable_buttons()
+
+    # TODO: Stop the thread.
+    terminate_thread.set()
 
 def on_click_upper_sensor():
     """Upper sensor on click event function.
@@ -545,12 +544,9 @@ def on_click_upper_sensor():
     config_thread.start()
 
 
-def on_config_middle_sensor(number):
+def on_config_middle_sensor():
     """Function to call identify, change and show pop up functions
         and enable buttons after configuration is done on button click.
-
-    Args:
-        number (int): Number of the thread.
     """
 
     global config, power_analyzer, upper_sensor,\
@@ -558,8 +554,6 @@ def on_config_middle_sensor(number):
 
     if config == None:
         return
-
-    print(f"Thread {number} starting")
 
     # Get ID, baudrate and port values for the middle sensor.
     str_middle_sensor_id = config['middle_sensor']['id']
@@ -571,8 +565,6 @@ def on_config_middle_sensor(number):
     # Call identify and change functions.
     current_settings = identify_sensor_id_bd(1, 247, str_middle_sensor_port)
     change_sensor_id_bd(current_settings["id"], middle_sensor_id, middle_sensor_bd)
-
-    print(f"Thread {number} finishing")
 
     # Enable the buttons.
     enable_buttons()
@@ -591,12 +583,9 @@ def on_click_middle_sensor():
     x.start()
 
 
-def on_config_lower_sensor(number):
+def on_config_lower_sensor():
     """Function to call identify, change and show pop up functions
         and enable buttons after configuration is done on button click.
-
-    Args:
-        number (int): Number of the thread.
     """
 
     global config, power_analyzer, upper_sensor,\
@@ -604,8 +593,6 @@ def on_config_lower_sensor(number):
 
     if config == None:
         return
-
-    print(f"Thread {number} starting")
 
     # Get ID, baudrate and port values for the lower sensor.
     str_lower_sensor_id = config['lower_sensor']['id']
@@ -617,8 +604,6 @@ def on_config_lower_sensor(number):
     # Call identify and change functions.
     current_settings = identify_sensor_id_bd(1, 247, str_lower_sensor_port)
     change_sensor_id_bd(current_settings["id"], lower_sensor_id, lower_sensor_bd)
-
-    print(f"Thread {number} finishing")
 
     # Enable the buttons.
     enable_buttons()
@@ -637,12 +622,9 @@ def on_click_lower_sensor():
     x.start()
 
 
-def on_config_white_island(number):
+def on_config_white_island():
     """Function to call identify, change and show pop up functions
         and enable buttons after configuration is done on button click.
-
-    Args:
-        number (int): Number of the thread.
     """
 
     global config, power_analyzer, upper_sensor,\
@@ -650,8 +632,6 @@ def on_config_white_island(number):
 
     if config == None:
         return
-
-    print(f"Thread {number} starting")
 
     # Get ID, baudrate and port values for the white island.
     str_white_island_id = config['white_island']['id']
@@ -663,8 +643,6 @@ def on_config_white_island(number):
     # Call identify and change functions.
     current_settings = identify_white_island_id_bd(1, 247, str_white_island_port)
     change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
-
-    print(f"Thread {number} finishing")
 
     # Enable the buttons.
     enable_buttons()
@@ -828,6 +806,7 @@ def read_config():
     config = configparser.ConfigParser()
     configFilePath = config_path
     config.read(configFilePath)
+
 
 def main():
     """Main function for the project.
