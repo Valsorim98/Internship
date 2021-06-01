@@ -28,6 +28,20 @@ def read_voltage(unit):
     print(f"Voltage: {round(voltage, 2)}")
     return round(voltage, 2)
 
+def read_measurement_mode(unit):
+    """Read the measurement mode.
+
+    Args:
+        unit (int): The device ID.
+    """
+
+    response = client.read_holding_registers(
+    address=63776,
+    count=1,
+    unit=unit)
+
+    print(response.registers)
+
 def identify_device_id(begin_id=1, end_id=247):
     """Function to identify device's id.
 
@@ -42,6 +56,7 @@ def identify_device_id(begin_id=1, end_id=247):
     for index in range(begin_id, end_id+1):
         try:
             read_voltage(index)
+            read_measurement_mode(index)
             current_id = index
             break
 
