@@ -698,3 +698,5 @@ def change_device_id(current_id, new_id):
 * Read about threads and python threads, daemon - a thread that is terminated on program exit.
 
 * Make every on_config thread a daemon.
+
+* Added a function to read the measurement mode in configure_SDM120 project.
