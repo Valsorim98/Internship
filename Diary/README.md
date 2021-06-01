@@ -680,3 +680,17 @@ def change_device_id(current_id, new_id):
 * Combined read_temperature and read_humidity functions in one function - read_sensor_parameters and created functions create_gui and read_config.
 
 * Refactoring, added imports and functions for disabling and enabling all the buttons and renamed gui_config.py to main.py.
+
+> # April 31:
+
+* Added a function in a new thread to create a progess bar, when configuration is done to destroy the progress bar and its thread.
+
+* Updated the config file and the keys of the read lines from the config file in main function.
+
+* Refactored progress_bar function, removed the thread and combined the progress_bar function with the identify functions.
+
+> # June 1:
+
+* Created a dict with the configured device and pass it as argument to show_pop_up function.
+
+* Added voltage, coils_status and room_temp_humidity to global.
