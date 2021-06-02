@@ -121,6 +121,8 @@ def read_coils(unit, baud_value, port):
 
     print(response.bits[:4])
 
+    return response.bits[:4]
+
 
 def change_sensor_id_bd(current_id, new_id, new_baudrate):
     """Function to change the sensor id and baudrate.
@@ -495,7 +497,7 @@ def on_click_power_analyzer():
     disable_buttons()
 
     # Start thread.
-    x = threading.Thread(target=on_config_power_analyzer, args=(2,), daemon=True)
+    x = threading.Thread(target=on_config_power_analyzer, daemon=True)
     x.start()
 
 
@@ -540,7 +542,7 @@ def on_click_upper_sensor():
     disable_buttons()
 
     # Start configuration thread.
-    config_thread = threading.Thread(target=on_config_upper_sensor, args=(2,), daemon=True)
+    config_thread = threading.Thread(target=on_config_upper_sensor, daemon=True)
     config_thread.start()
 
 
@@ -579,7 +581,7 @@ def on_click_middle_sensor():
     disable_buttons()
 
     # Start thread.
-    x = threading.Thread(target=on_config_middle_sensor, args=(2,), daemon=True)
+    x = threading.Thread(target=on_config_middle_sensor, daemon=True)
     x.start()
 
 
@@ -618,7 +620,7 @@ def on_click_lower_sensor():
     disable_buttons()
 
     # Start thread.
-    x = threading.Thread(target=on_config_lower_sensor, args=(2,), daemon=True)
+    x = threading.Thread(target=on_config_lower_sensor, daemon=True)
     x.start()
 
 
@@ -657,7 +659,7 @@ def on_click_white_island():
     disable_buttons()
 
     # Start thread.
-    x = threading.Thread(target=on_config_white_island, args=(2,), daemon=True)
+    x = threading.Thread(target=on_config_white_island, daemon=True)
     x.start()
 
 
