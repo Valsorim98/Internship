@@ -700,3 +700,11 @@ def change_device_id(current_id, new_id):
 * Make every on_config thread a daemon.
 
 * Added a function to read the measurement mode in configure_SDM120 project.
+
+> # June 3:
+
+* Created a function to create the progress bar.
+
+* Added locks and releases to the on_config threads.
+
+* After device configuration, the client disconnects from the device.
