@@ -13,6 +13,24 @@ class Programmer():
     """Class programmer.
     """
 
+    def __init__(self):
+        """Constructor for Programmer class.
+        """
+
+        global config
+
+        # Change directory
+        config_path = os.path.join(
+                os.getcwd(),
+                os.path.dirname(__file__),
+                "config.ini")
+
+        # Read config.ini file.
+        config = configparser.ConfigParser()
+        configFilePath = config_path
+        config.read(configFilePath)
+
+
     def read_sensor_parameters(self, unit, baud_value, port):
         """Method to read the temperature and humidity from a sensor.
 
@@ -641,19 +659,19 @@ class Programmer():
         config_white_island_thread.start()
 
 
-    def read_config(self):
-        """Method to read the config file.
-        """
+    # def read_config(self):
+    #     """Method to read the config file.
+    #     """
 
-        global config
+    #     global config
 
-        # Change directory
-        config_path = os.path.join(
-                os.getcwd(),
-                os.path.dirname(__file__),
-                "config.ini")
+    #     # Change directory
+    #     config_path = os.path.join(
+    #             os.getcwd(),
+    #             os.path.dirname(__file__),
+    #             "config.ini")
 
-        # Read config.ini file.
-        config = configparser.ConfigParser()
-        configFilePath = config_path
-        config.read(configFilePath)
+    #     # Read config.ini file.
+    #     config = configparser.ConfigParser()
+    #     configFilePath = config_path
+    #     config.read(configFilePath)
