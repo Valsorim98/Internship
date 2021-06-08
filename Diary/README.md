@@ -708,3 +708,7 @@ def change_device_id(current_id, new_id):
 * Added locks and releases to the on_config threads.
 
 * After device configuration, the client disconnects from the device.
+
+> # June 4:
+
+* Installation of a configured device on a real work place.
