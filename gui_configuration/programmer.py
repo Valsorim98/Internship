@@ -8,10 +8,14 @@ import configparser
 import argparse
 import threading
 from struct import pack, unpack
+import threading
 
 class Programmer():
     """Class programmer.
     """
+
+    __threadLock = threading.Lock()
+
 
     def __init__(self):
         """Constructor for Programmer class.
@@ -203,7 +207,7 @@ class Programmer():
                 root.update_idletasks()
 
                 try:
-                    room_temp_humid = read_sensor_parameters(index, baud_value, port)
+                    room_temp_humid = self.read_sensor_parameters(index, baud_value, port)
                     current_id = index
                     current_bd = baud_value
                     # Append the dictionary with id and baudrate.
@@ -326,7 +330,7 @@ class Programmer():
                 root.update_idletasks()
 
                 try:
-                    voltage = read_voltage(index, baud_value, port)
+                    voltage = self.read_voltage(index, baud_value, port)
                     current_id = index
                     current_bd = baud_value
                     # Append the dictionary with id and baudrate.
@@ -426,7 +430,7 @@ class Programmer():
                 root.update_idletasks()
 
                 try:
-                    coils_status = read_coils(index, baud_value, port)
+                    coils_status = self.read_coils(index, baud_value, port)
                     current_id = index
                     current_bd = baud_value
                     # Append the dictionary with id and baudrate.
@@ -460,14 +464,14 @@ class Programmer():
         power_analyzer_bd = int(str_power_analyzer_bd)
 
         # Lock the thread.
-        threadLock.acquire()
+        self.__threadLock.acquire()
 
         # Call identify and change functions.
-        current_settings = identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port)
-        change_power_analyzer_id_bd(current_settings["id"], power_analyzer_id, power_analyzer_bd)
+        current_settings = self.identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port)
+        self.change_power_analyzer_id_bd(current_settings["id"], power_analyzer_id, power_analyzer_bd)
 
         # Release the lock.
-        threadLock.release()
+        self.__threadLock.release()
 
         # Disconnect from the device.
         disconnect = client.close()
@@ -483,7 +487,7 @@ class Programmer():
         disable_buttons()
 
         # Start thread.
-        config_power_analyzer_thread = threading.Thread(target=on_config_power_analyzer, daemon=True)
+        config_power_analyzer_thread = threading.Thread(target=self.on_config_power_analyzer, daemon=True)
         config_power_analyzer_thread.start()
 
 
@@ -503,14 +507,14 @@ class Programmer():
         upper_sensor_bd = int(str_upper_sensor_bd)
 
         # Lock the thread.
-        threadLock.acquire()
+        self.__threadLock.acquire()
 
         # Call identify and change functions.
-        current_settings = identify_sensor_id_bd(1, 247, str_upper_sensor_port)
-        change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
+        current_settings = self.identify_sensor_id_bd(1, 247, str_upper_sensor_port)
+        self.change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
 
         # Release the lock.
-        threadLock.release()
+        self.__threadLock.release()
 
         # Disconnect from the device.
         disconnect = client.close()
@@ -526,7 +530,7 @@ class Programmer():
         disable_buttons()
 
         # Start configuration thread.
-        config_upper_sensor_thread = threading.Thread(target=on_config_upper_sensor, daemon=True)
+        config_upper_sensor_thread = threading.Thread(target=self.on_config_upper_sensor, daemon=True)
         config_upper_sensor_thread.start()
 
 
@@ -546,14 +550,14 @@ class Programmer():
         middle_sensor_bd = int(str_middle_sensor_bd)
 
         # Lock the thread.
-        threadLock.acquire()
+        self.__threadLock.acquire()
 
         # Call identify and change functions.
-        current_settings = identify_sensor_id_bd(1, 247, str_middle_sensor_port)
-        change_sensor_id_bd(current_settings["id"], middle_sensor_id, middle_sensor_bd)
+        current_settings = self.identify_sensor_id_bd(1, 247, str_middle_sensor_port)
+        self.change_sensor_id_bd(current_settings["id"], middle_sensor_id, middle_sensor_bd)
 
         # Release the lock.
-        threadLock.release()
+        self.__threadLock.release()
 
         # Disconnect from the device.
         disconnect = client.close()
@@ -569,7 +573,7 @@ class Programmer():
         disable_buttons()
 
         # Start thread.
-        config_middle_sensor_thread = threading.Thread(target=on_config_middle_sensor, daemon=True)
+        config_middle_sensor_thread = threading.Thread(target=self.on_config_middle_sensor, daemon=True)
         config_middle_sensor_thread.start()
 
 
@@ -589,14 +593,14 @@ class Programmer():
         lower_sensor_bd = int(str_lower_sensor_bd)
 
         # Lock the thread.
-        threadLock.acquire()
+        self.__threadLock.acquire()
 
         # Call identify and change functions.
-        current_settings = identify_sensor_id_bd(1, 247, str_lower_sensor_port)
-        change_sensor_id_bd(current_settings["id"], lower_sensor_id, lower_sensor_bd)
+        current_settings = self.identify_sensor_id_bd(1, 247, str_lower_sensor_port)
+        self.change_sensor_id_bd(current_settings["id"], lower_sensor_id, lower_sensor_bd)
 
         # Release the lock.
-        threadLock.release()
+        self.__threadLock.release()
 
         # Disconnect from the device.
         disconnect = client.close()
@@ -612,7 +616,7 @@ class Programmer():
         disable_buttons()
 
         # Start thread.
-        config_lower_sensor_thread = threading.Thread(target=on_config_lower_sensor, daemon=True)
+        config_lower_sensor_thread = threading.Thread(target=self.on_config_lower_sensor, daemon=True)
         config_lower_sensor_thread.start()
 
 
@@ -632,14 +636,14 @@ class Programmer():
         white_island_bd = int(str_white_island_bd)
 
         # Lock the thread.
-        threadLock.acquire()
+        self.__threadLock.acquire()
 
         # Call identify and change functions.
-        current_settings = identify_white_island_id_bd(1, 247, str_white_island_port)
-        change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
+        current_settings = self.identify_white_island_id_bd(1, 247, str_white_island_port)
+        self.change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
 
         # Release the lock.
-        threadLock.release()
+        self.__threadLock.release()
 
         # Disconnect from the device.
         disconnect = client.close()
@@ -655,7 +659,7 @@ class Programmer():
         disable_buttons()
 
         # Start thread.
-        config_white_island_thread = threading.Thread(target=on_config_white_island, daemon=True)
+        config_white_island_thread = threading.Thread(target=self.on_config_white_island, daemon=True)
         config_white_island_thread.start()
 
 
