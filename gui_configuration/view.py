@@ -12,11 +12,24 @@ class View():
     """Class View.
     """
 
-    def __init__(self):
+    def __init__(self, configure):
         """Constructor for View class.
         """
 
         global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island, root
+
+        global on_click_power_analyzer, on_click_upper_sensor,\
+                on_click_middle_sensor, on_click_lower_sensor, on_click_white_island
+
+        # Instance of Programmer() class
+        self.configure = configure
+
+        # Call on_click methods from Programmer class.
+        on_click_power_analyzer = self.configure.on_click_power_analyzer()
+        on_click_upper_sensor = self.configure.on_click_upper_sensor()
+        on_click_middle_sensor = self.configure.on_click_middle_sensor()
+        on_click_lower_sensor = self.configure.on_click_lower_sensor()
+        on_click_white_island = self.configure.on_click_white_island()
 
         # Create the window for GUI.
         root = tk.Tk()
@@ -103,18 +116,8 @@ class View():
         root.mainloop()
 
 
-    global on_click_power_analyzer, on_click_upper_sensor,\
-            on_click_middle_sensor, on_click_lower_sensor, on_click_white_island
-
-    # Call Programmer class.
-    configure = Programmer()
-
-    # Call on_click methods from Programmer class.
-    on_click_power_analyzer = configure.on_click_power_analyzer()
-    on_click_upper_sensor = configure.on_click_upper_sensor()
-    on_click_middle_sensor = configure.on_click_middle_sensor()
-    on_click_lower_sensor = configure.on_click_lower_sensor()
-    on_click_white_island = configure.on_click_white_island()
+        # # Call Programmer class.
+        # configure = Programmer()
 
 
     def create_progress_bar(self):
@@ -130,9 +133,16 @@ class View():
         pb['value'] = 0
         root.update_idletasks()
 
+        return [pb, root]
+
     def show_pop_up(self, device_configured):
         """Method to show a pop up.
         """
+
+        # Call methods from Programmer() class.
+        room_temp_humid = self.configure.read_sensor_parameters()
+        voltage = self.configure.read_voltage()
+        coils_status = self.configure.identify_white_island_id_bd()
 
         if device_configured["device"] == "sensor":
             # Shows a pop up window when a sensor is configured.
@@ -148,6 +158,7 @@ class View():
             messagebox.showinfo('Done', 'Configuration complete. Please do a power cycle.\n\
             Coils status: {}'.format(coils_status))
 
+    @classmethod
     def enable_buttons(self):
         """Method to enable all buttons.
         """
@@ -159,6 +170,7 @@ class View():
         lower_sensor.configure(state=NORMAL)
         white_island.configure(state=NORMAL)
 
+    @classmethod
     def disable_buttons(self):
         """Method to disable all buttons.
         """

@@ -167,7 +167,7 @@ class Programmer():
             print("Please do power cycle for the device.")
             device_configured["device"] = "sensor"
             # Shows a pop up.
-            show_pop_up(device_configured)
+            super().show_pop_up(device_configured)
 
         return state
 
@@ -190,7 +190,9 @@ class Programmer():
         time_to_stop = False
 
         # Create the progress bar.
-        create_progress_bar()
+        pb_and_root = super().create_progress_bar()
+        pb = pb_and_root[0]
+        root = pb_and_root[1]
 
         # for loop has range from 1 to 247, because of modbus specification.
         for index in range(begin_id, end_id+1):
@@ -290,7 +292,7 @@ class Programmer():
             print("Please do power cycle for the device.")
             device_configured["device"] = "power_analyzer"
             # Shows a pop up.
-            show_pop_up(device_configured)
+            super().show_pop_up(device_configured)
 
         return state
 
@@ -312,8 +314,11 @@ class Programmer():
         current_id_bd = {}
         time_to_stop = False
 
-        # Create a progress bar.
-        create_progress_bar()
+        # Create the progress bar.
+        pb_and_root = super().create_progress_bar()
+
+        pb = pb_and_root[0]
+        root = pb_and_root[1]
 
         # for loop has range from 1 to 247, because of modbus specification.
         for index in range(begin_id, end_id+1):
@@ -390,7 +395,7 @@ class Programmer():
             print("Please do a power cycle for the device.")
             device_configured["device"] = "white_island"
             # Show a pop up.
-            show_pop_up(device_configured)
+            super().show_pop_up(device_configured)
 
         return state
 
@@ -412,8 +417,11 @@ class Programmer():
         current_id_bd = {}
         time_to_stop = False
 
-        # Create a progress bar.
-        create_progress_bar()
+        # Create the progress bar.
+        pb_and_root = super().create_progress_bar()
+
+        pb = pb_and_root[0]
+        root = pb_and_root[1]
 
         # for loop has range from 1 to 247, because of modbus specification.
         for index in range(begin_id, end_id+1):
@@ -477,14 +485,14 @@ class Programmer():
         disconnect = client.close()
 
         # Enable the buttons.
-        enable_buttons()
+        super().enable_buttons()
 
     def on_click_power_analyzer(self):
         """Power analyzer on click event method.
         """
 
         # Disable the buttons.
-        disable_buttons()
+        super().disable_buttons()
 
         # Start thread.
         config_power_analyzer_thread = threading.Thread(target=self.on_config_power_analyzer, daemon=True)
@@ -520,14 +528,14 @@ class Programmer():
         disconnect = client.close()
 
         # Enable the buttons.
-        enable_buttons()
+        super().enable_buttons()
 
     def on_click_upper_sensor(self):
         """Upper sensor on click event method.
         """
 
         # Disable the buttons.
-        disable_buttons()
+        super().disable_buttons()
 
         # Start configuration thread.
         config_upper_sensor_thread = threading.Thread(target=self.on_config_upper_sensor, daemon=True)
@@ -563,14 +571,14 @@ class Programmer():
         disconnect = client.close()
 
         # Enable the buttons.
-        enable_buttons()
+        super().enable_buttons()
 
     def on_click_middle_sensor(self):
         """Middle sensor on click event method.
         """
 
         # Disable the buttons.
-        disable_buttons()
+        super().disable_buttons()
 
         # Start thread.
         config_middle_sensor_thread = threading.Thread(target=self.on_config_middle_sensor, daemon=True)
@@ -606,14 +614,14 @@ class Programmer():
         disconnect = client.close()
 
         # Enable the buttons.
-        enable_buttons()
+        super().enable_buttons()
 
     def on_click_lower_sensor(self):
         """Lower sensor on click event method.
         """
 
         # Disable the buttons.
-        disable_buttons()
+        super().disable_buttons()
 
         # Start thread.
         config_lower_sensor_thread = threading.Thread(target=self.on_config_lower_sensor, daemon=True)
@@ -649,14 +657,14 @@ class Programmer():
         disconnect = client.close()
 
         # Enable the buttons.
-        enable_buttons()
+        super().enable_buttons()
 
     def on_click_white_island(self):
         """White island on click event method.
         """
 
         # Disable the buttons.
-        disable_buttons()
+        super().disable_buttons()
 
         # Start thread.
         config_white_island_thread = threading.Thread(target=self.on_config_white_island, daemon=True)
