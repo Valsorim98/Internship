@@ -158,7 +158,6 @@ class View():
             messagebox.showinfo('Done', 'Configuration complete. Please do a power cycle.\n\
             Coils status: {}'.format(coils_status))
 
-    @classmethod
     def enable_buttons(self):
         """Method to enable all buttons.
         """
@@ -170,7 +169,6 @@ class View():
         lower_sensor.configure(state=NORMAL)
         white_island.configure(state=NORMAL)
 
-    @classmethod
     def disable_buttons(self):
         """Method to disable all buttons.
         """
