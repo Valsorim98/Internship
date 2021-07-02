@@ -1,27 +1,55 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-import pymodbus
-from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 import os
 import configparser
 import argparse
-import threading
 from struct import pack, unpack
-import threading
+from tkinter.constants import N, NONE
+
+from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 
 class Programmer():
     """Class programmer.
     """
 
-    __threadLock = threading.Lock()
+#region Attributes
 
+    __config = None
+
+    __update_progress = None
+
+#endregion
+
+#region Properties
+
+    @property
+    def update_progress(self):
+
+        return self.__update_progress
+
+
+    @update_progress.setter
+    def update_progress(self, value):
+
+        if value is not None:
+            self.__update_progress = value
+
+#endregion
+
+#region Constructor
 
     def __init__(self):
         """Constructor for Programmer class.
         """
 
-        global config
+        self.__read_config_file()
+
+#endregion
+
+#region Private Methods
+
+    def __read_config_file(self):
 
         # Change directory
         config_path = os.path.join(
@@ -30,208 +58,98 @@ class Programmer():
                 "config.ini")
 
         # Read config.ini file.
-        config = configparser.ConfigParser()
-        configFilePath = config_path
-        config.read(configFilePath)
+        self.__config = configparser.ConfigParser()
+        self.__config.read(config_path)
 
+#endregion
 
-    def read_sensor_parameters(self, unit, baud_value, port):
-        """Method to read the temperature and humidity from a sensor.
-
-        Args:
-            unit (int): Unit id.
-
-        Returns:
-            float: Returns temperature.
-        """
-
-        global client
-
-        room_temp_humid = {}
-
-        # Make a connection with the device.
-        client = ModbusClient(method="rtu", port=port,
-        timeout=0.4, stopbits=1, bytesize=8,
-        parity="N", baudrate=baud_value)
-        connection = client.connect()
-
-        # READ TEMPERATURE:
-        response = client.read_input_registers(
-            address=1,
-            count=1,
-            unit=unit)
-
-        temperature = int(response.registers[0]) / 10
-        room_temp_humid["temperature"] = temperature
-        print(f"Temperature: {temperature}")
-
-        # READ HUMIDITY:
-        response = client.read_input_registers(
-            address=2,
-            count=1,
-            unit=unit)
-
-        humidity = int(response.registers[0]) / 10
-        room_temp_humid["humidity"] = humidity
-        print(f"Humidity: {humidity}")
-
-        return room_temp_humid
-
-    def read_voltage(self, unit, baud_value, port):
+    def __pa_read_voltage(self, port, baudrate, unit):
         """Method to read the voltage from the power analyzer.
-        """
-
-        global client
-
-        # Make a connection with the device.
-        client = ModbusClient(method="rtu", port=port,
-        timeout=0.4, stopbits=1, bytesize=8,
-        parity="N", baudrate=baud_value)
-        connection = client.connect()
-
-        response = client.read_input_registers(
-        address=0,
-        count=2,
-        unit=unit)
-
-        # Pack the response to bytes from the registers
-        response_bytes = pack("<HH", response.registers[1], response.registers[0])
-        # Unpack the response as a float
-        response_float = unpack("f", response_bytes)
-        voltage = response_float[0]
-
-        print(f"Voltage: {round(voltage, 2)}")
-
-        return round(voltage, 2)
-
-    def read_coils(self, unit, baud_value, port):
-        """Method to read the coils.
 
         Args:
-            unit (int): The ID of the device.
-        """
-
-        global client
-
-        # Make a connection.
-        client = ModbusClient(method="rtu", port=port,
-        timeout=0.5, stopbits=1, bytesize=8,
-        parity="N", baudrate=baud_value)
-        connection = client.connect()
-
-        response = client.read_coils(
-            address=16,
-            count=4,
-            unit=unit)
-
-        print(response.bits[:4])
-
-        return response.bits[:4]
-
-
-    def change_sensor_id_bd(self, current_id, new_id, new_baudrate):
-        """Method to change the sensor id and baudrate.
-
-        Args:
-            current_id (int): Current sensor id.
-            new_id (int): Set new sensor id.
+            port (str): Port name.
+            baudrate (int): Baudrate
+            unit (int): Unit ID.
 
         Returns:
-            bool : True if successful, else False.
+            float: Voltage
         """
 
-        global client
+        voltage = 0.0
 
-        # To store which device is configured.
-        device_configured = {}
+        # Make a connection with the device.
+        with ModbusClient(method="rtu", port=port, timeout=0.33, baudrate=baudrate) as client:
 
-        state = False
+            response = client.read_input_registers(address=0, count=2, unit=unit)
+            is_err = response.isError()
+            if not is_err:
 
-        # Only values from 1 to 247 can be passed.
-        if new_id < 1 or new_id > 247:
-            raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 247.')
-        else:
-            response = client.write_register(0x0101, new_id, unit=current_id)
-            print(response)
-            state = True
+                # Pack the response to bytes from the registers
+                response_bytes = pack("<HH", response.registers[1], response.registers[0])
 
-        # Only values equal to 9600, 14400 or 19200 can be passed.
-        if new_baudrate != 9600 and new_baudrate != 14400 and new_baudrate != 19200:
-            raise argparse.ArgumentTypeError('Invalid value! Insert 9600, 14400 or 19200.')
-        else:
-            response = client.write_register(0x0102, new_baudrate, unit=current_id)
-            print(response)
-            state = True
+                # Unpack the response as a float
+                response_float = unpack("f", response_bytes)
 
-        if state:
-            print("Please do power cycle for the device.")
-            device_configured["device"] = "sensor"
-            # Shows a pop up.
-            super().show_pop_up(device_configured)
+                # Get the actual voltage value.
+                voltage = response_float[0]
 
-        return state
+                # Round the voltage.
+                voltage = round(voltage, 2)
 
-    def identify_sensor_id_bd(self, begin_id, end_id, port):
-        """Method to identify the sensor ID and baudrate.
+        return voltage
+
+    def __pa_identify(self, port, begin_id=1, end_id=247):
+        """Method to identify the power analyzer ID and baudrate.
 
         Args:
+            port (str): Name of the serial port.
             begin_id (int): The ID to start searching from.
             end_id (int): The last ID to search to.
 
         Returns:
-            dict: Dict containing the current ID and baudrate of the sensor.
+            dict: Dict containing the current ID and baudrate of the power analyzer.
         """
 
-        global client, room_temp_humid, root
-
-        current_id = -1
-        baudrate_list = [9600, 14400, 19200]
-        current_id_bd = {}
         time_to_stop = False
-
-        # Create the progress bar.
-        pb_and_root = super().create_progress_bar()
-        pb = pb_and_root[0]
-        root = pb_and_root[1]
+        baudrate_list = [1200, 2400, 4800, 9600]
+        current_settings = {}
 
         # for loop has range from 1 to 247, because of modbus specification.
-        for index in range(begin_id, end_id+1):
+        for device_id in range(begin_id, end_id):
 
             # If the device ID and baudrate are found to stop.
             if time_to_stop == True:
                 break
 
             # Search for every baudrate value in the baudrate_list.
-            for baud_value in baudrate_list:
+            for baudrate in baudrate_list:
 
-                # Move the progress bar.
-                pb['value'] += 25
-                root.update_idletasks()
+                if self.__update_progress is not None:
+                    self.__update_progress(25)
 
-                try:
-                    room_temp_humid = self.read_sensor_parameters(index, baud_value, port)
-                    current_id = index
-                    current_bd = baud_value
-                    # Append the dictionary with id and baudrate.
-                    current_id_bd["id"] = current_id
-                    current_id_bd["baudrate"] = current_bd
-                    time_to_stop = True
-                    print(current_id_bd)
-                    # After finding the device to destroy the progress bar.
-                    pb.destroy()
-                    break
+                voltage = self.__pa_read_voltage(port, baudrate, device_id)
+                if voltage < 100.0:
+                    print(f"No device found at ID: {device_id} baudrate: {baudrate}.")
+                    continue
 
-                except Exception as e:
-                    print(f"No device found at id: {index} baudrate: {baud_value}.")
+                print(f"Device found at ID: {device_id} baudrate: {baudrate}.")
+                print(f"Voltage: {round(voltage, 2)}")
 
-        return current_id_bd
+                # Append the dictionary with id and baudrate.                    
+                current_settings["ID"] = device_id
+                current_settings["BAUDRATE"] = baudrate
 
+                # Break the search.
+                time_to_stop = True
+                break
 
-    def change_power_analyzer_id_bd(self, current_id, new_id, new_baudrate):
+        return current_settings
+
+    def __pa_change_settings(self, current_settings, new_id, new_baudrate):
         """Method to change the power analyzer ID and baudrate.
 
         Args:
-            current_id (int): Current power analyzer id.
+            current_settings (dict): Current power analyzer settings.
             new_id (int): Set new power analyzer id.
             new_baudrate(int): Set new power analyzer baudrate.
 
@@ -239,7 +157,12 @@ class Programmer():
             bool : True if successful, else False.
         """
 
-        global client
+        # Port
+        port = self.__config["POWER_ANALYZER"]["PORT"]
+
+        # Make a connection with the device.
+        client = ModbusClient(method="rtu", port=port, timeout=0.33,    baudrate=current_settings["BAUDRATE"])
+        client.connect()
 
         # To store which device is configured.
         device_configured = {}
@@ -254,16 +177,16 @@ class Programmer():
         unpack_value = unpack("<HH", byte_value)
 
         # Append the lower number on last position for little-endian.
-        regs_value = []
-        regs_value.append(unpack_value[1])
-        regs_value.append(unpack_value[0])
+        id_regs_values = []
+        id_regs_values.append(unpack_value[1])
+        id_regs_values.append(unpack_value[0])
 
         # Write registers 20,21 with the float number to change the ID.
         # Only values from 1 to 247 can be passed.
         if new_id < 1 or new_id > 247:
-            raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 247.')
+            raise argparse.ArgumentTypeError("Invalid value! Insert 1 ~ 247.")
         else:
-            response = client.write_registers(20, regs_value, unit=current_id)
+            response = client.write_registers(20, id_regs_values, unit=current_settings["ID"])
             print(response)
             state = True
 
@@ -272,134 +195,191 @@ class Programmer():
         baudrate_byte_value = pack("f", new_baudrate)
 
         # Unpack bytes to binary.
-        baudrate_unpack_value = unpack("<HH", baudrate_byte_value)
+        bd_unpack_values = unpack("<HH", baudrate_byte_value)
 
         # Append the lower number on last position for little-endian.
-        baudrate_regs_value = []
-        baudrate_regs_value.append(baudrate_unpack_value[1])
-        baudrate_regs_value.append(baudrate_unpack_value[0])
+        bd_regs_values = []
+        bd_regs_values.append(bd_unpack_values[1])
+        bd_regs_values.append(bd_unpack_values[0])
 
         # Write registers 28,29 with the float number to change the baudrate.
         # Only values equal to 2400, 4800, 9600 or 1200 baudrate can be passed.
         if new_baudrate != 0 and new_baudrate != 1 and new_baudrate != 2 and new_baudrate != 5:
-            raise argparse.ArgumentTypeError('Invalid value! Insert 0, 1, 2 or 5.')
+            raise argparse.ArgumentTypeError("Invalid value! Insert 0, 1, 2 or 5.")
         else:
-            response = client.write_registers(28, baudrate_regs_value, unit=current_id)
+            response = client.write_registers(28, bd_regs_values, unit=current_settings["ID"])
             print(response)
             state = True
 
         if state:
             print("Please do power cycle for the device.")
-            device_configured["device"] = "power_analyzer"
+            device_configured["device"] = "POWER_ANALYZER"
             # Shows a pop up.
-            super().show_pop_up(device_configured)
+            # super().show_pop_up(device_configured)
 
         return state
 
-    def identify_power_analyzer_id_bd(self, begin_id, end_id, port):
-        """Method to identify the power analyzer ID and baudrate.
+
+    def __sensor_read_params(self, port, baudrate, unit):
+        """Method to read the temperature and humidity from a sensor.
 
         Args:
-            begin_id (int): The ID to start searching from.
-            end_id (int): The last ID to search to.
+            port ([type]): [description]
+            baudrate ([type]): [description]
+            unit (int): Unit id.
 
         Returns:
-            dict: Dict containing the current ID and baudrate of the power analyzer.
+            float: Returns temperature.
         """
 
-        global client, voltage
+        # PArameters dictionary.
+        params = {}
+        params["temperature"] = 0.0
+        params["humidity"] = 0.0
+        
+        try:
 
-        current_id = -1
-        baudrate_list = [1200, 2400, 4800, 9600]
-        current_id_bd = {}
+            # Make a connection with the device.
+            with ModbusClient(method="rtu", port=port, timeout=0.33, baudrate=baudrate) as client:
+
+                # Read temperature:
+                response = client.read_input_registers(address=1, count=1, unit=unit)
+                is_err = response.isError()
+                if not is_err:
+                    params["temperature"] = int(response.registers[0]) / 10
+
+                # Read humidity.
+                response = client.read_input_registers(address=2, count=1, unit=unit)
+                is_err = response.isError()
+                if not is_err:
+                    params["humidity"] = int(response.registers[0]) / 10
+        
+        except Exception as e:
+            pass
+        
+        return params
+
+    def __sensor_identify(self, port, begin_id=1, end_id=247):
+        """Method to identify the sensor ID and baudrate.
+
+        Args:
+            port (str): Port
+            begin_id (int, optional): Defaults to 1.
+            end_id (int, optional): Defaults to 247.
+
+        Returns:
+            dict: Current ID and baudrate of the sensor.
+        """
+
         time_to_stop = False
-
-        # Create the progress bar.
-        pb_and_root = super().create_progress_bar()
-
-        pb = pb_and_root[0]
-        root = pb_and_root[1]
+        baudrate_list = [9600, 14400, 19200]
+        current_settings = {}
 
         # for loop has range from 1 to 247, because of modbus specification.
-        for index in range(begin_id, end_id+1):
+        for device_id in range(begin_id, end_id):
 
             # If the device ID and baudrate are found to stop.
             if time_to_stop == True:
                 break
 
             # Search for every baudrate value in the baudrate_list.
-            for baud_value in baudrate_list:
+            for baudrate in baudrate_list:
 
-                # Move the progress bar.
-                pb['value'] += 25
-                root.update_idletasks()
+                if self.__update_progress is not None:
+                    self.__update_progress(25)
 
-                try:
-                    voltage = self.read_voltage(index, baud_value, port)
-                    current_id = index
-                    current_bd = baud_value
-                    # Append the dictionary with id and baudrate.
-                    current_id_bd["id"] = current_id
-                    current_id_bd["baudrate"] = current_bd
-                    time_to_stop = True
-                    print(current_id_bd)
-                    # After finding the device to destroy the progress bar.
-                    pb.destroy()
-                    break
+                params = self.__sensor_read_params(port, baudrate, device_id)
+                if (params["temperature"] <= 0.0 or params["humidity"] <= 0.0):
+                    print(f"No device found at ID: {device_id} baudrate: {baudrate}.")
+                    continue
 
-                except Exception as e:
-                    print(f"No device found at id: {index} baudrate: {baud_value}.")
+                # print device parameters.
+                print(f"Device found at ID: {device_id} baudrate: {baudrate}.")
+                print("Temp: {}; Hum: {}".format(params["temperature"], params["humidity"]))
 
-        return current_id_bd
+                # Append the dictionary with id and baudrate.
+                current_settings["ID"] = device_id
+                current_settings["BAUDRATE"] = baudrate
 
+                # stop the cycle.
+                time_to_stop = True
+                break
 
-    def change_white_island_id_bd(self, current_id, new_id, new_baudrate):
-        """Method to change the white island id and baudrate.
+        return current_settings
+
+    def __sensor_change_settings(self, current_settings, new_id, new_baudrate):
+        """Change the sensor ID and baudrate.
 
         Args:
-            current_id (int): Current device id.
-            new_id(int): Set new device id.
-            new_baudrate(int): Set new device baudrate.
+            current_settings (dict): Current sensor id.
+            new_id (int): Set new sensor id.
+            new_baudrate (int): New baudrate.
+
+        Raises:
+            argparse.ArgumentTypeError: Invalid new ID: [1 ~ 247]
+            argparse.ArgumentTypeError: Invalid baudrate: [9600, 14400, 19200]
 
         Returns:
-            bool : True if successful, else False.
+            bool: Is the change succeeded.
         """
 
-        global client
-
-        # To store which device is configured.
-        device_configured = {}
-        state = False
-
-        # Change device ID.
-        # ATTENTION: register address 1 changes the ID, mistake in the documentation(2)!
         # Only values from 1 to 247 can be passed.
         if new_id < 1 or new_id > 247:
-            raise argparse.ArgumentTypeError('Invalid value! Insert 1 ~ 247.')
-        else:
-            response = client.write_register(address=1, value=6, unit=0)
-            print(response)
-            state = True
+            raise argparse.ArgumentTypeError("Invalid new ID: [1 ~ 247]")
 
-        # Write device baudrate.
-        # ATTENTION: register address 2 changes the baudrate, mistake in the documentation(3)!
         # Only values equal to 9600, 14400 or 19200 can be passed.
-        if new_baudrate != 1 and new_baudrate != 2 and new_baudrate != 3 and new_baudrate != 4 and new_baudrate != 5:
-            raise argparse.ArgumentTypeError('Invalid value! Insert 1, 2, 3, 4 or 5.')
-        else:
-            response = client.write_register(address=2, value=4, unit=0)
-            print(response)
-            state = True
+        if new_baudrate != 9600 and new_baudrate != 14400 and new_baudrate != 19200:
+            raise argparse.ArgumentTypeError("Invalid baudrate: [9600, 14400, 19200]")
 
-        if state:
-            print("Please do a power cycle for the device.")
-            device_configured["device"] = "white_island"
-            # Show a pop up.
-            super().show_pop_up(device_configured)
+        # Port
+        port = self.__config["POWER_ANALYZER"]["PORT"]
 
-        return state
+        state = 0
 
-    def identify_white_island_id_bd(self, begin_id, end_id, port):
+        # Make a connection with the device.
+        with ModbusClient(method="rtu", port=port, timeout=0.33, baudrate=current_settings["BAUDRATE"]) as client:
+
+            response = client.write_register(0x0101, new_id, unit=current_settings["ID"])
+            is_err = response.isError()
+            if not is_err:
+                print(response)
+                state += 1
+
+            response = client.write_register(0x0102, new_baudrate, unit=current_settings["ID"])
+            is_err = response.isError()
+            if not is_err:
+                print(response)
+                state += 1
+
+        return state == 2
+
+
+    def __wi_read_coils(self, unit, baudrate, port):
+        """Method to read the coils.
+
+        Args:
+            unit (int): The ID of the device.
+            baudrate (int): Baudrate value.
+            port (str): Port
+
+        Returns:
+            list: List of bits.
+        """
+
+        # Response result.
+        bits = []
+
+        # Make a connection.
+        with ModbusClient(method="rtu", port=port, timeout=0.33, baudrate=baudrate) as client:
+
+            response = client.read_coils(address=16, count=4, unit=unit)
+            is_err = response.isError()
+            if not is_err:
+                bits = response.bits
+
+        return bits
+
+    def __wi_identify(self, begin_id, end_id, port):
         """Method to identify the white island ID and baudrate.
 
         Args:
@@ -410,280 +390,163 @@ class Programmer():
             dict: Dict containing the current ID and baudrate of the white island.
         """
 
-        global client, coils_status
-
-        current_id = -1
-        baudrate_list = [1200, 2400, 4800, 9600, 19200]
-        current_id_bd = {}
         time_to_stop = False
-
-        # Create the progress bar.
-        pb_and_root = super().create_progress_bar()
-
-        pb = pb_and_root[0]
-        root = pb_and_root[1]
+        baudrate_list = [1200, 2400, 4800, 9600, 19200]
+        current_settings = {}
 
         # for loop has range from 1 to 247, because of modbus specification.
-        for index in range(begin_id, end_id+1):
+        for device_id in range(begin_id, end_id+1):
 
             # If the device ID and baudrate are found to stop.
             if time_to_stop == True:
                 break
 
             # Search for every baudrate value in the baudrate_list.
-            for baud_value in baudrate_list:
+            for baudrate in baudrate_list:
 
-                # Move the progress bar.
-                pb['value'] += 25
-                root.update_idletasks()
+                if self.__update_progress is not None:
+                    self.__update_progress(25)
 
-                try:
-                    coils_status = self.read_coils(index, baud_value, port)
-                    current_id = index
-                    current_bd = baud_value
-                    # Append the dictionary with id and baudrate.
-                    current_id_bd["id"] = current_id
-                    current_id_bd["baudrate"] = current_bd
-                    time_to_stop = True
-                    print(current_id_bd)
-                    # After finding the device to destroy the progress bar.
-                    pb.destroy()
-                    break
+                coils_status = self.__wi_read_coils(device_id, baudrate, port)
+                if len(coils_status) <= 0:
+                    print(f"No device found at ID: {device_id} baudrate: {baudrate}.")
+                    continue
 
-                except Exception as e:
-                    print(f"No device found at id: {index} baudrate: {baud_value}.")
+                # Append the dictionary with id and baudrate.
+                current_settings["ID"] = device_id
+                current_settings["BAUDRATE"] = baudrate
+                    
+                print(f"Device found at ID: {device_id} baudrate: {baudrate}.")
+                print("Coils: {}".format(coils_status))
 
-        return current_id_bd
+                time_to_stop = True
+                break
 
+        return current_settings
 
-    def on_config_power_analyzer(self):
-        """Method to call identify, change and show pop up methods
-            and enable buttons after configuration is done on button click.
+    def __wi_change_settings(self, current_settings, new_id, new_baudrate):
+        """Method to change the white island id and baudrate.
+
+        Args:
+            current_settings (dict): Current device id.
+            new_id(int): Set new device id.
+            new_baudrate(int): Set new device baudrate.
+
+        Raises:
+            argparse.ArgumentTypeError: Invalid ID! Insert [1 ~ 247]
+            argparse.ArgumentTypeError: Invalid baudrate! Insert [1, 2, 3, 4, 5]
+
+        Returns:
+            bool : True if successful, else False.
         """
 
-        if config == None:
+        # Only values from 1 to 247 can be passed.
+        if new_id < 1 or new_id > 247:
+            raise argparse.ArgumentTypeError("Invalid ID! Insert [1 ~ 247]")
+
+        # Only values equal to 9600, 14400 or 19200 can be passed.
+        if new_baudrate != 1 and new_baudrate != 2 and new_baudrate != 3 and new_baudrate != 4 and new_baudrate != 5:
+            raise argparse.ArgumentTypeError("Invalid baudrate! Insert [1, 2, 3, 4, 5]")
+
+        # Port
+        port = self.__config["POWER_ANALYZER"]["PORT"]
+
+        state = 0
+
+        # Make a connection with the device.
+        with ModbusClient(method="rtu", port=port, timeout=0.33, baudrate=current_settings["BAUDRATE"]) as client:
+
+            # Change device ID.
+            # ATTENTION: register address 1 changes the ID, mistake in the documentation(2)!
+            response = client.write_register(address=1, value=6, unit=0)
+            is_err = response.isError()
+            if not is_err:
+                print(response)
+                state += 1
+
+            # Write device baudrate.
+            # ATTENTION: register address 2 changes the baudrate, mistake in the documentation(3)!
+            response = client.write_register(address=2, value=4, unit=0)
+            is_err = response.isError()
+            if not is_err:
+                print(response)
+                state += 1
+
+        return state == 2
+
+#endregion
+
+#region Public Methods
+
+    def config_power_analyser(self):
+
+        if self.__config == None:
             return
 
         # Get ID, baudrate and port values for the power analyzer.
-        str_power_analyzer_id = config['power_analyzer']['id']
-        str_power_analyzer_bd = config['power_analyzer']['for_9600_baudrate']
-        str_power_analyzer_port = config['power_analyzer']['port']
-        power_analyzer_id = int(str_power_analyzer_id)
-        power_analyzer_bd = int(str_power_analyzer_bd)
-
-        # Lock the thread.
-        self.__threadLock.acquire()
+        power_analyzer_port = self.__config["POWER_ANALYZER"]["PORT"]
+        power_analyzer_id = int(self.__config["POWER_ANALYZER"]["ID"])
+        power_analyzer_bd = int(self.__config["POWER_ANALYZER"]["B9600"])
 
         # Call identify and change functions.
-        current_settings = self.identify_power_analyzer_id_bd(1, 247, str_power_analyzer_port)
-        self.change_power_analyzer_id_bd(current_settings["id"], power_analyzer_id, power_analyzer_bd)
+        current_settings = self.__pa_identify(power_analyzer_port)
+        self.__pa_change_settings(current_settings, power_analyzer_id, power_analyzer_bd)
 
-        # Release the lock.
-        self.__threadLock.release()
+    def config_upper_sensor(self):
 
-        # Disconnect from the device.
-        disconnect = client.close()
-
-        # Enable the buttons.
-        super().enable_buttons()
-
-    def on_click_power_analyzer(self):
-        """Power analyzer on click event method.
-        """
-
-        # Disable the buttons.
-        super().disable_buttons()
-
-        # Start thread.
-        config_power_analyzer_thread = threading.Thread(target=self.on_config_power_analyzer, daemon=True)
-        config_power_analyzer_thread.start()
-
-
-    def on_config_upper_sensor(self):
-        """Method to call identify, change and show pop up methods
-        and enable buttons after configuration is done on button click.
-        """
-
-        if config == None:
+        if self.__config == None:
             return
 
         # Get ID, baudrate and port values for the upper sensor.
-        str_upper_sensor_id = config['upper_sensor']['id']
-        str_upper_sensor_bd = config['upper_sensor']['baudrate']
-        str_upper_sensor_port = config['upper_sensor']['port']
-        upper_sensor_id = int(str_upper_sensor_id)
-        upper_sensor_bd = int(str_upper_sensor_bd)
-
-        # Lock the thread.
-        self.__threadLock.acquire()
+        sensor_id = int(self.__config["UPPER_SENSOR"]["ID"])
+        sensor_bd = int(self.__config["UPPER_SENSOR"]["BAUDRATE"])
+        sensor_port = self.__config["UPPER_SENSOR"]["PORT"]
 
         # Call identify and change functions.
-        current_settings = self.identify_sensor_id_bd(1, 247, str_upper_sensor_port)
-        self.change_sensor_id_bd(current_settings["id"], upper_sensor_id, upper_sensor_bd)
+        current_settings = self.__sensor_identify(sensor_port)
+        self.__sensor_change_settings(current_settings, sensor_id, sensor_bd)
 
-        # Release the lock.
-        self.__threadLock.release()
+    def config_middle_sensor(self):
 
-        # Disconnect from the device.
-        disconnect = client.close()
-
-        # Enable the buttons.
-        super().enable_buttons()
-
-    def on_click_upper_sensor(self):
-        """Upper sensor on click event method.
-        """
-
-        # Disable the buttons.
-        super().disable_buttons()
-
-        # Start configuration thread.
-        config_upper_sensor_thread = threading.Thread(target=self.on_config_upper_sensor, daemon=True)
-        config_upper_sensor_thread.start()
-
-
-    def on_config_middle_sensor(self):
-        """Method to call identify, change and show pop up methods
-            and enable buttons after configuration is done on button click.
-        """
-
-        if config == None:
+        if self.__config == None:
             return
 
-        # Get ID, baudrate and port values for the middle sensor.
-        str_middle_sensor_id = config['middle_sensor']['id']
-        str_middle_sensor_bd = config['middle_sensor']['baudrate']
-        str_middle_sensor_port = config['middle_sensor']['port']
-        middle_sensor_id = int(str_middle_sensor_id)
-        middle_sensor_bd = int(str_middle_sensor_bd)
-
-        # Lock the thread.
-        self.__threadLock.acquire()
+        # Get ID, baudrate and port values for the upper sensor.
+        sensor_id = int(self.__config["MIDDLE_SENSOR"]["ID"])
+        sensor_bd = int(self.__config["MIDDLE_SENSOR"]["BAUDRATE"])
+        sensor_port = self.__config["MIDDLE_SENSOR"]["PORT"]
 
         # Call identify and change functions.
-        current_settings = self.identify_sensor_id_bd(1, 247, str_middle_sensor_port)
-        self.change_sensor_id_bd(current_settings["id"], middle_sensor_id, middle_sensor_bd)
+        current_settings = self.__sensor_identify(sensor_port)
+        self.__sensor_change_settings(current_settings, sensor_id, sensor_bd)
 
-        # Release the lock.
-        self.__threadLock.release()
+    def config_lower_sensor(self):
 
-        # Disconnect from the device.
-        disconnect = client.close()
-
-        # Enable the buttons.
-        super().enable_buttons()
-
-    def on_click_middle_sensor(self):
-        """Middle sensor on click event method.
-        """
-
-        # Disable the buttons.
-        super().disable_buttons()
-
-        # Start thread.
-        config_middle_sensor_thread = threading.Thread(target=self.on_config_middle_sensor, daemon=True)
-        config_middle_sensor_thread.start()
-
-
-    def on_config_lower_sensor(self):
-        """Method to call identify, change and show pop up methods
-            and enable buttons after configuration is done on button click.
-        """
-
-        if config == None:
+        if self.__config == None:
             return
 
-        # Get ID, baudrate and port values for the lower sensor.
-        str_lower_sensor_id = config['lower_sensor']['id']
-        str_lower_sensor_bd = config['lower_sensor']['baudrate']
-        str_lower_sensor_port = config['lower_sensor']['port']
-        lower_sensor_id = int(str_lower_sensor_id)
-        lower_sensor_bd = int(str_lower_sensor_bd)
-
-        # Lock the thread.
-        self.__threadLock.acquire()
+        # Get ID, baudrate and port values for the upper sensor.
+        sensor_id = int(self.__config["LOWER_SENSOR"]["ID"])
+        sensor_bd = int(self.__config["LOWER_SENSOR"]["BAUDRATE"])
+        sensor_port = self.__config["LOWER_SENSOR"]["PORT"]
 
         # Call identify and change functions.
-        current_settings = self.identify_sensor_id_bd(1, 247, str_lower_sensor_port)
-        self.change_sensor_id_bd(current_settings["id"], lower_sensor_id, lower_sensor_bd)
+        current_settings = self.__sensor_identify(sensor_port)
+        self.__sensor_change_settings(current_settings, sensor_id, sensor_bd)
 
-        # Release the lock.
-        self.__threadLock.release()
+    def config_white_island(self):
 
-        # Disconnect from the device.
-        disconnect = client.close()
-
-        # Enable the buttons.
-        super().enable_buttons()
-
-    def on_click_lower_sensor(self):
-        """Lower sensor on click event method.
-        """
-
-        # Disable the buttons.
-        super().disable_buttons()
-
-        # Start thread.
-        config_lower_sensor_thread = threading.Thread(target=self.on_config_lower_sensor, daemon=True)
-        config_lower_sensor_thread.start()
-
-
-    def on_config_white_island(self):
-        """Method to call identify, change and show pop up methods
-            and enable buttons after configuration is done on button click.
-        """
-
-        if config == None:
+        if self.__config == None:
             return
 
         # Get ID, baudrate and port values for the white island.
-        str_white_island_id = config['white_island']['id']
-        str_white_island_bd = config['white_island']['for_9600_baudrate']
-        str_white_island_port = config['white_island']['port']
-        white_island_id = int(str_white_island_id)
-        white_island_bd = int(str_white_island_bd)
+        white_island_id = int(self.__config["WHITE_ISLAND"]["ID"])
+        white_island_bd = int(self.__config["WHITE_ISLAND"]["B9600"])
+        str_white_island_port = self.__config["WHITE_ISLAND"]["PORT"]
 
-        # Lock the thread.
-        self.__threadLock.acquire()
 
         # Call identify and change functions.
-        current_settings = self.identify_white_island_id_bd(1, 247, str_white_island_port)
-        self.change_white_island_id_bd(current_settings["id"], white_island_id, white_island_bd)
+        current_settings = self.__wi_identify(1, 247, str_white_island_port)
+        self.__wi_change_settings(current_settings, white_island_id, white_island_bd)
 
-        # Release the lock.
-        self.__threadLock.release()
-
-        # Disconnect from the device.
-        disconnect = client.close()
-
-        # Enable the buttons.
-        super().enable_buttons()
-
-    def on_click_white_island(self):
-        """White island on click event method.
-        """
-
-        # Disable the buttons.
-        super().disable_buttons()
-
-        # Start thread.
-        config_white_island_thread = threading.Thread(target=self.on_config_white_island, daemon=True)
-        config_white_island_thread.start()
-
-
-    # def read_config(self):
-    #     """Method to read the config file.
-    #     """
-
-    #     global config
-
-    #     # Change directory
-    #     config_path = os.path.join(
-    #             os.getcwd(),
-    #             os.path.dirname(__file__),
-    #             "config.ini")
-
-    #     # Read config.ini file.
-    #     config = configparser.ConfigParser()
-    #     configFilePath = config_path
-    #     config.read(configFilePath)
+#endregion

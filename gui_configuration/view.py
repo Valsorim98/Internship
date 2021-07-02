@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
+import threading
+
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
@@ -12,259 +14,364 @@ class View():
     """Class View.
     """
 
-    def __init__(self, configure):
+#region Attributes
+
+    __thread_lock = None
+    """Thread lock.
+    """
+
+    __root = None
+    """Root window instance.
+    """
+
+    __btn_power_analyser = None
+    """Button power analyser config.
+    """
+
+    __btn_upper_sensor = None
+    """Button upper sensor config.
+    """
+
+    __btn_middle_sensor = None
+    """Button middle sensor config.
+    """
+
+    __btn_lower_sensor = None
+    """Button lower sensor config.
+    """
+
+    __btn_white_island = None
+    """Button white island.
+    """
+
+    __progress_bar = None
+    """Prograss bar.
+    """
+
+    __label = None
+    """Label
+    """
+
+    __programmer = None
+    """Device flasher.
+    """
+
+#endregion
+
+#region Constructor
+
+    def __init__(self):
         """Constructor for View class.
         """
 
-        global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island, root
-
-        global on_click_power_analyzer, on_click_upper_sensor,\
-                on_click_middle_sensor, on_click_lower_sensor, on_click_white_island
-
-        # Instance of Programmer() class
-        self.configure = configure
-
-        # Call on_click methods from Programmer class.
-        on_click_power_analyzer = self.configure.on_click_power_analyzer()
-        on_click_upper_sensor = self.configure.on_click_upper_sensor()
-        on_click_middle_sensor = self.configure.on_click_middle_sensor()
-        on_click_lower_sensor = self.configure.on_click_lower_sensor()
-        on_click_white_island = self.configure.on_click_white_island()
+        self.__thread_lock = threading.Lock()
 
         # Create the window for GUI.
-        root = tk.Tk()
+        self.__root = tk.Tk()
 
         # Set window name.
-        root.title("Configuration")
+        self.__root.title("Zontromat ManJob")
 
         # Prevents resizing.
-        root.resizable(False, False)
+        self.__root.resizable(False, False)
 
         # Set window size.
         root_width = 500
         root_height = 500
 
         # Place the window in the center of the screen.
-        screen_width = root.winfo_screenwidth()
-        screen_height = root.winfo_screenheight()
+        screen_width = self.__root.winfo_screenwidth()
+        screen_height = self.__root.winfo_screenheight()
         x_cordinate = int((screen_width/2) - (root_width/2))
         y_cordinate = int((screen_height/2) - (root_height/2))
-        root.geometry("{}x{}+{}+{}".format(root_width, root_height, x_cordinate, y_cordinate))
+        self.__root.geometry("{}x{}+{}+{}".format(root_width, root_height, x_cordinate, y_cordinate))
 
         # Set window background colour.
-        root.configure(bg='#A37CF7')
+        self.__root.configure(bg="#A37CF7")
 
-        label = tk.Label(text="Which device do you want to configure?", fg="white", bg="#A37CF7")
-        label.config(font=("Courier", 12))
-        label.pack(pady=20)
+        self.__label = tk.Label(text="Which device do you want to configure?", fg="white", bg="#A37CF7")
+        self.__label.config(font=("Courier", 12))
+        self.__label.pack(pady=20)
 
         # Button to configure the power analyzer.
-        power_analyzer = tk.Button(
+        self.__btn_power_analyser = tk.Button(
             text="Power analyzer",
             width=15,
             height=2,
             fg="white",
             bg="#6DA536",
-            command=on_click_power_analyzer)
-
-        power_analyzer.pack(pady=10)
+            command=self.__on_click_power_analyzer)
+        self.__btn_power_analyser.pack(pady=10)
 
         # Button to configure the upper sensor.
-        upper_sensor = tk.Button(
+        self.__btn_upper_sensor = tk.Button(
             text="Upper sensor",
             width=15,
             height=2,
             fg="white",
             bg="#6DA536",
-            command=on_click_upper_sensor)
-
-        upper_sensor.pack(pady=10)
+            command=self.__on_click_upper_sensor)
+        self.__btn_upper_sensor.pack(pady=10)
 
         # Button to configure the middle sensor.
-        middle_sensor = tk.Button(
+        self.__btn_middle_sensor = tk.Button(
             text="Middle sensor",
             width=15,
             height=2,
             fg="white",
             bg="#6DA536",
-            command=on_click_middle_sensor)
-
-        middle_sensor.pack(pady=10)
+            command=self.__on_click_middle_sensor)
+        self.__btn_middle_sensor.pack(pady=10)
 
         # Button to configure the lower sensor.
-        lower_sensor = tk.Button(
+        self.__btn_lower_sensor = tk.Button(
             text="Lower sensor",
             width=15,
             height=2,
             fg="white",
             bg="#6DA536",
-            command=on_click_lower_sensor)
-
-        lower_sensor.pack(pady=10)
+            command=self.__on_click_lower_sensor)
+        self.__btn_lower_sensor.pack(pady=10)
 
         # Button to configure the white island.
-        white_island = tk.Button(
+        self.__btn_white_island = tk.Button(
             text="White island",
             width=15,
             height=2,
             fg="white",
             bg="#6DA536",
-            command=on_click_white_island)
+            command=self.__on_click_white_island)
+        self.__btn_white_island.pack(pady=10)
 
-        white_island.pack(pady=10)
+        self.__create_progress_bar()
 
-        root.mainloop()
+        self.__programmer = Programmer()
+        self.__programmer.update_progress = self.__update_progress
 
+#endregion
 
-        # # Call Programmer class.
-        # configure = Programmer()
+#region Public Methods
 
+    def run(self):
+        """Run the main loop.
+        """
 
-    def create_progress_bar(self):
+        self.__root.mainloop()
+
+#nedregion
+
+#region Private Methods
+
+    def __show_pop_up(self, device_configured):
+        """Method to show a pop up.
+
+        Args:
+            device_configured (str): [description]
+        """
+
+        if device_configured == "sensor":
+            # Shows a pop up window when a sensor is configured.
+            messagebox.showinfo("Done", "Configuration of the sensor is complete. Please do a power cycle.")
+
+        if device_configured == "power_analyzer":
+            # Shows a pop up window when a power analyzer is configured.
+            messagebox.showinfo("Done", "Configuration of the power analyser is complete. Please do a power cycle.")
+
+        if device_configured == "white_island":
+            # Shows a pop up window when a power analyzer is configured.
+            messagebox.showinfo("Done", "Configuration of the white island is complete. Please do a power cycle.")
+
+    def __create_progress_bar(self):
         """Method to create a progress bar.
         """
 
-        global pb
-
         # Create a progress bar.
-        pb = Progressbar(orient=HORIZONTAL, length=100, mode='indeterminate')
-        pb.pack(expand=True)
+        self.__progress_bar = Progressbar(orient=HORIZONTAL, length=100, mode="indeterminate")
+        self.__progress_bar.pack(expand=True)
 
-        pb['value'] = 0
-        root.update_idletasks()
+        self.__progress_bar["value"] = 0
+        self.__root.update_idletasks()
 
-        return [pb, root]
+    def __update_progress(self, progress):
 
-    def show_pop_up(self, device_configured):
-        """Method to show a pop up.
-        """
+        # Move the progress bar.
+        self.__progress_bar["value"] += progress
+        self.__root.update_idletasks()
 
-        # Call methods from Programmer() class.
-        room_temp_humid = self.configure.read_sensor_parameters()
-        voltage = self.configure.read_voltage()
-        coils_status = self.configure.identify_white_island_id_bd()
-
-        if device_configured["device"] == "sensor":
-            # Shows a pop up window when a sensor is configured.
-            messagebox.showinfo('Done', 'Configuration complete. Please do a power cycle.\n\
-            Temperature: {}C°, Humidity: {}%\n'.format(room_temp_humid["temperature"], room_temp_humid["humidity"]))
-
-        if device_configured["device"] == "power_analyzer":
-            # Shows a pop up window when a power analyzer is configured.
-            messagebox.showinfo('Done', 'Configuration complete. Please do a power cycle.\nVoltage: {}V'.format(voltage))
-
-        if device_configured["device"] == "white_island":
-            # Shows a pop up window when a power analyzer is configured.
-            messagebox.showinfo('Done', 'Configuration complete. Please do a power cycle.\n\
-            Coils status: {}'.format(coils_status))
-
-    def enable_buttons(self):
+    def __enable_buttons(self):
         """Method to enable all buttons.
         """
 
         # Turn all buttons back to normal state.
-        power_analyzer.configure(state=NORMAL)
-        upper_sensor.configure(state=NORMAL)
-        middle_sensor.configure(state=NORMAL)
-        lower_sensor.configure(state=NORMAL)
-        white_island.configure(state=NORMAL)
+        self.__btn_power_analyser.configure(state=NORMAL)
+        self.__btn_upper_sensor.configure(state=NORMAL)
+        self.__btn_middle_sensor.configure(state=NORMAL)
+        self.__btn_lower_sensor.configure(state=NORMAL)
+        self.__btn_white_island.configure(state=NORMAL)
 
-    def disable_buttons(self):
+    def __disable_buttons(self):
         """Method to disable all buttons.
         """
 
-        power_analyzer.configure(state=DISABLED)
-        upper_sensor.configure(state=DISABLED)
-        middle_sensor.configure(state=DISABLED)
-        lower_sensor.configure(state=DISABLED)
-        white_island.configure(state=DISABLED)
+        self.__btn_power_analyser.configure(state=DISABLED)
+        self.__btn_upper_sensor.configure(state=DISABLED)
+        self.__btn_middle_sensor.configure(state=DISABLED)
+        self.__btn_lower_sensor.configure(state=DISABLED)
+        self.__btn_white_island.configure(state=DISABLED)
 
-    # def create_gui(self):
-    #     """Method to create GUI form.
-    #     """
+    def __on_config_power_analyzer(self):
+        """Method to call identify, change and show pop up methods
+            and enable buttons after configuration is done on button click.
+        """
 
-        # global power_analyzer, upper_sensor, middle_sensor, lower_sensor, white_island, root
+        # Lock the thread.
+        self.__thread_lock.acquire()
 
-        # # Create the window for GUI.
-        # root = tk.Tk()
+        # Configure the power analyser.
+        self.__programmer.config_power_analyser()
 
-        # # Set window name.
-        # root.title("Configuration")
+        # Show end message.
+        self.__show_pop_up("power_analyser")
 
-        # # Prevents resizing.
-        # root.resizable(False, False)
+        # Release the thread.
+        self.__thread_lock.release()
 
-        # # Set window size.
-        # root_width = 500
-        # root_height = 500
+        # Enable the buttons.
+        self.__enable_buttons()
 
-        # # Place the window in the center of the screen.
-        # screen_width = root.winfo_screenwidth()
-        # screen_height = root.winfo_screenheight()
-        # x_cordinate = int((screen_width/2) - (root_width/2))
-        # y_cordinate = int((screen_height/2) - (root_height/2))
-        # root.geometry("{}x{}+{}+{}".format(root_width, root_height, x_cordinate, y_cordinate))
+    def __on_click_power_analyzer(self):
+        """Power analyzer on click event method.
+        """
 
-        # # Set window background colour.
-        # root.configure(bg='#A37CF7')
+        # Disable the buttons.
+        self.__disable_buttons()
 
-        # label = tk.Label(text="Which device do you want to configure?", fg="white", bg="#A37CF7")
-        # label.config(font=("Courier", 12))
-        # label.pack(pady=20)
+        # Start thread.
+        config_power_analyzer_thread = threading.Thread(target=self.__on_config_power_analyzer, daemon=True)
+        config_power_analyzer_thread.start()
 
-        # # Button to configure the power analyzer.
-        # power_analyzer = tk.Button(
-        #     text="Power analyzer",
-        #     width=15,
-        #     height=2,
-        #     fg="white",
-        #     bg="#6DA536",
-        #     command=on_click_power_analyzer)
+    def __on_config_upper_sensor(self):
+        """Method to call identify, change and show pop up methods
+        and enable buttons after configuration is done on button click.
+        """
 
-        # power_analyzer.pack(pady=10)
+        # Lock the thread.
+        self.__thread_lock.acquire()
 
-        # # Button to configure the upper sensor.
-        # upper_sensor = tk.Button(
-        #     text="Upper sensor",
-        #     width=15,
-        #     height=2,
-        #     fg="white",
-        #     bg="#6DA536",
-        #     command=on_click_upper_sensor)
+        # Configure the upper sensor.
+        self.__programmer.config_upper_sensor()
 
-        # upper_sensor.pack(pady=10)
+        # Show end message.
+        self.__show_pop_up("sensor")
 
-        # # Button to configure the middle sensor.
-        # middle_sensor = tk.Button(
-        #     text="Middle sensor",
-        #     width=15,
-        #     height=2,
-        #     fg="white",
-        #     bg="#6DA536",
-        #     command=on_click_middle_sensor)
+        # Release the thread.
+        self.__thread_lock.release()
 
-        # middle_sensor.pack(pady=10)
+        # Enable the buttons.
+        self.__enable_buttons()
 
-        # # Button to configure the lower sensor.
-        # lower_sensor = tk.Button(
-        #     text="Lower sensor",
-        #     width=15,
-        #     height=2,
-        #     fg="white",
-        #     bg="#6DA536",
-        #     command=on_click_lower_sensor)
+    def __on_click_upper_sensor(self):
+        """Upper sensor on click event method.
+        """
 
-        # lower_sensor.pack(pady=10)
+        # Disable the buttons.
+        self.__disable_buttons()
 
-        # # Button to configure the white island.
-        # white_island = tk.Button(
-        #     text="White island",
-        #     width=15,
-        #     height=2,
-        #     fg="white",
-        #     bg="#6DA536",
-        #     command=on_click_white_island)
+        # Start configuration thread.
+        config_upper_sensor_thread = threading.Thread(target=self.__on_config_upper_sensor, daemon=True)
+        config_upper_sensor_thread.start()
 
-        # white_island.pack(pady=10)
+    def __on_config_middle_sensor(self):
+        """Method to call identify, change and show pop up methods
+            and enable buttons after configuration is done on button click.
+        """
 
-        # root.mainloop()
+        # Lock the thread.
+        self.__thread_lock.acquire()
+
+        # Configure the middle sensor.
+        self.__programmer.config_upper_sensor()
+
+        # Show end message.
+        self.__show_pop_up("sensor")
+
+        # Release the thread.
+        self.__thread_lock.release()
+
+        # Enable the buttons.
+        self.__enable_buttons()
+
+    def __on_click_middle_sensor(self):
+        """Middle sensor on click event method.
+        """
+
+        # Disable the buttons.
+        self.__disable_buttons()
+
+        # Start thread.
+        config_middle_sensor_thread = threading.Thread(target=self.__on_config_middle_sensor, daemon=True)
+        config_middle_sensor_thread.start()
+
+    def __on_config_lower_sensor(self):
+        """Method to call identify, change and show pop up methods
+            and enable buttons after configuration is done on button click.
+        """
+
+        # Lock the thread.
+        self.__thread_lock.acquire()
+
+        # Configure the lower sensor.
+        self.__programmer.config_upper_sensor()
+
+        # Show end message.
+        self.__show_pop_up("sensor")
+
+        # Release the thread.
+        self.__thread_lock.release()
+
+        # Enable the buttons.
+        self.__enable_buttons()
+
+    def __on_click_lower_sensor(self):
+        """Lower sensor on click event method.
+        """
+
+        # Disable the buttons.
+        self.__disable_buttons()
+
+        # Start thread.
+        config_lower_sensor_thread = threading.Thread(target=self.__on_config_lower_sensor, daemon=True)
+        config_lower_sensor_thread.start()
+
+    def __on_config_white_island(self):
+        """Method to call identify, change and show pop up methods
+            and enable buttons after configuration is done on button click.
+        """
+
+        # Lock the thread.
+        self.__thread_lock.acquire()
+
+        # Configure the white island.
+        self.__programmer.config_upper_sensor()
+
+        # Show end message.
+        self.__show_pop_up("white_island")
+
+        # Release the thread.
+        self.__thread_lock.release()
+
+        # Enable the buttons.
+        self.__enable_buttons()
+
+    def __on_click_white_island(self):
+        """White island on click event method.
+        """
+
+        # Disable the buttons.
+        self.__disable_buttons()
+
+        # Start thread.
+        config_white_island_thread = threading.Thread(target=self.__on_config_white_island, daemon=True)
+        config_white_island_thread.start()
+
+#endregion
