@@ -31,14 +31,18 @@ from tkinter.constants import N, NONE
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 
 class Programmer():
-    """Class programmer.
+    """Programmer abstraction.
     """
 
 #region Attributes
 
     __config = None
+    """Configuration.
+    """
 
     __update_progress = None
+    """Update progress bar handler function.
+    """
 
 #endregion
 
@@ -46,12 +50,19 @@ class Programmer():
 
     @property
     def update_progress(self):
-
+        """Update progress bar handler.
+        """
+    
         return self.__update_progress
 
 
     @update_progress.setter
     def update_progress(self, value):
+        """Update progress bar handler
+
+        Args:
+            value (function): Reference to the function.
+        """
 
         if value is not None:
             self.__update_progress = value
@@ -82,7 +93,6 @@ class Programmer():
         self.__config = configparser.ConfigParser()
         self.__config.read(config_path)
 
-#endregion
 
     def __pa_read_voltage(self, port, baudrate, unit):
         """Method to read the voltage from the power analyzer.
@@ -179,7 +189,7 @@ class Programmer():
         """
 
         # Port
-        port = self.__config["POWER_ANALYZER"]["PORT"]
+        port = self.__config["APPLICATION"]["PORT"]
 
         # Make a connection with the device.
         client = ModbusClient(method="rtu", port=port, timeout=0.33,    baudrate=current_settings["BAUDRATE"])
@@ -353,7 +363,7 @@ class Programmer():
             raise argparse.ArgumentTypeError("Invalid baudrate: [9600, 14400, 19200]")
 
         # Port
-        port = self.__config["POWER_ANALYZER"]["PORT"]
+        port = self.__config["APPLICATION"]["PORT"]
 
         state = 0
 
@@ -470,7 +480,7 @@ class Programmer():
             raise argparse.ArgumentTypeError("Invalid baudrate! Insert [1, 2, 3, 4, 5]")
 
         # Port
-        port = self.__config["POWER_ANALYZER"]["PORT"]
+        port = self.__config["APPLICATION"]["PORT"]
 
         state = 0
 
@@ -500,12 +510,14 @@ class Programmer():
 #region Public Methods
 
     def config_power_analyser(self):
+        """Configure the power analyser.
+        """
 
         if self.__config == None:
             return
 
         # Get ID, baudrate and port values for the power analyzer.
-        power_analyzer_port = self.__config["POWER_ANALYZER"]["PORT"]
+        power_analyzer_port = self.__config["APPLICATION"]["PORT"]
         power_analyzer_id = int(self.__config["POWER_ANALYZER"]["ID"])
         power_analyzer_bd = int(self.__config["POWER_ANALYZER"]["B9600"])
 
@@ -514,56 +526,64 @@ class Programmer():
         self.__pa_change_settings(current_settings, power_analyzer_id, power_analyzer_bd)
 
     def config_upper_sensor(self):
+        """Configure upper sensor.
+        """
 
         if self.__config == None:
             return
 
         # Get ID, baudrate and port values for the upper sensor.
+        sensor_port = self.__config["APPLICATION"]["PORT"]
         sensor_id = int(self.__config["UPPER_SENSOR"]["ID"])
         sensor_bd = int(self.__config["UPPER_SENSOR"]["BAUDRATE"])
-        sensor_port = self.__config["UPPER_SENSOR"]["PORT"]
 
         # Call identify and change functions.
         current_settings = self.__sensor_identify(sensor_port)
         self.__sensor_change_settings(current_settings, sensor_id, sensor_bd)
 
     def config_middle_sensor(self):
+        """Configure the middle sensor.
+        """
 
         if self.__config == None:
             return
 
         # Get ID, baudrate and port values for the upper sensor.
+        sensor_port = self.__config["APPLICATION"]["PORT"]
         sensor_id = int(self.__config["MIDDLE_SENSOR"]["ID"])
         sensor_bd = int(self.__config["MIDDLE_SENSOR"]["BAUDRATE"])
-        sensor_port = self.__config["MIDDLE_SENSOR"]["PORT"]
 
         # Call identify and change functions.
         current_settings = self.__sensor_identify(sensor_port)
         self.__sensor_change_settings(current_settings, sensor_id, sensor_bd)
 
     def config_lower_sensor(self):
+        """Configure the lower sensor.
+        """
 
         if self.__config == None:
             return
 
         # Get ID, baudrate and port values for the upper sensor.
+        sensor_port = self.__config["APPLICATION"]["PORT"]
         sensor_id = int(self.__config["LOWER_SENSOR"]["ID"])
         sensor_bd = int(self.__config["LOWER_SENSOR"]["BAUDRATE"])
-        sensor_port = self.__config["LOWER_SENSOR"]["PORT"]
 
         # Call identify and change functions.
         current_settings = self.__sensor_identify(sensor_port)
         self.__sensor_change_settings(current_settings, sensor_id, sensor_bd)
 
     def config_white_island(self):
+        """Configure the white island.
+        """
 
         if self.__config == None:
             return
 
         # Get ID, baudrate and port values for the white island.
+        str_white_island_port = self.__config["APPLICATION"]["PORT"]
         white_island_id = int(self.__config["WHITE_ISLAND"]["ID"])
         white_island_bd = int(self.__config["WHITE_ISLAND"]["B9600"])
-        str_white_island_port = self.__config["WHITE_ISLAND"]["PORT"]
 
 
         # Call identify and change functions.
