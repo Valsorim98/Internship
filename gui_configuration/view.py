@@ -87,6 +87,33 @@ class View():
 
         self.__thread_lock = threading.Lock()
 
+        self.__programmer = Programmer()
+        self.__programmer.update_progress = self.__update_progress
+
+        self.__create_form()
+
+        self.__create_label()
+
+        self.__create_buttons()
+
+        self.__create_progress_bar()
+
+#endregion
+
+#region Public Methods
+
+    def run(self):
+        """Run the main loop.
+        """
+
+        self.__root.mainloop()
+
+#nedregion
+
+#region Private Methods
+
+    def __create_form(self):
+
         # Create the window for GUI.
         self.__root = tk.Tk()
 
@@ -110,9 +137,52 @@ class View():
         # Set window background colour.
         self.__root.configure(bg="#A37CF7")
 
+    def __show_pop_up(self, device_configured):
+        """Method to show a pop up.
+
+        Args:
+            device_configured (str): [description]
+        """
+
+        if device_configured == "sensor":
+            # Shows a pop up window when a sensor is configured.
+            messagebox.showinfo("Done", "Configuration of the sensor is complete. Please do a power cycle.")
+
+        if device_configured == "power_analyzer":
+            # Shows a pop up window when a power analyzer is configured.
+            messagebox.showinfo("Done", "Configuration of the power analyser is complete. Please do a power cycle.")
+
+        if device_configured == "white_island":
+            # Shows a pop up window when a power analyzer is configured.
+            messagebox.showinfo("Done", "Configuration of the white island is complete. Please do a power cycle.")
+
+
+    def __create_label(self):
+
         self.__label = tk.Label(text="Which device do you want to configure?", fg="white", bg="#A37CF7")
         self.__label.config(font=("Courier", 12))
         self.__label.pack(pady=20)
+
+
+    def __create_progress_bar(self):
+        """Method to create a progress bar.
+        """
+
+        # Create a progress bar.
+        self.__progress_bar = Progressbar(orient=HORIZONTAL, length=100, mode="indeterminate")
+        self.__progress_bar.pack(expand=True)
+
+        self.__progress_bar["value"] = 0
+        self.__root.update_idletasks()
+
+    def __update_progress(self, progress):
+
+        # Move the progress bar.
+        self.__progress_bar["value"] += progress
+        self.__root.update_idletasks()
+
+
+    def __create_buttons(self):
 
         # Button to configure the power analyzer.
         self.__btn_power_analyser = tk.Button(
@@ -163,61 +233,6 @@ class View():
             bg="#6DA536",
             command=self.__on_click_white_island)
         self.__btn_white_island.pack(pady=10)
-
-        self.__create_progress_bar()
-
-        self.__programmer = Programmer()
-        self.__programmer.update_progress = self.__update_progress
-
-#endregion
-
-#region Public Methods
-
-    def run(self):
-        """Run the main loop.
-        """
-
-        self.__root.mainloop()
-
-#nedregion
-
-#region Private Methods
-
-    def __show_pop_up(self, device_configured):
-        """Method to show a pop up.
-
-        Args:
-            device_configured (str): [description]
-        """
-
-        if device_configured == "sensor":
-            # Shows a pop up window when a sensor is configured.
-            messagebox.showinfo("Done", "Configuration of the sensor is complete. Please do a power cycle.")
-
-        if device_configured == "power_analyzer":
-            # Shows a pop up window when a power analyzer is configured.
-            messagebox.showinfo("Done", "Configuration of the power analyser is complete. Please do a power cycle.")
-
-        if device_configured == "white_island":
-            # Shows a pop up window when a power analyzer is configured.
-            messagebox.showinfo("Done", "Configuration of the white island is complete. Please do a power cycle.")
-
-    def __create_progress_bar(self):
-        """Method to create a progress bar.
-        """
-
-        # Create a progress bar.
-        self.__progress_bar = Progressbar(orient=HORIZONTAL, length=100, mode="indeterminate")
-        self.__progress_bar.pack(expand=True)
-
-        self.__progress_bar["value"] = 0
-        self.__root.update_idletasks()
-
-    def __update_progress(self, progress):
-
-        # Move the progress bar.
-        self.__progress_bar["value"] += progress
-        self.__root.update_idletasks()
 
     def __enable_buttons(self):
         """Method to enable all buttons.
@@ -311,7 +326,7 @@ class View():
         self.__thread_lock.acquire()
 
         # Configure the middle sensor.
-        self.__programmer.config_upper_sensor()
+        self.__programmer.config_middle_sensor()
 
         # Show end message.
         self.__show_pop_up("sensor")
@@ -342,7 +357,7 @@ class View():
         self.__thread_lock.acquire()
 
         # Configure the lower sensor.
-        self.__programmer.config_upper_sensor()
+        self.__programmer.config_lower_sensor()
 
         # Show end message.
         self.__show_pop_up("sensor")
